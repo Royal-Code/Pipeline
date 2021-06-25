@@ -32,7 +32,7 @@ namespace RoyalCode.PipelineFlow.Chains
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override TOut Send(TIn input)
-            => function(input).ConfigureAwait(false).GetAwaiter().GetResult();
+            => function(input).GetAwaiter().GetResult();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override Task<TOut> SendAsync(TIn input, CancellationToken token)
