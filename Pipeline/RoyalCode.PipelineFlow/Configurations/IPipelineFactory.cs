@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RoyalCode.PipelineFlow.Configurations
 {
@@ -14,5 +10,12 @@ namespace RoyalCode.PipelineFlow.Configurations
     public interface IPipelineFactory<TFor>
     {
 
+        IPipeline<TIn> Create<TIn>();
+
+        IPipeline<TIn, TOut> Create<TIn, TOut>();
+
+        object Create(Type inputType);
+
+        object Create(Type inputType, Type outputType);
     }
 }

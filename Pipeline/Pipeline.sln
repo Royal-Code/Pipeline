@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30709.64
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoyalCode.PipelineFlow", "RoyalCode.PipelineFlow\RoyalCode.PipelineFlow.csproj", "{57A5D837-2896-40D0-9B36-1A417B1E04E3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoyalCode.PipelineFlow", "RoyalCode.PipelineFlow\RoyalCode.PipelineFlow.csproj", "{57A5D837-2896-40D0-9B36-1A417B1E04E3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoyalCode.Core.Cqs", "RoyalCode.Core.Cqs\RoyalCode.Core.Cqs.csproj", "{3041096A-38C0-4206-9718-2262C859BB7D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{57A5D837-2896-40D0-9B36-1A417B1E04E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{57A5D837-2896-40D0-9B36-1A417B1E04E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{57A5D837-2896-40D0-9B36-1A417B1E04E3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3041096A-38C0-4206-9718-2262C859BB7D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3041096A-38C0-4206-9718-2262C859BB7D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3041096A-38C0-4206-9718-2262C859BB7D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3041096A-38C0-4206-9718-2262C859BB7D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
