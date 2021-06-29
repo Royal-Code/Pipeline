@@ -6,6 +6,23 @@ namespace RoyalCode.Core.Cqs
     /// Handler intermediário, o qual redirecionará a request a outro handler.
     /// </summary>
     /// <typeparam name="TRequest">A Request original.</typeparam>
+    /// <typeparam name="TNextRequest">A nova request, a qual deve ter o mesmo resultado.</typeparam>
+    public interface IBridge<in TRequest, TNextRequest> : IBridgeBase<TRequest>
+        where TRequest : IRequest
+        where TNextRequest : IRequest
+    {
+        /// <summary>
+        /// Obtém a nova request a partir da request original.
+        /// </summary>
+        /// <param name="request">Request Original.</param>
+        /// <param name="next">Delegate for the next action in the pipeline.</param>
+        void Next(TRequest request, Action<TNextRequest> next);
+    }
+
+    /// <summary>
+    /// Handler intermediário, o qual redirecionará a request a outro handler.
+    /// </summary>
+    /// <typeparam name="TRequest">A Request original.</typeparam>
     /// <typeparam name="TResult">O Resultado da Request.</typeparam>
     /// <typeparam name="TNextRequest">A nova request, a qual deve ter o mesmo resultado.</typeparam>
     public interface IBridge<in TRequest, TResult, TNextRequest> : IBridgeBase<TRequest, TResult>
@@ -19,23 +36,6 @@ namespace RoyalCode.Core.Cqs
         /// <param name="next">Delegate for the next action in the pipeline.</param>
         /// <returns>O Resultado da execução da requisição.</returns>
         TResult Next(TRequest request, Func<TNextRequest, TResult> next);
-    }
-
-    /// <summary>
-    /// Handler intermediário, o qual redirecionará a request a outro handler.
-    /// </summary>
-    /// <typeparam name="TRequest">A Request original.</typeparam>
-    /// <typeparam name="TNextRequest">A nova request, a qual deve ter o mesmo resultado.</typeparam>
-    public interface IBridge<in TRequest, TNextRequest> : IBridgeBase<TRequest>
-        where TRequest : IRequest
-        where TNextRequest : IRequest
-    {
-        /// <summary>
-        /// Obtém a nova request a partir da request original.
-        /// </summary>
-        /// <param name="request">Request Original.</param>
-        /// <param name="next">Delegate for the next action in the pipeline.</param>
-        void Next(TRequest request, Action<TNextRequest> next);
     }
 
     /// <summary>

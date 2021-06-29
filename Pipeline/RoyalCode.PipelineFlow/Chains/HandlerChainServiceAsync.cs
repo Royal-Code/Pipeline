@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RoyalCode.Tasks;
+using System;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -36,7 +37,7 @@ namespace RoyalCode.PipelineFlow.Chains
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override TOut Send(TIn input)
-            => function(service, input, default).GetAwaiter().GetResult();
+            => function(service, input, default).GetResultSynchronously();
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override Task<TOut> SendAsync(TIn input, CancellationToken token)

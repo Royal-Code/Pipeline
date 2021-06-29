@@ -5,27 +5,26 @@ using System.Threading.Tasks;
 
 namespace RoyalCode.PipelineFlow.Chains
 {
-    public class DecoratorChainActionSync<TIn, TNext> : DecoratorChain<TIn, TNext>
-        where TNext : Chain<TIn>
+    public class BridgeChainActionSync<TIn, TNextIn, TNextChain> : BridgeChain<TIn, TNextIn, TNextChain>
+        where TNextChain : Chain<TNextIn>
     {
-        private readonly Action<TIn, Action> action;
-        private readonly TNext next;
+        private readonly Action<TIn, Action<TNextIn>> action;
+        private readonly TNextChain next;
 
-        public DecoratorChainActionSync(Action<TIn, Action> action, TNext next)
+        public BridgeChainActionSync(Action<TIn, Action<TNextIn>> action, TNextChain next)
         {
             this.action = action ?? throw new ArgumentNullException(nameof(action));
             this.next = next ?? throw new ArgumentNullException(nameof(next));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override void Send(TIn input) => action(input, () => next.Send(input));
+        public override void Send(TIn input) => action(input, nextInput => next.Send(nextInput));
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override Task SendAsync(TIn input, CancellationToken token)
         {
-            Task resultTask = null;
-            action(input, () => { resultTask = next.SendAsync(input, token); });
-            return resultTask ?? Task.CompletedTask;
+            action(input, nextInput => next.Send(nextInput));
+            return Task.CompletedTask;
         }
     }
 }
