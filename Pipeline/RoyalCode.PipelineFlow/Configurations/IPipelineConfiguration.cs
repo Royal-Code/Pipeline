@@ -18,6 +18,9 @@ namespace RoyalCode.PipelineFlow.Configurations
 
     public interface IChainBuilder
     {
+        ChainKind Kind { get; }
 
+        Type Build(HandlerDescription handlerDescription, Type previousChainType);
+        Type Build(HandlerDescription handlerDescription);
     }
 }
