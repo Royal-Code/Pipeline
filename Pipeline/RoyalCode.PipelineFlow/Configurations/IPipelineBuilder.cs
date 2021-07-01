@@ -8,22 +8,55 @@ namespace RoyalCode.PipelineFlow.Configurations
 {
     public interface IPipelineBuilder
     {
-
+        void AddHandlerResolver(IHandlerResolver resolver);
     }
 
     public interface IPipelineBuilder<TIn> : IPipelineBuilder
     {
+        IPipelineBuilder<TIn> Handle(Action<TIn> handler);
+
+        IPipelineBuilder<TIn> HandleAsync(Func<TIn, Task> handler);
+
+        IPipelineBuilder<TIn> Handle<TService>(Action<TService, TIn> handler);
+
+        IPipelineBuilder<TIn> HandleAsync<TService>(Func<TService, TIn, Task> handler);
     }
 
     public interface IPipelineBuilder<TIn, TOut> : IPipelineBuilder
     {
+        IPipelineBuilder<TIn, TOut> Handle(Func<TIn, TOut> handler);
+
+        IPipelineBuilder<TIn, TOut> HandleAsync(Func<TIn, Task<TOut>> handler);
+
+        IPipelineBuilder<TIn, TOut> Handle<TService>(Action<TService, TIn, TOut> handler);
+
+        IPipelineBuilder<TIn, TOut> HandleAsync<TService>(Func<TService, TIn, Task<TOut>> handler);
     }
 
-    public class DefaultPipelineBuilder : IPipelineBuilder
+    public class BuildingSample
+    {
+        public void Buiding(IPipelineBuilder builder)
+        {
+            IHandlerResolver resolver = null;
+            builder.AddHandlerResolver(resolver);
+        }
+
+        public void Buiding(IPipelineBuilder<BuildingSample> builder)
+        {
+
+        }
+
+        public void Buiding(IPipelineBuilder<BuildingSample, object> builder)
+        {
+
+        }
+    }
+
+    public class DefaultPipelineChainBuilder
     {
         IEnumerable<IChainBuilder> chainBuilders; // genérico ou por IPipelineConfigurtion<TFor> ???
-        HandlersRegistry handlersRegistry;        // HandlerResolver -> Por IPipelineConfigurtion<TFor>
-        DecoratorsRegistry decoratorsRegistry;    // DecoratorsResolver -> Por IPipelineConfigurtion<TFor>
+        HandlerRegistry handlersRegistry;         // HandlerResolver -> Por IPipelineConfigurtion<TFor>
+        DecoratorRegistry decoratorsRegistry;     // DecoratorsResolver -> Por IPipelineConfigurtion<TFor>
         IDecoratorSorter decoratorSorter;         // genérico
 
         public Type Build(Type inputType)
@@ -69,7 +102,7 @@ namespace RoyalCode.PipelineFlow.Configurations
         Decorator
     }
 
-    public class HandlersRegistry
+    public class HandlerRegistry
     {
         public HandlerDescription GetDescription(Type inputType)
         {
@@ -79,6 +112,15 @@ namespace RoyalCode.PipelineFlow.Configurations
 
     public class HandlerDescription
     {
+        public Type InputType { get; internal set; }
+        public Type OutputType { get; internal set; }
+        public bool HasOutput { get; internal set; }
+        public bool IsAsync { get; internal set; }
+        public bool HasToken { get; internal set; }
+
+        public Delegate HandlerDelegate { get; internal set; }
+        public Type ServiceType { get; internal set; }
+
         public bool IsBridge { get; internal set; }
 
         public Type GetBridgeType()
@@ -87,7 +129,7 @@ namespace RoyalCode.PipelineFlow.Configurations
         }
     }
 
-    public class DecoratorsRegistry
+    public class DecoratorRegistry
     {
         public IEnumerable<DecoratorDescription> GetDescriptions(Type inputType)
         {
