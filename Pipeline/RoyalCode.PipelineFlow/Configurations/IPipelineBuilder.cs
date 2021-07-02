@@ -110,25 +110,6 @@ namespace RoyalCode.PipelineFlow.Configurations
         }
     }
 
-    public class HandlerDescription
-    {
-        public Type InputType { get; internal set; }
-        public Type OutputType { get; internal set; }
-        public bool HasOutput { get; internal set; }
-        public bool IsAsync { get; internal set; }
-        public bool HasToken { get; internal set; }
-
-        public Delegate HandlerDelegate { get; internal set; }
-        public Type ServiceType { get; internal set; }
-
-        public bool IsBridge { get; internal set; }
-
-        public Type GetBridgeType()
-        {
-            throw new NotImplementedException();
-        }
-    }
-
     public class DecoratorRegistry
     {
         public IEnumerable<DecoratorDescription> GetDescriptions(Type inputType)

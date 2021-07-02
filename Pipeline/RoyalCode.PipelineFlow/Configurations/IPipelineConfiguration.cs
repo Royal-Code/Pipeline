@@ -1,9 +1,5 @@
-﻿using RoyalCode.PipelineFlow.Exceptions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace RoyalCode.PipelineFlow.Configurations
@@ -31,6 +27,8 @@ namespace RoyalCode.PipelineFlow.Configurations
     public interface IHandlerResolver
     {
         HandlerDescription TryResolve(Type inputType);
+
+        HandlerDescription TryResolve(Type inputType, Type output);
     }
 
     public class DelegateHandlerResolver : IHandlerResolver
@@ -40,6 +38,13 @@ namespace RoyalCode.PipelineFlow.Configurations
         public DelegateHandlerResolver(Delegate handler)
         {
             handlerDescription = handler.GetHandlerDescription();
+        }
+
+        public HandlerDescription TryResolve(Type inputType, Type output)
+        {
+            return handlerDescription.InputType == inputType && handlerDescription.OutputType == output
+                ? handlerDescription
+                : null;
         }
 
         HandlerDescription IHandlerResolver.TryResolve(Type inputType)
@@ -52,90 +57,25 @@ namespace RoyalCode.PipelineFlow.Configurations
 
     public class ServiceAndDelegateHandlerResolver : IHandlerResolver
     {
-        public ServiceAndDelegateHandlerResolver(Delegate handler)
-        {
+        private readonly HandlerDescription handlerDescription;
 
+        public ServiceAndDelegateHandlerResolver(Delegate handler, Type serviceType)
+        {
+            handlerDescription = handler.GetHandlerDescription(serviceType);
         }
 
         public HandlerDescription TryResolve(Type inputType)
         {
-            throw new NotImplementedException();
+            return handlerDescription.Match(inputType)
+                ? handlerDescription
+                : null;
         }
-    }
 
-    internal static class HandlerDescriptionFactory
-    {
-        internal static HandlerDescription GetHandlerDescription(this Delegate handler)
+        public HandlerDescription TryResolve(Type inputType, Type output)
         {
-            var method = handler.Method;
-            var parms = method.GetParameters();
-
-            // first check parameters
-            if (parms.Length is not 1 and not 2)
-                throw new InvalidHandlerDelegateException();
-
-            // the input type.
-            var inputType = parms[0].ParameterType;
-
-            // the output type
-            var outputType = method.ReturnType;
-            bool hasOutput = true;
-            bool isAsync = false;
-            bool hasToken = false;
-
-            if (outputType == typeof(void))
-            {
-                hasOutput = false;
-            }
-            else if (outputType == typeof(Task))
-            {
-                isAsync = true;
-
-                // check if a Task<>, with result.
-                if (outputType.IsGenericType)
-                {
-                    // get the result type.
-                    outputType = outputType.GetGenericArguments()[0];
-                }
-                else
-                {
-                    // Task without result is like void.
-                    hasOutput = false;
-                }
-            }
-
-            // check parameters
-            if (isAsync)
-            {
-                if (parms.Length is 2)
-                {
-                    if (parms[1].ParameterType != typeof(CancellationToken))
-                    {
-                        throw new InvalidHandlerDelegateException();
-                    }
-                    else
-                    {
-                        hasToken = true;
-                    }
-                }
-            }
-            else if (parms.Length != 1)
-            {
-                throw new InvalidHandlerDelegateException();
-            }
-
-            var description = new HandlerDescription()
-            {
-                InputType = inputType,
-                OutputType = outputType,
-                HasOutput = hasOutput,
-                IsAsync = isAsync,
-                HasToken = hasToken,
-                IsBridge = false,
-                HandlerDelegate = handler
-            };
-
-            return description;
+            return handlerDescription.Match(inputType, output)
+                ? handlerDescription
+                : null;
         }
     }
 }
