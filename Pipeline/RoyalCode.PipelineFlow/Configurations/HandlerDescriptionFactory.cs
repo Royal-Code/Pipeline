@@ -1,8 +1,5 @@
 ﻿using RoyalCode.PipelineFlow.Exceptions;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -144,46 +141,8 @@ namespace RoyalCode.PipelineFlow.Configurations
                 throw new InvalidHandlerMethodException();
             }
 
-            // create a delegate
-
-            ParameterExpression serviceParam, inputParam, tokenParam;
-            List<ParameterExpression> parameters = new();
-
-            serviceParam = Expression.Parameter(serviceType, "service");
-            inputParam = Expression.Parameter(inputType, "input");
-            parameters.Add(serviceParam);
-            parameters.Add(inputParam);
-
-            if (hasToken)
-            {
-                tokenParam = Expression.Parameter(typeof(CancellationToken), "token");
-                parameters.Add(tokenParam);
-            }
-
-            // define the delegate type
-            Type delegateType;
-            if (hasOutput || isAsync)
-            {
-                if (hasToken)
-                {
-                    delegateType = typeof(Func<,,,>)
-                        .MakeGenericType(serviceType, inputType, typeof(CancellationToken), method.ReturnType);
-                }
-                else
-                {
-                    delegateType = typeof(Func<,,>)
-                        .MakeGenericType(serviceType, inputType, method.ReturnType);
-                }
-            }
-            else
-            {
-                delegateType = typeof(Action<,>).MakeGenericType(serviceType, inputType);
-            }
-
-            var body = Expression.Call(serviceParam, method, parameters.Skip(1));
-            var lambda = Expression.Lambda(delegateType, body, parameters);
-            var methodDelegate = lambda.Compile();
-
+            var resolution = new GenericResolution(inputType, outputType, isAsync, hasOutput, method);
+            
             var description = new HandlerDescription()
             {
                 InputType = inputType,
@@ -192,7 +151,7 @@ namespace RoyalCode.PipelineFlow.Configurations
                 IsAsync = isAsync,
                 HasToken = hasToken,
                 IsBridge = false,
-                //HandlerDelegate = methodDelegate, TODO -> usar GenericResolution
+                HandlerDelegateProvider = (i, o) => resolution.CreateDelegate(i, o),
                 ServiceType = serviceType
             };
 
@@ -277,39 +236,6 @@ namespace RoyalCode.PipelineFlow.Configurations
             };
 
             return description;
-        }
-    }
-
-    /// <summary>
-    /// Contém a resolução dos tipos genéricos do input e output em relação ao serviço de um method handler.
-    /// </summary>
-    public class GenericResolution
-    {
-        // deve conter uma relação/mapeamento dos parametros genéricos do serviço em relação
-        // aos parâmetros genéricos do input e em relação ao output ou parâmetros genéricos do output.
-
-        private readonly Type inputType;
-        private readonly Type outputType;
-        private readonly bool isAsync;
-        private readonly bool hasToken;
-        private readonly MemberInfo handlerMethod;
-
-        public GenericResolution(Type inputType, Type outputType, bool isAsync, bool hasToken, MemberInfo handlerMethod)
-        {
-            this.inputType = inputType ?? throw new ArgumentNullException(nameof(inputType));
-            this.outputType = outputType ?? throw new ArgumentNullException(nameof(outputType));
-            this.isAsync = isAsync;
-            this.hasToken = hasToken;
-            this.handlerMethod = handlerMethod ?? throw new ArgumentNullException(nameof(handlerMethod));
-        }
-
-        public Delegate CreateDelegate(Type inputType, Type outputType)
-        {
-            // resolver o typo do serviço a partir do tipo do input e output.
-            // resolver o método real.
-            // criar o delegate.
-
-            throw new NotImplementedException();
         }
     }
 }
