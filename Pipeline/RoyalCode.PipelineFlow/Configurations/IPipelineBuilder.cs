@@ -11,6 +11,21 @@ namespace RoyalCode.PipelineFlow.Configurations
         void AddHandlerResolver(IHandlerResolver resolver);
     }
 
+    public class DeafultPipelineBuilder : IPipelineBuilder
+    {
+        private readonly IPipelineConfiguration configuration;
+
+        public DeafultPipelineBuilder(IPipelineConfiguration configuration)
+        {
+            this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+        }
+
+        public void AddHandlerResolver(IHandlerResolver resolver)
+        {
+            configuration.Handlers.Add(resolver);
+        }
+    }
+
     public interface IPipelineBuilder<TIn> : IPipelineBuilder
     {
         IPipelineBuilder<TIn> Handle(Action<TIn> handler);
@@ -22,22 +37,96 @@ namespace RoyalCode.PipelineFlow.Configurations
         IPipelineBuilder<TIn> HandleAsync<TService>(Func<TService, TIn, Task> handler);
     }
 
+    public class DefaultPipelineBuilder<TIn> : IPipelineBuilder<TIn>
+    {
+        private readonly IPipelineBuilder pipelineBuilder;
+
+        public DefaultPipelineBuilder(IPipelineBuilder pipelineBuilder)
+        {
+            this.pipelineBuilder = pipelineBuilder ?? throw new ArgumentNullException(nameof(pipelineBuilder));
+        }
+
+        public void AddHandlerResolver(IHandlerResolver resolver) => pipelineBuilder.AddHandlerResolver(resolver);
+
+        public IPipelineBuilder<TIn> Handle(Action<TIn> handler)
+        {
+            pipelineBuilder.AddHandlerResolver(DefaultHandlersResolver.Handle(handler));
+            return this;
+        }
+
+        public IPipelineBuilder<TIn> Handle<TService>(Action<TService, TIn> handler)
+        {
+            pipelineBuilder.AddHandlerResolver(DefaultHandlersResolver.Handle(handler));
+            return this;
+        }
+
+        public IPipelineBuilder<TIn> HandleAsync(Func<TIn, Task> handler)
+        {
+            pipelineBuilder.AddHandlerResolver(DefaultHandlersResolver.Handle(handler));
+            return this;
+        }
+
+        public IPipelineBuilder<TIn> HandleAsync<TService>(Func<TService, TIn, Task> handler)
+        {
+            pipelineBuilder.AddHandlerResolver(DefaultHandlersResolver.Handle(handler));
+            return this;
+        }
+    }
+
     public interface IPipelineBuilder<TIn, TOut> : IPipelineBuilder
     {
         IPipelineBuilder<TIn, TOut> Handle(Func<TIn, TOut> handler);
 
         IPipelineBuilder<TIn, TOut> HandleAsync(Func<TIn, Task<TOut>> handler);
 
-        IPipelineBuilder<TIn, TOut> Handle<TService>(Action<TService, TIn, TOut> handler);
+        IPipelineBuilder<TIn, TOut> Handle<TService>(Func<TService, TIn, TOut> handler);
 
         IPipelineBuilder<TIn, TOut> HandleAsync<TService>(Func<TService, TIn, Task<TOut>> handler);
+    }
+
+    public class DefaultPipelineBuilder<TIn, TOut> : IPipelineBuilder<TIn, TOut>
+    {
+        private readonly IPipelineBuilder pipelineBuilder;
+
+        public DefaultPipelineBuilder(IPipelineBuilder pipelineBuilder)
+        {
+            this.pipelineBuilder = pipelineBuilder ?? throw new ArgumentNullException(nameof(pipelineBuilder));
+        }
+
+        public void AddHandlerResolver(IHandlerResolver resolver) => pipelineBuilder.AddHandlerResolver(resolver);
+
+        public IPipelineBuilder<TIn, TOut> Handle(Func<TIn, TOut> handler)
+        {
+            pipelineBuilder.AddHandlerResolver(DefaultHandlersResolver.Handle(handler));
+            return this;
+        }
+
+        public IPipelineBuilder<TIn, TOut> Handle<TService>(Func<TService, TIn, TOut> handler)
+        {
+            pipelineBuilder.AddHandlerResolver(DefaultHandlersResolver.Handle(handler));
+            return this;
+        }
+
+        public IPipelineBuilder<TIn, TOut> HandleAsync(Func<TIn, Task<TOut>> handler)
+        {
+            pipelineBuilder.AddHandlerResolver(DefaultHandlersResolver.Handle(handler));
+            return this;
+        }
+
+        public IPipelineBuilder<TIn, TOut> HandleAsync<TService>(Func<TService, TIn, Task<TOut>> handler)
+        {
+            pipelineBuilder.AddHandlerResolver(DefaultHandlersResolver.Handle(handler));
+            return this;
+        }
     }
 
     public class BuildingSample
     {
         public void Buiding(IPipelineBuilder builder)
         {
-            IHandlerResolver resolver = null;
+            IHandlerResolver resolver = DefaultHandlersResolver
+                .Handle<BuildingSample>(sample => Task.FromResult(sample));
+
             builder.AddHandlerResolver(resolver);
         }
 
@@ -66,12 +155,13 @@ namespace RoyalCode.PipelineFlow.Configurations
             if (handlerDescription is null)
                 throw new InvalidOperationException($"None handler registrated for type '{inputType.FullName}'.");
 
-            Type chainType = null;
+            Type chainType;
 
             if (handlerDescription.IsBridge)
             {
                 Type bridgeNextInputType = handlerDescription.GetBridgeType();
                 chainType = Build(bridgeNextInputType); // requer algum tratamento para evitar loop infinito
+                
 
                 var chainBuilder = chainBuilders.FirstOrDefault(c => c.Kind == ChainKind.Bridge);
                 chainType = chainBuilder.Build(handlerDescription, chainType);
@@ -100,14 +190,6 @@ namespace RoyalCode.PipelineFlow.Configurations
         Handler,
         Bridge,
         Decorator
-    }
-
-    public class HandlerRegistry
-    {
-        public HandlerDescription GetDescription(Type inputType)
-        {
-            throw new NotImplementedException();
-        }
     }
 
     public class DecoratorRegistry

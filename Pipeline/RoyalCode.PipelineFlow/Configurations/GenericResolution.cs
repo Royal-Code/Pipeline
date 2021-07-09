@@ -56,12 +56,7 @@ namespace RoyalCode.PipelineFlow.Configurations
             for (int i = 0; i < serviceGenerics.Length; i++)
             {
                 var generic = serviceGenerics[i];
-                bindings.Add(new GenericParameterBinding()
-                {
-                    Index = i,
-                    ServiceGenericType = generic
-                    
-                });
+                bindings.Add(new GenericParameterBinding(i, generic));
             }
 
             if (inputType.IsGenericType)
@@ -116,13 +111,19 @@ namespace RoyalCode.PipelineFlow.Configurations
 
         private class GenericParameterBinding
         {
-            public int Index { get; set; }
+            public int Index { get; }
 
-            public Type ServiceGenericType { get; set; }
+            public Type ServiceGenericType { get; }
 
             public BindingMatch Match { get; set; }
 
             public int OtherIndex { get; set; }
+
+            public GenericParameterBinding(int index, Type serviceGenericType)
+            {
+                Index = index;
+                ServiceGenericType = serviceGenericType ?? throw new ArgumentNullException(nameof(serviceGenericType));
+            }
         }
 
         private enum BindingMatch
@@ -196,7 +197,7 @@ namespace RoyalCode.PipelineFlow.Configurations
             return methodDelegate;
         }
 
-        private Type MakeDelegateType(Type serviceType, Type[] methodParametersTypes, Type returnType = null)
+        private Type MakeDelegateType(Type serviceType, Type[] methodParametersTypes, Type? returnType = null)
         {
             var totalParameters = methodParametersTypes.Length + 1;
 
