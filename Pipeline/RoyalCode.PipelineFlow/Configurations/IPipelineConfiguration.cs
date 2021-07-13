@@ -21,7 +21,10 @@ namespace RoyalCode.PipelineFlow.Configurations
     {
         ChainKind Kind { get; }
 
+        Type Build(DecoratorDescription decoratorDescription, Type previousChainType);
         Type Build(HandlerDescription handlerDescription, Type previousChainType);
         Type Build(HandlerDescription handlerDescription);
+
+
     }
 }

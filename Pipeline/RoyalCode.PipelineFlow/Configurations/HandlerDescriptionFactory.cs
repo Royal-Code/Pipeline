@@ -67,15 +67,12 @@ namespace RoyalCode.PipelineFlow.Configurations
                 throw new InvalidHandlerDelegateException();
             }
 
-            var description = new HandlerDescription()
+            var description = new HandlerDescription(inputType, outputType, (_, _) => handler)
             {
-                InputType = inputType,
-                OutputType = outputType,
                 HasOutput = hasOutput,
                 IsAsync = isAsync,
                 HasToken = hasToken,
                 IsBridge = false,
-                HandlerDelegateProvider = (_, _) => handler
             };
 
             return description;
@@ -143,15 +140,12 @@ namespace RoyalCode.PipelineFlow.Configurations
 
             var resolution = new GenericResolution(inputType, outputType, isAsync, hasOutput, method);
             
-            var description = new HandlerDescription()
+            var description = new HandlerDescription(inputType, outputType, (i, o) => resolution.CreateDelegate(i, o))
             {
-                InputType = inputType,
-                OutputType = outputType,
                 HasOutput = hasOutput,
                 IsAsync = isAsync,
                 HasToken = hasToken,
                 IsBridge = false,
-                HandlerDelegateProvider = (i, o) => resolution.CreateDelegate(i, o),
                 ServiceType = serviceType
             };
 
@@ -223,15 +217,12 @@ namespace RoyalCode.PipelineFlow.Configurations
                 throw new InvalidServiceHandlerDelegateException();
             }
 
-            var description = new HandlerDescription()
+            var description = new HandlerDescription(inputType, outputType, (_, _) => handler)
             {
-                InputType = inputType,
-                OutputType = outputType,
                 HasOutput = hasOutput,
                 IsAsync = isAsync,
                 HasToken = hasToken,
                 IsBridge = false,
-                HandlerDelegateProvider = (_, _) => handler,
                 ServiceType = serviceType
             };
 

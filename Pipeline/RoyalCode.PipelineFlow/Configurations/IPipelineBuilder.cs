@@ -143,12 +143,26 @@ namespace RoyalCode.PipelineFlow.Configurations
 
     public class DefaultPipelineChainBuilder
     {
-        IEnumerable<IChainBuilder> chainBuilders; // genérico ou por IPipelineConfigurtion<TFor> ???
-        HandlerRegistry handlersRegistry;         // HandlerResolver -> Por IPipelineConfigurtion<TFor>
-        DecoratorRegistry decoratorsRegistry;     // DecoratorsResolver -> Por IPipelineConfigurtion<TFor>
-        IDecoratorSorter decoratorSorter;         // genérico
+        private readonly IEnumerable<IChainBuilder> chainBuilders;
+        private readonly HandlerRegistry handlersRegistry;
+        private readonly DecoratorRegistry decoratorsRegistry;
+        private readonly IDecoratorSorter decoratorSorter;
 
-        public Type Build(Type inputType)
+        public DefaultPipelineChainBuilder(
+            IPipelineConfiguration configuration,
+            IDecoratorSorter decoratorSorter,
+            IEnumerable<IChainBuilder> chainBuilders)
+        {
+            if (configuration is null)
+                throw new ArgumentNullException(nameof(configuration));
+
+            handlersRegistry = configuration.Handlers;
+            decoratorsRegistry = configuration.Decorators;
+            this.decoratorSorter = decoratorSorter ?? throw new ArgumentNullException(nameof(decoratorSorter));
+            this.chainBuilders = chainBuilders ?? throw new ArgumentNullException(nameof(chainBuilders));
+        }
+
+        public Type Build(Type inputType, BridgeChainTypes? bridgeChainTypes = null)
         {
             var handlerDescription = handlersRegistry.GetDescription(inputType);
 
@@ -159,10 +173,19 @@ namespace RoyalCode.PipelineFlow.Configurations
 
             if (handlerDescription.IsBridge)
             {
-                Type bridgeNextInputType = handlerDescription.GetBridgeType();
-                chainType = Build(bridgeNextInputType); // requer algum tratamento para evitar loop infinito
-                
+                if (bridgeChainTypes is null)
+                    bridgeChainTypes = new BridgeChainTypes(inputType);
 
+                // obtém o tipo do próximo input
+                Type bridgeNextInputType = handlerDescription.GetBridgeType();
+
+                // valida o input
+                bridgeChainTypes.Enqueue(bridgeNextInputType);
+
+                // gera o chain para o próximo input
+                chainType = Build(bridgeNextInputType, bridgeChainTypes);
+                
+                // adiciona um chain handler para o bridge.
                 var chainBuilder = chainBuilders.FirstOrDefault(c => c.Kind == ChainKind.Bridge);
                 chainType = chainBuilder.Build(handlerDescription, chainType);
             }
@@ -173,23 +196,21 @@ namespace RoyalCode.PipelineFlow.Configurations
             }
 
             var decoratorDescriptions = decoratorsRegistry.GetDescriptions(inputType);
-            decoratorDescriptions = decoratorSorter.Sort(decoratorDescriptions);
             
             if (decoratorDescriptions.Any())
             {
-                var chainBuilder = chainBuilders.FirstOrDefault(c => c.Kind == ChainKind.Bridge);
-                chainType = chainBuilder.Build(handlerDescription, chainType);
+                var chainBuilder = chainBuilders.FirstOrDefault(c => c.Kind == ChainKind.Decorator);
+
+                decoratorSorter.Sort(decoratorDescriptions)
+                    .ToList()
+                    .ForEach(decoratorDescription =>
+                    {
+                        chainType = chainBuilder.Build(decoratorDescription, chainType);
+                    });
             }
 
             return chainType;
         }
-    }
-
-    public enum ChainKind
-    {
-        Handler,
-        Bridge,
-        Decorator
     }
 
     public class DecoratorRegistry
@@ -201,10 +222,7 @@ namespace RoyalCode.PipelineFlow.Configurations
 
     }
 
-    public class DecoratorDescription
-    {
-
-    }
+    
 
     public interface IDecoratorSorter
     {

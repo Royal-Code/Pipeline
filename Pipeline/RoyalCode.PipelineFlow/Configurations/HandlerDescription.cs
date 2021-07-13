@@ -2,21 +2,33 @@
 
 namespace RoyalCode.PipelineFlow.Configurations
 {
-    public class HandlerDescription
+    public class DescriptionBase
     {
-        public Type InputType { get; internal set; }
-        public Type OutputType { get; internal set; }
+        public Type InputType { get; }
+        public Type OutputType { get; }
         public bool HasOutput { get; internal set; }
         public bool IsAsync { get; internal set; }
         public bool HasToken { get; internal set; }
+        public Type? ServiceType { get; internal set; }
+        public bool HasGenericService { get; internal set; }
 
-        public Func<Type, Type, Delegate> HandlerDelegateProvider { get; internal set; }
+        public Func<Type, Type, Delegate> HandlerDelegateProvider { get; }
 
-        public Type ServiceType { get; internal set; }
+        public DescriptionBase(Type inputType, Type outputType, Func<Type, Type, Delegate> handlerDelegateProvider)
+        {
+            InputType = inputType ?? throw new ArgumentNullException(nameof(inputType));
+            OutputType = outputType ?? throw new ArgumentNullException(nameof(outputType));
+            HandlerDelegateProvider = handlerDelegateProvider ?? throw new ArgumentNullException(nameof(handlerDelegateProvider));
+        }
+    }
+
+    public class HandlerDescription : DescriptionBase
+    {
+        public HandlerDescription(Type inputType, Type outputType, Func<Type, Type, Delegate> handlerDelegateProvider) 
+            : base(inputType, outputType, handlerDelegateProvider)
+        { }
 
         public bool IsBridge { get; internal set; }
-
-        public bool HasGenericService { get; internal set; }
 
         public Type GetBridgeType()
         {

@@ -53,6 +53,21 @@ namespace RoyalCode.PipelineFlow.Tests
             action(new GenericResolution_Test_02<string, int>(), new Tuple<int, string>(0, string.Empty));
         }
 
+        [Fact]
+        public void _03_IsAssinableFrom()
+        {
+            var typeGeneric = typeof(IGenericResolution_Test_03);
+            var typeConstructed = typeof(GenericResolution_Test_03<string>);
+
+            Assert.True(typeGeneric.IsAssignableFrom(typeConstructed));
+
+            // tem que dar um jeito disso batar como verdadeiro
+            typeGeneric = typeof(IGenericResolution_Test_03<>);
+            typeConstructed = typeConstructed.GetGenericTypeDefinition();
+
+            Assert.True(typeGeneric.IsAssignableFrom(typeConstructed));
+        }
+
         private class GenericResolution_Test_01<T>
         {
             public void Handler(List<T> input)
@@ -74,5 +89,11 @@ namespace RoyalCode.PipelineFlow.Tests
                 }
             }
         }
+
+        private interface IGenericResolution_Test_03 { }
+
+        private interface IGenericResolution_Test_03<T> : IGenericResolution_Test_03 { }
+
+        private class GenericResolution_Test_03<T> : IGenericResolution_Test_03<T> { }
     }
 }
