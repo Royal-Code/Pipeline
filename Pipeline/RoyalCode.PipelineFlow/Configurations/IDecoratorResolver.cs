@@ -9,31 +9,42 @@ namespace RoyalCode.PipelineFlow.Configurations
         DecoratorDescription? TryResolve(Type inputType, Type output);
     }
 
-    public class DecoratorDescription : DescriptionBase
+    public abstract class DecoratorResolverBase : IDecoratorResolver
     {
-        public DecoratorDescription(Type inputType, Type outputType, Func<Type, Type, Delegate> handlerDelegateProvider) 
-            : base(inputType, outputType, handlerDelegateProvider)
-        { }
+        private readonly DecoratorDescription decoratorDescription;
 
-        public bool Match(Type inputType)
+        protected DecoratorResolverBase(DecoratorDescription decoratorDescription)
         {
-            if (HasOutput)
-                return false;
-
-            return HasGenericService && InputType.IsGenericType && inputType.IsGenericType
-                ? InputType.GetGenericTypeDefinition() == inputType.GetGenericTypeDefinition() && !HasOutput
-                : InputType == inputType && !HasOutput;
+            this.decoratorDescription = decoratorDescription ?? throw new ArgumentNullException(nameof(decoratorDescription));
         }
 
-        public bool Match(Type inputType, Type outputType)
+        public DecoratorDescription? TryResolve(Type inputType)
         {
-            return
-                (InputType.IsGenericType && inputType.IsGenericType
-                    ? InputType.GetGenericTypeDefinition() == inputType.GetGenericTypeDefinition()
-                    : InputType == inputType)
-                && (OutputType.IsGenericType && outputType.IsGenericType
-                    ? OutputType.GetGenericTypeDefinition() == outputType.GetGenericTypeDefinition()
-                    : OutputType == outputType);
+            return decoratorDescription.Match(inputType)
+                ? decoratorDescription
+                : null;
+        }
+
+        public DecoratorDescription? TryResolve(Type inputType, Type output)
+        {
+            return decoratorDescription.Match(inputType, output)
+                ? decoratorDescription
+                : null;
+        }
+    }
+
+    public class DelegateDecoratorResolver : DecoratorResolverBase
+    {
+        public DelegateDecoratorResolver(Delegate decoratorHandler)
+            : base(decoratorHandler.GetDecoratorDescription())
+        { }
+    }
+
+    public static class DecoratorDescriptionFactory
+    {
+        public static DecoratorDescription GetDecoratorDescription(this Delegate decoratorHandler)
+        {
+            throw new NotImplementedException();
         }
     }
 }
