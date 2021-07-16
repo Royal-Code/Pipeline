@@ -8,9 +8,9 @@ namespace RoyalCode.PipelineFlow.Configurations
     /// <summary>
     /// Analyze and store information about the return type of a method, which will be the output of the pipeline.
     /// </summary>
-    internal class OutputDescription
+    public class OutputDescription
     {
-        internal OutputDescription(MethodInfo method)
+        public OutputDescription(MethodInfo method)
         {
             var outputType = method.ReturnType;
             bool hasOutput = true;

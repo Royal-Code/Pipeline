@@ -151,9 +151,7 @@ namespace RoyalCode.PipelineFlow.Configurations
                         genericTypes[i] = outputType;
                         break;
                     case BindingMatch.ToOutputGeneric:
-                        genericTypes[i] = isAsync 
-                            ? outputType
-                            : outputType.GetGenericArguments()[binding.OtherIndex];
+                        genericTypes[i] = outputType.GetGenericArguments()[binding.OtherIndex];
                         break;
                 }
             }

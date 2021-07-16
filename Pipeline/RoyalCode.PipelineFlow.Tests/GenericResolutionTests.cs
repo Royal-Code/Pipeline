@@ -12,12 +12,13 @@ namespace RoyalCode.PipelineFlow.Tests
         public void _01_List_T()
         {
             var method = typeof(GenericResolution_Test_01<>).GetMethod("Handler");
+            var output = new OutputDescription(method);
 
             var resolution = new GenericResolution(
                 method.GetParameters()[0].ParameterType,
-                method.ReturnType,
-                false,
-                false,
+                output.OutputType,
+                output.IsAsync,
+                output.HasOutput,
                 method);
 
             Assert.NotNull(resolution);
@@ -35,12 +36,13 @@ namespace RoyalCode.PipelineFlow.Tests
         public void _02_Tuple_T2_T1()
         {
             var method = typeof(GenericResolution_Test_02<,>).GetMethod("Handler");
+            var output = new OutputDescription(method);
 
             var resolution = new GenericResolution(
                 method.GetParameters()[0].ParameterType,
-                method.ReturnType,
-                false,
-                false,
+                output.OutputType,
+                output.IsAsync,
+                output.HasOutput,
                 method);
 
             Assert.NotNull(resolution);
@@ -58,12 +60,13 @@ namespace RoyalCode.PipelineFlow.Tests
         public void _03_Simple_Int32()
         {
             var method = typeof(GenericResolution_Test_03).GetMethod("Handler");
+            var output = new OutputDescription(method);
 
             var resolution = new GenericResolution(
                 method.GetParameters()[0].ParameterType,
-                method.ReturnType,
-                false,
-                false,
+                output.OutputType,
+                output.IsAsync,
+                output.HasOutput,
                 method);
 
             Assert.NotNull(resolution);
@@ -81,12 +84,13 @@ namespace RoyalCode.PipelineFlow.Tests
         public void _04_Simple_Task_Int32()
         {
             var method = typeof(GenericResolution_Test_04).GetMethod("Handler");
+            var output = new OutputDescription(method);
 
             var resolution = new GenericResolution(
                 method.GetParameters()[0].ParameterType,
-                method.ReturnType,
-                true,
-                false,
+                output.OutputType,
+                output.IsAsync,
+                output.HasOutput,
                 method);
 
             Assert.NotNull(resolution);
@@ -105,12 +109,13 @@ namespace RoyalCode.PipelineFlow.Tests
         public void _05_Simple_Task_WithResult_Int32()
         {
             var method = typeof(GenericResolution_Test_05).GetMethod("Handler");
+            var output = new OutputDescription(method);
 
             var resolution = new GenericResolution(
                 method.GetParameters()[0].ParameterType,
-                method.ReturnType,
-                true,
-                true,
+                output.OutputType,
+                output.IsAsync,
+                output.HasOutput,
                 method);
 
             Assert.NotNull(resolution);
@@ -132,12 +137,13 @@ namespace RoyalCode.PipelineFlow.Tests
         public void _06_GenericResult_Int32_TResult()
         {
             var method = typeof(GenericResolution_Test_06<>).GetMethod("Handler");
+            var output = new OutputDescription(method);
 
             var resolution = new GenericResolution(
                 method.GetParameters()[0].ParameterType,
-                method.ReturnType,
-                false,
-                true,
+                output.OutputType,
+                output.IsAsync,
+                output.HasOutput,
                 method);
 
             Assert.NotNull(resolution);
@@ -156,12 +162,13 @@ namespace RoyalCode.PipelineFlow.Tests
         public void _07_GenericResult_Int32_Task_TResult()
         {
             var method = typeof(GenericResolution_Test_07<>).GetMethod("Handler");
+            var output = new OutputDescription(method);
 
             var resolution = new GenericResolution(
                 method.GetParameters()[0].ParameterType,
-                method.ReturnType,
-                true,
-                true,
+                output.OutputType,
+                output.IsAsync,
+                output.HasOutput,
                 method);
 
             Assert.NotNull(resolution);
@@ -183,12 +190,13 @@ namespace RoyalCode.PipelineFlow.Tests
         public void _08_GenericResult_Int32_List_TResult()
         {
             var method = typeof(GenericResolution_Test_08<>).GetMethod("Handler");
+            var output = new OutputDescription(method);
 
             var resolution = new GenericResolution(
                 method.GetParameters()[0].ParameterType,
-                method.ReturnType,
-                false,
-                true,
+                output.OutputType,
+                output.IsAsync,
+                output.HasOutput,
                 method);
 
             Assert.NotNull(resolution);
@@ -208,12 +216,13 @@ namespace RoyalCode.PipelineFlow.Tests
         public void _09_GenericResult_Int32_Task_List_TResult()
         {
             var method = typeof(GenericResolution_Test_09<>).GetMethod("Handler");
+            var output = new OutputDescription(method);
 
             var resolution = new GenericResolution(
                 method.GetParameters()[0].ParameterType,
-                method.ReturnType,
-                true,
-                true,
+                output.OutputType,
+                output.IsAsync,
+                output.HasOutput,
                 method);
 
             Assert.NotNull(resolution);
@@ -230,6 +239,63 @@ namespace RoyalCode.PipelineFlow.Tests
             var list = result.Result;
             Assert.NotNull(list);
             Assert.Empty(list);
+        }
+
+        [Fact]
+        public void _10_GenericResult_T_List_T()
+        {
+            var method = typeof(GenericResolution_Test_10<>).GetMethod("Handler");
+            var output = new OutputDescription(method);
+
+            var resolution = new GenericResolution(
+                method.GetParameters()[0].ParameterType,
+                output.OutputType,
+                output.IsAsync,
+                output.HasOutput,
+                method);
+
+            Assert.NotNull(resolution);
+
+            var @delegate = resolution.CreateDelegate(typeof(int), typeof(List<int>));
+            Assert.NotNull(@delegate);
+
+            var function = @delegate as Func<GenericResolution_Test_10<int>, int, List<int>>;
+            Assert.NotNull(function);
+
+            var result = function(new GenericResolution_Test_10<int>(), 1);
+            Assert.NotNull(result);
+            Assert.NotEmpty(result);
+            Assert.Equal(1, result[0]);
+        }
+
+        [Fact]
+        public void _11_GenericResult_T_Task_List_T()
+        {
+            var method = typeof(GenericResolution_Test_11<>).GetMethod("Handler");
+            var output = new OutputDescription(method);
+
+            var resolution = new GenericResolution(
+                method.GetParameters()[0].ParameterType,
+                output.OutputType,
+                output.IsAsync,
+                output.HasOutput,
+                method);
+
+            Assert.NotNull(resolution);
+
+            var @delegate = resolution.CreateDelegate(typeof(int), typeof(List<int>));
+            Assert.NotNull(@delegate);
+
+            var function = @delegate as Func<GenericResolution_Test_11<int>, int, Task<List<int>>>;
+            Assert.NotNull(function);
+
+            var result = function(new GenericResolution_Test_11<int>(), 1);
+            Assert.NotNull(result);
+
+            var list = result.Result;
+            Assert.NotNull(list);
+            Assert.NotEmpty(list);
+            Assert.Equal(1, list[0]);
         }
 
         private class GenericResolution_Test_01<T>
