@@ -1,5 +1,4 @@
-﻿using RoyalCode.PipelineFlow.Extensions;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -139,7 +138,7 @@ namespace RoyalCode.PipelineFlow.Configurations
         {
             var genericTypes = new Type[bindings.Count];
 
-            // resolver o typo do serviço a partir do tipo do input e output.
+            // resolve the service type from input and output types.
             for (int i = 0; i < bindings.Count; i++)
             {
                 var binding = bindings[i];
@@ -159,7 +158,7 @@ namespace RoyalCode.PipelineFlow.Configurations
 
             var serviceType = handlerMethod.DeclaringType.MakeGenericType(genericTypes);
 
-            // pametros do método
+            // resolve real method parameters
             var parameters = handlerMethod.GetParameters();
             var parametersTypes = new Type[parameters.Length];
             parametersTypes[0] = inputType;
@@ -169,10 +168,10 @@ namespace RoyalCode.PipelineFlow.Configurations
                     parametersTypes[i] = parameters[i].ParameterType;
                 }
 
-            // resolver o método real.
+            // resolve the real method.
             var executableMethod = serviceType.GetRuntimeMethod(handlerMethod.Name, parametersTypes);
 
-            // criar o delegate.
+            // starting delegate creation
             List<ParameterExpression> delegateParameters = new();
 
             var serviceParam = Expression.Parameter(serviceType, "service");

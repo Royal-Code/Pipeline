@@ -8,12 +8,11 @@ namespace RoyalCode.PipelineFlow.Configurations
             : base(inputType, outputType, handlerDelegateProvider)
         { }
 
-        public bool IsBridge { get; internal set; }
+        public virtual bool IsBridge => false;
 
-        public Type GetBridgeType()
-        {
-            throw new NotImplementedException();
-        }
+        public virtual BridgeNextHandlerDescription GetBridgeNextHandlerDescription() 
+            => throw new InvalidOperationException("This handler description is not a bridge handler.");
+        
 
         public bool Match(Type inputType)
         {

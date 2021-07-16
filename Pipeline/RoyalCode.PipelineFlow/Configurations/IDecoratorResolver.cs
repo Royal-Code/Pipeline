@@ -39,12 +39,4 @@ namespace RoyalCode.PipelineFlow.Configurations
             : base(decoratorHandler.GetDecoratorDescription())
         { }
     }
-
-    public static class DecoratorDescriptionFactory
-    {
-        public static DecoratorDescription GetDecoratorDescription(this Delegate decoratorHandler)
-        {
-            throw new NotImplementedException();
-        }
-    }
 }
