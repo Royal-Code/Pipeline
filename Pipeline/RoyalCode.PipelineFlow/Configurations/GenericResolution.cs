@@ -97,7 +97,7 @@ namespace RoyalCode.PipelineFlow.Configurations
                             binding.Match = BindingMatch.ToOutputGeneric;
                             binding.OtherIndex = i;
                         }
-                        else
+                        else if (outputGeneric.IsGenericParameter)
                         {
                             throw new InvalidOperationException("TODO create exception for case");
                         }
@@ -151,12 +151,16 @@ namespace RoyalCode.PipelineFlow.Configurations
                         genericTypes[i] = outputType;
                         break;
                     case BindingMatch.ToOutputGeneric:
-                        genericTypes[i] = outputType.GetGenericArguments()[binding.OtherIndex];
+                        genericTypes[i] = isAsync 
+                            ? outputType
+                            : outputType.GetGenericArguments()[binding.OtherIndex];
                         break;
                 }
             }
 
-            var serviceType = handlerMethod.DeclaringType.MakeGenericType(genericTypes);
+            var serviceType =  genericTypes.Length > 0
+                ? handlerMethod.DeclaringType.MakeGenericType(genericTypes)
+                : handlerMethod.DeclaringType;
 
             // resolve real method parameters
             var parameters = handlerMethod.GetParameters();
@@ -220,7 +224,7 @@ namespace RoyalCode.PipelineFlow.Configurations
             {
                 var parmsTypes = new Type[totalParameters + 1];
                 parmsTypes[0] = serviceType;
-                Array.Copy(methodParametersTypes, 1, parmsTypes, 1, methodParametersTypes.Length);
+                Array.Copy(methodParametersTypes, 0, parmsTypes, 1, methodParametersTypes.Length);
                 parmsTypes[parmsTypes.Length - 1] = returnType;
 
                 return totalParameters switch

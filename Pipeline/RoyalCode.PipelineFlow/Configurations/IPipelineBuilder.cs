@@ -177,7 +177,7 @@ namespace RoyalCode.PipelineFlow.Configurations
                     bridgeChainTypes = new BridgeChainTypes(inputType);
 
                 // obtém o tipo do próximo input
-                Type bridgeNextInputType = handlerDescription.GetBridgeType();
+                Type bridgeNextInputType = handlerDescription.GetBridgeNextHandlerDescription().InputType;
 
                 // valida o input
                 bridgeChainTypes.Enqueue(bridgeNextInputType);
