@@ -3,6 +3,7 @@ using RoyalCode.PipelineFlow.Extensions;
 using System;
 using System.Reflection;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace RoyalCode.PipelineFlow.Configurations
 {
@@ -19,6 +20,7 @@ namespace RoyalCode.PipelineFlow.Configurations
         private OutputDescription? output;
         private bool hasToken;
         private GenericResolution? resolution;
+        private BridgeNextHandlerDescription? bridgeNextHandlerDescription;
 
         private DescriptionBuilder(Delegate handler)
         {
@@ -230,6 +232,79 @@ namespace RoyalCode.PipelineFlow.Configurations
                 HasOutput = output.HasOutput,
                 IsAsync = output.IsAsync
             };
+        }
+
+        #endregion
+
+        #region Bridge
+
+        public void ReadBridgeParameters()
+        {
+            // first check parameters
+            if (handlerHasService)
+            {
+                if (parms.Length is not 3 and not 4)
+                    throw new InvalidDecoratorDelegateException();
+
+                // check that first param must be the service
+                if (parms[0].ParameterType.Implements(serviceType!))
+                {
+                    throw new InvalidServiceHandlerDelegateException();
+                }
+            }
+            else
+            {
+                if (parms.Length is not 2 and not 3)
+                    throw new InvalidDecoratorDelegateException();
+            }
+
+            // the input type.
+            inputType = parms[handlerHasService ? 1 : 0].ParameterType;
+
+            kind = ChainKind.Bridge;
+
+            output = new OutputDescription(method);
+        }
+
+        public void ReadBridgeNextHandler()
+        {
+            if (output is null || inputType is null)
+                throw new InvalidOperationException("Read decorator parameters is required.");
+
+            var nextParm = parms[handlerHasService ? 2 : 1];
+            var nextHandlerType = nextParm.ParameterType;
+
+            if (!nextHandlerType.IsGenericType)
+                throw new InvalidOperationException("TODO: criar exception do handler de bridge inválido");
+
+            var genericHandlerType = nextHandlerType.GetGenericTypeDefinition();
+            if (genericHandlerType != typeof(Action<>) && genericHandlerType != typeof(Func<,>))
+                throw new InvalidOperationException("TODO: criar exception do handler de bridge inválido");
+
+            var nextHandlerArguments = nextHandlerType.GetGenericArguments();
+            var nextInput = nextHandlerArguments[0];
+            
+            if (genericHandlerType == typeof(Action<>))
+            {
+                bridgeNextHandlerDescription = new(nextInput, typeof(void), false, false);
+            }
+            else
+            {
+                // so, is Func<,>
+
+                var nextOutput = nextHandlerArguments[1];
+                if (nextOutput.Implements(typeof(Task)))
+                {
+                    if (nextOutput.IsGenericType)
+                        bridgeNextHandlerDescription = new(nextInput, nextOutput.GetGenericArguments()[0], true, true);
+                    else
+                        bridgeNextHandlerDescription = new(nextInput, nextOutput, false, true);
+                }
+                else
+                {
+                    bridgeNextHandlerDescription = new(nextInput, nextOutput, true, false);
+                }
+            }
         }
 
         #endregion
