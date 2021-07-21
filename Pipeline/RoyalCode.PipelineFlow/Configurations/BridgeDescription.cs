@@ -20,20 +20,4 @@ namespace RoyalCode.PipelineFlow.Configurations
 
         public override BridgeNextHandlerDescription GetBridgeNextHandlerDescription() => nextHandlerDescription;
     }
-
-    internal static class BridgeDescriptionFactory
-    {
-        internal static BridgeDescription GetDecoratorDescription(this Delegate bridgeHandler)
-        {
-            var builder = DescriptionBuilder.Create(bridgeHandler);
-            builder.ReadBridgeParameters();
-            builder.ReadBridgeNextHandler();
-            // validate parameters
-            // build description
-
-            builder.ValidateDecoratorParameters();
-
-            throw new NotImplementedException();
-        }
-    }
 }

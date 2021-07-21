@@ -26,7 +26,7 @@ namespace RoyalCode.PipelineFlow.Configurations
             var builder = DescriptionBuilder.Create(decoratorMethod);
             builder.ReadDecoratorParameters();
             builder.ValidateDecoratorParameters();
-            builder.ResolveMethodHandlerProvier();
+            builder.ResolveMethodHandlerProvider();
             return builder.BuildDecoratorDescription();
         }
     }

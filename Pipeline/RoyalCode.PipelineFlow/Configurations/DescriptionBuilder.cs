@@ -200,12 +200,12 @@ namespace RoyalCode.PipelineFlow.Configurations
             }
         }
 
-        public void ResolveMethodHandlerProvier()
+        public void ResolveMethodHandlerProvider()
         {
             if (output is null || inputType is null)
-                throw new InvalidOperationException("Read decorator parameters is required.");
+                throw new InvalidOperationException("Read parameters is required.");
 
-            resolution = new GenericResolution(inputType, 
+            resolution = new GenericResolution(inputType,
                 output.OutputType, output.IsAsync, output.HasOutput,
                 method);
         }
@@ -236,7 +236,7 @@ namespace RoyalCode.PipelineFlow.Configurations
 
         #endregion
 
-        #region Bridge
+        #region Bridge Functions
 
         public void ReadBridgeParameters()
         {
@@ -269,7 +269,7 @@ namespace RoyalCode.PipelineFlow.Configurations
         public void ReadBridgeNextHandler()
         {
             if (output is null || inputType is null)
-                throw new InvalidOperationException("Read decorator parameters is required.");
+                throw new InvalidOperationException("Read bridge parameters is required.");
 
             var nextParm = parms[handlerHasService ? 2 : 1];
             var nextHandlerType = nextParm.ParameterType;
@@ -283,7 +283,7 @@ namespace RoyalCode.PipelineFlow.Configurations
 
             var nextHandlerArguments = nextHandlerType.GetGenericArguments();
             var nextInput = nextHandlerArguments[0];
-            
+
             if (genericHandlerType == typeof(Action<>))
             {
                 bridgeNextHandlerDescription = new(nextInput, typeof(void), false, false);
@@ -305,6 +305,64 @@ namespace RoyalCode.PipelineFlow.Configurations
                     bridgeNextHandlerDescription = new(nextInput, nextOutput, true, false);
                 }
             }
+        }
+
+        public void ValidateBridgeParameters()
+        {
+            if (output is null)
+                throw new InvalidOperationException("Read bridge parameters is required.");
+
+            if (bridgeNextHandlerDescription is null)
+                throw new InvalidOperationException("Read bridge next handler is required.");
+
+            // check parameters
+            if (output.IsAsync)
+            {
+                if (parms.Length == (handlerHasService ? 4 : 3))
+                {
+                    if (parms[handlerHasService ? 3 : 2].ParameterType != typeof(CancellationToken))
+                    {
+                        throw new InvalidDecoratorDelegateException();
+                    }
+                    else
+                    {
+                        hasToken = true;
+                    }
+                }
+            }
+            else if (parms.Length != (handlerHasService ? 3 : 2))
+            {
+                throw new InvalidDecoratorDelegateException();
+            }
+        }
+
+        public BridgeDescription BuildBridgeDescription()
+        {
+
+            if (kind is not ChainKind.Bridge)
+                throw new InvalidOperationException("The builder is not for decorator.");
+
+            if (output is null || inputType is null)
+                throw new InvalidOperationException("Read bridge parameters is required.");
+
+            if (bridgeNextHandlerDescription is null)
+                throw new InvalidOperationException("Read bridge next handler is required.");
+
+            Func<Type, Type, Delegate> provider;
+            if (handler is not null)
+                provider = (_, _) => handler;
+            else if (resolution is not null)
+                provider = resolution.CreateDelegate;
+            else
+                throw new InvalidOperationException("Handler provider can't be resolved");
+
+            return new BridgeDescription(inputType, output.OutputType, provider, bridgeNextHandlerDescription)
+            {
+                HasToken = hasToken,
+                HasOutput = output.HasOutput,
+                IsAsync = output.IsAsync
+            };
+
         }
 
         #endregion

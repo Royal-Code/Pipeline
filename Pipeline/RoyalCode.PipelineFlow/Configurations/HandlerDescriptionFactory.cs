@@ -26,7 +26,7 @@ namespace RoyalCode.PipelineFlow.Configurations
             var builder = DescriptionBuilder.Create(handlerMethod);
             builder.ReadHandlerParameters();
             builder.ValidateHandlerParameters();
-            builder.ResolveMethodHandlerProvier();
+            builder.ResolveMethodHandlerProvider();
             return builder.BuildHandlerDescription();
         }
     }
