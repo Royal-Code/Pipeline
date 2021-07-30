@@ -3,10 +3,26 @@ using System.Collections.Generic;
 
 namespace RoyalCode.PipelineFlow.Configurations
 {
+    /// <summary>
+    /// <para>
+    ///     This class work like a collection to store <see cref="IHandlerResolver"/> and retrieve <see cref="HandlerDescription"/>.
+    /// </para>
+    /// <para>
+    ///     The <see cref="IPipelineConfiguration"/> holds the <see cref="HandlerRegistry"/> and the <see cref="DecoratorRegistry"/>
+    ///     that contains all the handlers and decorators for building pipelines for a "bus" component kind.
+    /// </para>
+    /// <para>
+    ///     Each kind of "bus" component may have its own policies and restrictions on how to build pipelines.
+    /// </para>
+    /// </summary>
     public class HandlerRegistry
     {
         private readonly ICollection<IHandlerResolver> resolvers = new List<IHandlerResolver>();
 
+        /// <summary>
+        /// Add a <see cref="IHandlerResolver"/>.
+        /// </summary>
+        /// <param name="handlerResolver">Some <see cref="IHandlerResolver"/>.</param>
         public void Add(IHandlerResolver handlerResolver)
         {
             resolvers.Add(handlerResolver);
@@ -29,7 +45,7 @@ namespace RoyalCode.PipelineFlow.Configurations
                 if (resolvedDescription is not null)
                 {
                     if (description is not null)
-                        throw new InvalidOperationException("Não pode haver mais de um handler");
+                        throw new InvalidOperationException("Não pode haver mais de um handler. TODO: Criar exeption deste erro.");
                     description = resolvedDescription;
                 }
             }
@@ -64,7 +80,7 @@ namespace RoyalCode.PipelineFlow.Configurations
                 if (resolvedDescription is not null)
                 {
                     if (description is not null)
-                        throw new InvalidOperationException("Não pode haver mais de um handler");
+                        throw new InvalidOperationException("Não pode haver mais de um handler. TODO: Criar exeption deste erro.");
                     description = resolvedDescription;
                 }
             }

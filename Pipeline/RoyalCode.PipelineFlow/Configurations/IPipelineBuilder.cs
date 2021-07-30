@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace RoyalCode.PipelineFlow.Configurations
@@ -32,9 +32,15 @@ namespace RoyalCode.PipelineFlow.Configurations
 
         IPipelineBuilder<TIn> HandleAsync(Func<TIn, Task> handler);
 
+        IPipelineBuilder<TIn> HandleAsync(Func<TIn, CancellationToken, Task> handler);
+
         IPipelineBuilder<TIn> Handle<TService>(Action<TService, TIn> handler);
 
         IPipelineBuilder<TIn> HandleAsync<TService>(Func<TService, TIn, Task> handler);
+
+        IPipelineBuilder<TIn> HandleAsync<TService>(Func<TService, TIn, CancellationToken, Task> handler);
+
+        IPipelineBuilder<TIn> BridgeHandler<TNextInput>(Action<TIn, Action<TNextInput>> handler);
     }
 
     public class DefaultPipelineBuilder<TIn> : IPipelineBuilder<TIn>
@@ -47,6 +53,8 @@ namespace RoyalCode.PipelineFlow.Configurations
         }
 
         public void AddHandlerResolver(IHandlerResolver resolver) => pipelineBuilder.AddHandlerResolver(resolver);
+
+        #region Handlers
 
         public IPipelineBuilder<TIn> Handle(Action<TIn> handler)
         {
@@ -66,11 +74,35 @@ namespace RoyalCode.PipelineFlow.Configurations
             return this;
         }
 
+        public IPipelineBuilder<TIn> HandleAsync(Func<TIn, CancellationToken, Task> handler)
+        {
+            pipelineBuilder.AddHandlerResolver(DefaultHandlersResolver.Handle(handler));
+            return this;
+        }
+
         public IPipelineBuilder<TIn> HandleAsync<TService>(Func<TService, TIn, Task> handler)
         {
             pipelineBuilder.AddHandlerResolver(DefaultHandlersResolver.Handle(handler));
             return this;
         }
+
+        public IPipelineBuilder<TIn> HandleAsync<TService>(Func<TService, TIn, CancellationToken, Task> handler)
+        {
+            pipelineBuilder.AddHandlerResolver(DefaultHandlersResolver.Handle(handler));
+            return this;
+        }
+
+        #endregion
+
+        #region Bridges
+
+        public IPipelineBuilder<TIn> BridgeHandler<TNextInput>(Action<TIn, Action<TNextInput>> handler)
+        {
+            pipelineBuilder.AddHandlerResolver(DefaultHandlersResolver.BridgeHandler(handler));
+            return this;
+        }
+
+        #endregion
     }
 
     public interface IPipelineBuilder<TIn, TOut> : IPipelineBuilder
@@ -79,9 +111,13 @@ namespace RoyalCode.PipelineFlow.Configurations
 
         IPipelineBuilder<TIn, TOut> HandleAsync(Func<TIn, Task<TOut>> handler);
 
+        IPipelineBuilder<TIn, TOut> HandleAsync(Func<TIn, CancellationToken, Task<TOut>> handler);
+
         IPipelineBuilder<TIn, TOut> Handle<TService>(Func<TService, TIn, TOut> handler);
 
         IPipelineBuilder<TIn, TOut> HandleAsync<TService>(Func<TService, TIn, Task<TOut>> handler);
+
+        IPipelineBuilder<TIn, TOut> HandleAsync<TService>(Func<TService, TIn, CancellationToken, Task<TOut>> handler);
     }
 
     public class DefaultPipelineBuilder<TIn, TOut> : IPipelineBuilder<TIn, TOut>
@@ -113,7 +149,19 @@ namespace RoyalCode.PipelineFlow.Configurations
             return this;
         }
 
+        public IPipelineBuilder<TIn, TOut> HandleAsync(Func<TIn, CancellationToken, Task<TOut>> handler)
+        {
+            pipelineBuilder.AddHandlerResolver(DefaultHandlersResolver.Handle(handler));
+            return this;
+        }
+
         public IPipelineBuilder<TIn, TOut> HandleAsync<TService>(Func<TService, TIn, Task<TOut>> handler)
+        {
+            pipelineBuilder.AddHandlerResolver(DefaultHandlersResolver.Handle(handler));
+            return this;
+        }
+
+        public IPipelineBuilder<TIn, TOut> HandleAsync<TService>(Func<TService, TIn, CancellationToken, Task<TOut>> handler)
         {
             pipelineBuilder.AddHandlerResolver(DefaultHandlersResolver.Handle(handler));
             return this;
@@ -211,15 +259,6 @@ namespace RoyalCode.PipelineFlow.Configurations
 
             return chainType;
         }
-    }
-
-    public class DecoratorRegistry
-    {
-        public IEnumerable<DecoratorDescription> GetDescriptions(Type inputType)
-        {
-            throw new NotImplementedException();
-        }
-
     }
 
     
