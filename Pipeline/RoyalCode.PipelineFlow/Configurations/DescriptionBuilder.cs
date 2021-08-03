@@ -112,8 +112,8 @@ namespace RoyalCode.PipelineFlow.Configurations
 
         public HandlerDescription BuildHandlerDescription()
         {
-            if (kind is not ChainKind.Decorator)
-                throw new InvalidOperationException("The builder is not for decorator.");
+            if (kind is not ChainKind.Handler)
+                throw new InvalidOperationException("The builder is not for handler.");
 
             if (output is null || inputType is null)
                 throw new InvalidOperationException("Read decorator parameters is required.");

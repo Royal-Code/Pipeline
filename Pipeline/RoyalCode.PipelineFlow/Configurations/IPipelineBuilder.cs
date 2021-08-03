@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -39,6 +40,8 @@ namespace RoyalCode.PipelineFlow.Configurations
         IPipelineBuilder<TIn> HandleAsync<TService>(Func<TService, TIn, Task> handler);
 
         IPipelineBuilder<TIn> HandleAsync<TService>(Func<TService, TIn, CancellationToken, Task> handler);
+
+        IPipelineBuilder<TIn> Handle(MethodInfo method);
 
         IPipelineBuilder<TIn> BridgeHandler<TNextInput>(Action<TIn, Action<TNextInput>> handler);
     }
@@ -89,6 +92,12 @@ namespace RoyalCode.PipelineFlow.Configurations
         public IPipelineBuilder<TIn> HandleAsync<TService>(Func<TService, TIn, CancellationToken, Task> handler)
         {
             pipelineBuilder.AddHandlerResolver(DefaultHandlersResolver.Handle(handler));
+            return this;
+        }
+
+        public IPipelineBuilder<TIn> Handle(MethodInfo method)
+        {
+            pipelineBuilder.AddHandlerResolver(new MethodHandlerResolver(method));
             return this;
         }
 
