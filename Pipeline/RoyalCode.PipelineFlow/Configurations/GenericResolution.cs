@@ -59,13 +59,18 @@ namespace RoyalCode.PipelineFlow.Configurations
                 bindings.Add(new GenericParameterBinding(i, generic));
             }
 
+            var binding = bindings.FirstOrDefault(b => b.ServiceGenericType == inputType);
+            if (binding != null)
+            {
+                binding.Match = BindingMatch.ToInputType;
+            }
             if (inputType.IsGenericType)
             {
                 var inputGenerics = inputType.GetGenericArguments();
                 for (int i = 0; i < inputGenerics.Length; i++)
                 {
                     var inputGeneric = inputGenerics[i];
-                    var binding = bindings.FirstOrDefault(b => b.ServiceGenericType == inputGeneric);
+                    binding = bindings.FirstOrDefault(b => b.ServiceGenericType == inputGeneric);
                     if (binding != null)
                     {
                         binding.Match = BindingMatch.ToInputGeneric;
@@ -80,7 +85,7 @@ namespace RoyalCode.PipelineFlow.Configurations
 
             if (hasOutput)
             {
-                var binding = bindings.FirstOrDefault(b => b.ServiceGenericType == outputType);
+                binding = bindings.FirstOrDefault(b => b.ServiceGenericType == outputType);
                 if (binding != null)
                 {
                     binding.Match = BindingMatch.ToOutputType;
@@ -129,6 +134,7 @@ namespace RoyalCode.PipelineFlow.Configurations
         private enum BindingMatch
         {
             None,
+            ToInputType,
             ToInputGeneric,
             ToOutputType,
             ToOutputGeneric,
@@ -144,6 +150,9 @@ namespace RoyalCode.PipelineFlow.Configurations
                 var binding = bindings[i];
                 switch (binding.Match)
                 {
+                    case BindingMatch.ToInputType:
+                        genericTypes[i] = inputType;
+                        break;
                     case BindingMatch.ToInputGeneric:
                         genericTypes[i] = inputType.GetGenericArguments()[binding.OtherIndex];
                         break;

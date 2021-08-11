@@ -18,7 +18,7 @@ namespace RoyalCode.PipelineFlow.Configurations
         {
             return InputType.IsGenericType
                 ? InputType.GetGenericTypeDefinition() == inputType.GetGenericTypeDefinition() && !HasOutput
-                : InputType == inputType && !HasOutput;
+                : InputType.IsGenericParameter || InputType == inputType && !HasOutput;
         }
 
         public bool Match(Type inputType, Type outputType)
@@ -26,10 +26,10 @@ namespace RoyalCode.PipelineFlow.Configurations
             return 
                 (InputType.IsGenericType
                     ? InputType.GetGenericTypeDefinition() == inputType.GetGenericTypeDefinition()
-                    : InputType == inputType)
+                    : InputType.IsGenericParameter || InputType == inputType)
                 && (OutputType.IsGenericType
                     ? OutputType.GetGenericTypeDefinition() == outputType.GetGenericTypeDefinition()
-                    : OutputType == outputType);
+                    : OutputType.IsGenericParameter || OutputType == outputType);
         }
     }
 }
