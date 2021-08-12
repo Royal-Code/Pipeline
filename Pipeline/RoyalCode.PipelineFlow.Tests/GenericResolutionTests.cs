@@ -298,6 +298,31 @@ namespace RoyalCode.PipelineFlow.Tests
             Assert.Equal(1, list[0]);
         }
 
+        [Fact]
+        public void _12_Simple_Input()
+        {
+            
+            var method = typeof(GenericResolution_Test_12<>).GetMethod("Handler");
+            var output = new OutputDescription(method);
+
+            var resolution = new GenericResolution(
+                method.GetParameters()[0].ParameterType,
+                output.OutputType,
+                output.IsAsync,
+                output.HasOutput,
+                method);
+
+            Assert.NotNull(resolution);
+
+            var @delegate = resolution.CreateDelegate(typeof(int), typeof(void));
+            Assert.NotNull(@delegate);
+
+            var action = @delegate as Action<GenericResolution_Test_12<int>, int>;
+            Assert.NotNull(action);
+
+            action(new GenericResolution_Test_12<int>(), 1);
+        }
+
         private class GenericResolution_Test_01<T>
         {
             public void Handler(List<T> input)
@@ -424,6 +449,17 @@ namespace RoyalCode.PipelineFlow.Tests
                     throw new InvalidOperationException("input must be informed");
                 }
                 return Task.FromResult(new List<T>() { input });
+            }
+        }
+
+        private class GenericResolution_Test_12<T>
+        {
+            public void Handler(T input)
+            {
+                if (Equals(input, default(T)))
+                {
+                    throw new InvalidOperationException("input must be informed");
+                }
             }
         }
     }

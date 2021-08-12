@@ -11,7 +11,6 @@ namespace RoyalCode.PipelineFlow.Tests
 {
     public class DefaultHandlersResolverTests
     {
-
         [Fact]
         public void _01_Action_Handler()
         {
@@ -304,45 +303,46 @@ namespace RoyalCode.PipelineFlow.Tests
             Assert.Equal(1, backValue);
             Assert.Equal("1", resultValue);
         }
-    }
 
-    public class BackValueService
-    {
-        public int Value { get; set; }
 
-        public BackValueService(int value = 0)
+        private class BackValueService
         {
-            Value = value;
-        }
-    }
+            public int Value { get; set; }
 
-    public class GenericMethodHandlerService<TIn>
-    {
-        private readonly Action<TIn> testCallback;
-
-        public GenericMethodHandlerService(Action<TIn> testCallback)
-        {
-            this.testCallback = testCallback ?? throw new ArgumentNullException(nameof(testCallback));
+            public BackValueService(int value = 0)
+            {
+                Value = value;
+            }
         }
 
-        public void Handle(TIn input)
+        private class GenericMethodHandlerService<TIn>
         {
-            testCallback(input);
+            private readonly Action<TIn> testCallback;
+
+            public GenericMethodHandlerService(Action<TIn> testCallback)
+            {
+                this.testCallback = testCallback ?? throw new ArgumentNullException(nameof(testCallback));
+            }
+
+            public void Handle(TIn input)
+            {
+                testCallback(input);
+            }
         }
-    }
 
-    public class GenericMethodHandlerService<TIn, TOut>
-    {
-        private readonly Func<TIn, TOut> testCallback;
-
-        public GenericMethodHandlerService(Func<TIn, TOut> testCallback)
+        private class GenericMethodHandlerService<TIn, TOut>
         {
-            this.testCallback = testCallback ?? throw new ArgumentNullException(nameof(testCallback));
-        }
+            private readonly Func<TIn, TOut> testCallback;
 
-        public TOut Handle(TIn input)
-        {
-            return testCallback(input);
+            public GenericMethodHandlerService(Func<TIn, TOut> testCallback)
+            {
+                this.testCallback = testCallback ?? throw new ArgumentNullException(nameof(testCallback));
+            }
+
+            public TOut Handle(TIn input)
+            {
+                return testCallback(input);
+            }
         }
     }
 }
