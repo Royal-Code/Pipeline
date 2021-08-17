@@ -29,20 +29,6 @@ namespace RoyalCode.PipelineFlow.Configurations
 
     public interface IPipelineBuilder<TIn> : IPipelineBuilder
     {
-        IPipelineBuilder<TIn> Handle(Action<TIn> handler);
-
-        IPipelineBuilder<TIn> HandleAsync(Func<TIn, Task> handler);
-
-        IPipelineBuilder<TIn> HandleAsync(Func<TIn, CancellationToken, Task> handler);
-
-        IPipelineBuilder<TIn> Handle<TService>(Action<TService, TIn> handler);
-
-        IPipelineBuilder<TIn> HandleAsync<TService>(Func<TService, TIn, Task> handler);
-
-        IPipelineBuilder<TIn> HandleAsync<TService>(Func<TService, TIn, CancellationToken, Task> handler);
-
-        IPipelineBuilder<TIn> Handle(MethodInfo method);
-
         IPipelineBuilder<TIn> BridgeHandler<TNextInput>(Action<TIn, Action<TNextInput>> handler);
     }
 
@@ -56,52 +42,6 @@ namespace RoyalCode.PipelineFlow.Configurations
         }
 
         public void AddHandlerResolver(IHandlerResolver resolver) => pipelineBuilder.AddHandlerResolver(resolver);
-
-        #region Handlers
-
-        public IPipelineBuilder<TIn> Handle(Action<TIn> handler)
-        {
-            pipelineBuilder.AddHandlerResolver(DefaultHandlersResolver.Handle(handler));
-            return this;
-        }
-
-        public IPipelineBuilder<TIn> Handle<TService>(Action<TService, TIn> handler)
-        {
-            pipelineBuilder.AddHandlerResolver(DefaultHandlersResolver.Handle(handler));
-            return this;
-        }
-
-        public IPipelineBuilder<TIn> HandleAsync(Func<TIn, Task> handler)
-        {
-            pipelineBuilder.AddHandlerResolver(DefaultHandlersResolver.Handle(handler));
-            return this;
-        }
-
-        public IPipelineBuilder<TIn> HandleAsync(Func<TIn, CancellationToken, Task> handler)
-        {
-            pipelineBuilder.AddHandlerResolver(DefaultHandlersResolver.Handle(handler));
-            return this;
-        }
-
-        public IPipelineBuilder<TIn> HandleAsync<TService>(Func<TService, TIn, Task> handler)
-        {
-            pipelineBuilder.AddHandlerResolver(DefaultHandlersResolver.Handle(handler));
-            return this;
-        }
-
-        public IPipelineBuilder<TIn> HandleAsync<TService>(Func<TService, TIn, CancellationToken, Task> handler)
-        {
-            pipelineBuilder.AddHandlerResolver(DefaultHandlersResolver.Handle(handler));
-            return this;
-        }
-
-        public IPipelineBuilder<TIn> Handle(MethodInfo method)
-        {
-            pipelineBuilder.AddHandlerResolver(new MethodHandlerResolver(method));
-            return this;
-        }
-
-        #endregion
 
         #region Bridges
 
