@@ -15,6 +15,15 @@ namespace RoyalCode.PipelineFlow.Configurations
     /// </summary>
     public static class PipelineBuilderExtensions
     {
+        #region PipelineBuilder
+
+        public static IPipelineBuilderWithService<TService> ConfigureWithService<TService>(this IPipelineBuilder pipelineBuilder)
+        {
+            return new DefaultPipelineBuilderWithService<TService>(pipelineBuilder);
+        }
+
+        #endregion
+
         #region Handlers TIn
 
         public static IPipelineBuilder<TIn> Handle<TIn>(this IPipelineBuilder<TIn> builder, Action<TIn> handler)
@@ -23,10 +32,10 @@ namespace RoyalCode.PipelineFlow.Configurations
             return builder;
         }
 
-        public static IPipelineBuilder<TIn> Handle<TService, TIn>(this IPipelineBuilder<TIn> builder, Action<TService, TIn> handler)
+        public static IPipelineBuilder<TIn> Handle<TService, TIn>(this IPipelineBuilderWithService<TService, TIn> builder, Action<TService, TIn> handler)
         {
             builder.AddHandlerResolver(DefaultHandlersResolver.Handle(handler));
-            return builder;
+            return builder.Configure<TIn>();
         }
 
         public static IPipelineBuilder<TIn> HandleAsync<TIn>(this IPipelineBuilder<TIn> builder, Func<TIn, Task> handler)
@@ -41,16 +50,16 @@ namespace RoyalCode.PipelineFlow.Configurations
             return builder;
         }
 
-        public static IPipelineBuilder<TIn> HandleAsync<TService, TIn>(this IPipelineBuilder<TIn> builder, Func<TService, TIn, Task> handler)
+        public static IPipelineBuilder<TIn> HandleAsync<TService, TIn>(this IPipelineBuilderWithService<TService, TIn> builder, Func<TService, TIn, Task> handler)
         {
             builder.AddHandlerResolver(DefaultHandlersResolver.Handle(handler));
-            return builder;
+            return builder.Configure<TIn>();
         }
 
-        public static IPipelineBuilder<TIn> HandleAsync<TService, TIn>(this IPipelineBuilder<TIn> builder, Func<TService, TIn, CancellationToken, Task> handler)
+        public static IPipelineBuilder<TIn> HandleAsync<TService, TIn>(this IPipelineBuilderWithService<TService, TIn> builder, Func<TService, TIn, CancellationToken, Task> handler)
         {
             builder.AddHandlerResolver(DefaultHandlersResolver.Handle(handler));
-            return builder;
+            return builder.Configure<TIn>();
         }
 
         #endregion
@@ -63,10 +72,10 @@ namespace RoyalCode.PipelineFlow.Configurations
             return builder;
         }
 
-        public static IPipelineBuilder<TIn, TOut> Handle<TService, TIn, TOut>(this IPipelineBuilder<TIn, TOut> builder, Func<TService, TIn, TOut> handler)
+        public static IPipelineBuilder<TIn, TOut> Handle<TService, TIn, TOut>(this IPipelineBuilderWithService<TService, TIn, TOut> builder, Func<TService, TIn, TOut> handler)
         {
             builder.AddHandlerResolver(DefaultHandlersResolver.Handle(handler));
-            return builder;
+            return builder.Configure<TIn, TOut>();
         }
 
         public static IPipelineBuilder<TIn, TOut> HandleAsync<TIn, TOut>(this IPipelineBuilder<TIn, TOut> builder, Func<TIn, Task<TOut>> handler)
@@ -81,16 +90,16 @@ namespace RoyalCode.PipelineFlow.Configurations
             return builder;
         }
 
-        public static IPipelineBuilder<TIn, TOut> HandleAsync<TService, TIn, TOut>(this IPipelineBuilder<TIn, TOut> builder, Func<TService, TIn, Task<TOut>> handler)
+        public static IPipelineBuilder<TIn, TOut> HandleAsync<TService, TIn, TOut>(this IPipelineBuilderWithService<TService, TIn, TOut> builder, Func<TService, TIn, Task<TOut>> handler)
         {
             builder.AddHandlerResolver(DefaultHandlersResolver.Handle(handler));
-            return builder;
+            return builder.Configure<TIn, TOut>();
         }
 
-        public static IPipelineBuilder<TIn, TOut> HandleAsync<TService, TIn, TOut>(this IPipelineBuilder<TIn, TOut> builder, Func<TService, TIn, CancellationToken, Task<TOut>> handler)
+        public static IPipelineBuilder<TIn, TOut> HandleAsync<TService, TIn, TOut>(this IPipelineBuilderWithService<TService, TIn, TOut> builder, Func<TService, TIn, CancellationToken, Task<TOut>> handler)
         {
             builder.AddHandlerResolver(DefaultHandlersResolver.Handle(handler));
-            return builder;
+            return builder.Configure<TIn, TOut>();
         }
 
         #endregion
@@ -161,6 +170,21 @@ namespace RoyalCode.PipelineFlow.Configurations
         }
 
         /// <summary>
+        /// Adds all methods from a service to <paramref name="builder"/> as handlers
+        /// where the methods are defined with some attribute.
+        /// </summary>
+        /// <typeparam name="TService">The service with handlers methods.</typeparam>
+        /// <param name="builder">The <see cref="IPipelineBuilder"/> to configure.</param>
+        /// <param name="attributeType">The attribute that define a method as handler.</param>
+        /// <returns>The same instance of <paramref name="builder"/> for chain calls.</returns>
+        public static IPipelineBuilder AddHandlerMethodsDefined<TService>(
+            this IPipelineBuilderWithService<TService> builder,
+            Type attributeType)
+        {
+            return builder.AddHandlerMethodsDefined(typeof(TService), attributeType);
+        }
+
+        /// <summary>
         /// Add a handler method to <paramref name="builder"/> from a service finding the method by name.
         /// </summary>
         /// <param name="builder">The <see cref="IPipelineBuilder"/> to configure.</param>
@@ -198,9 +222,23 @@ namespace RoyalCode.PipelineFlow.Configurations
             return builder.AddHandlerMethods(methods[0]);
         }
 
+        /// <summary>
+        /// Add a handler method to <paramref name="builder"/> from a service finding the method by name.
+        /// </summary>
+        /// <typeparam name="TService">The service with one handler method.</typeparam>
+        /// <param name="builder">The <see cref="IPipelineBuilder"/> to configure.</param>
+        /// <param name="methodName">The name of handler method.</param>
+        /// <returns>The same instance of <paramref name="builder"/> for chain calls.</returns>
+        public static IPipelineBuilder AddHandlerMethodDefined<TService>(
+            this IPipelineBuilder<TService> builder,
+            string methodName)
+        {
+            return builder.AddHandlerMethodDefined(typeof(TService), methodName);
+        }
+
         #endregion
 
-        #region Bridges Handlers
+        #region Bridges Handlers TIn
 
         public static IPipelineBuilder<TIn> BridgeHandler<TIn, TNextInput>(IPipelineBuilder<TIn> builder, Action<TIn, Action<TNextInput>> handler)
         {

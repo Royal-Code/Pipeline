@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace RoyalCode.PipelineFlow.Configurations
@@ -10,7 +8,27 @@ namespace RoyalCode.PipelineFlow.Configurations
     public interface IPipelineBuilder
     {
         void AddHandlerResolver(IHandlerResolver resolver);
+
+        IPipelineBuilder<TIn> Configure<TIn>();
+
+        IPipelineBuilder<TIn, TOut> Configure<TIn, TOut>();
     }
+
+    public interface IPipelineBuilder<TIn> : IPipelineBuilder
+    {
+        IPipelineBuilderWithService<TService, TIn> WithService<TService>();
+    }
+
+    public interface IPipelineBuilder<TIn, TOut> : IPipelineBuilder
+    {
+        IPipelineBuilderWithService<TService, TIn, TOut> WithService<TService>();
+    }
+
+    public interface IPipelineBuilderWithService<TService> : IPipelineBuilder { }
+
+    public interface IPipelineBuilderWithService<TService, TIn> : IPipelineBuilderWithService<TService> { }
+
+    public interface IPipelineBuilderWithService<TService, TIn, TOut> : IPipelineBuilderWithService<TService> { }
 
     public class DeafultPipelineBuilder : IPipelineBuilder
     {
@@ -25,98 +43,62 @@ namespace RoyalCode.PipelineFlow.Configurations
         {
             configuration.Handlers.Add(resolver);
         }
+
+        public IPipelineBuilder<TIn> Configure<TIn>() => new DefaultPipelineBuilder<TIn>(this);
+
+        public IPipelineBuilder<TIn, TOut> Configure<TIn, TOut>() => new DefaultPipelineBuilder<TIn, TOut>(this);
     }
 
-    public interface IPipelineBuilder<TIn> : IPipelineBuilder
+    public abstract class PipelineBuilderBase : IPipelineBuilder
     {
-        IPipelineBuilder<TIn> BridgeHandler<TNextInput>(Action<TIn, Action<TNextInput>> handler);
-    }
+        protected readonly IPipelineBuilder pipelineBuilder;
 
-    public class DefaultPipelineBuilder<TIn> : IPipelineBuilder<TIn>
-    {
-        private readonly IPipelineBuilder pipelineBuilder;
-
-        public DefaultPipelineBuilder(IPipelineBuilder pipelineBuilder)
+        internal protected PipelineBuilderBase(IPipelineBuilder pipelineBuilder)
         {
             this.pipelineBuilder = pipelineBuilder ?? throw new ArgumentNullException(nameof(pipelineBuilder));
         }
 
         public void AddHandlerResolver(IHandlerResolver resolver) => pipelineBuilder.AddHandlerResolver(resolver);
 
-        #region Bridges
+        public IPipelineBuilder<TInput> Configure<TInput>() => pipelineBuilder.Configure<TInput>();
 
-        public IPipelineBuilder<TIn> BridgeHandler<TNextInput>(Action<TIn, Action<TNextInput>> handler)
-        {
-            pipelineBuilder.AddHandlerResolver(DefaultHandlersResolver.BridgeHandler(handler));
-            return this;
-        }
-
-        #endregion
+        public IPipelineBuilder<TInput, TOut> Configure<TInput, TOut>() => pipelineBuilder.Configure<TInput, TOut>();
     }
 
-    public interface IPipelineBuilder<TIn, TOut> : IPipelineBuilder
+    public class DefaultPipelineBuilderWithService<TService> : PipelineBuilderBase, IPipelineBuilderWithService<TService>
     {
-        IPipelineBuilder<TIn, TOut> Handle(Func<TIn, TOut> handler);
-
-        IPipelineBuilder<TIn, TOut> HandleAsync(Func<TIn, Task<TOut>> handler);
-
-        IPipelineBuilder<TIn, TOut> HandleAsync(Func<TIn, CancellationToken, Task<TOut>> handler);
-
-        IPipelineBuilder<TIn, TOut> Handle<TService>(Func<TService, TIn, TOut> handler);
-
-        IPipelineBuilder<TIn, TOut> HandleAsync<TService>(Func<TService, TIn, Task<TOut>> handler);
-
-        IPipelineBuilder<TIn, TOut> HandleAsync<TService>(Func<TService, TIn, CancellationToken, Task<TOut>> handler);
+        public DefaultPipelineBuilderWithService(IPipelineBuilder builder) 
+            : base(builder)
+        { }
     }
 
-    public class DefaultPipelineBuilder<TIn, TOut> : IPipelineBuilder<TIn, TOut>
+    public class DefaultPipelineBuilder<TIn> : PipelineBuilderBase, IPipelineBuilder<TIn>
     {
-        private readonly IPipelineBuilder pipelineBuilder;
+        public DefaultPipelineBuilder(IPipelineBuilder pipelineBuilder) 
+            : base(pipelineBuilder)
+        { }
 
-        public DefaultPipelineBuilder(IPipelineBuilder pipelineBuilder)
-        {
-            this.pipelineBuilder = pipelineBuilder ?? throw new ArgumentNullException(nameof(pipelineBuilder));
-        }
-
-        public void AddHandlerResolver(IHandlerResolver resolver) => pipelineBuilder.AddHandlerResolver(resolver);
-
-        public IPipelineBuilder<TIn, TOut> Handle(Func<TIn, TOut> handler)
-        {
-            pipelineBuilder.AddHandlerResolver(DefaultHandlersResolver.Handle(handler));
-            return this;
-        }
-
-        public IPipelineBuilder<TIn, TOut> Handle<TService>(Func<TService, TIn, TOut> handler)
-        {
-            pipelineBuilder.AddHandlerResolver(DefaultHandlersResolver.Handle(handler));
-            return this;
-        }
-
-        public IPipelineBuilder<TIn, TOut> HandleAsync(Func<TIn, Task<TOut>> handler)
-        {
-            pipelineBuilder.AddHandlerResolver(DefaultHandlersResolver.Handle(handler));
-            return this;
-        }
-
-        public IPipelineBuilder<TIn, TOut> HandleAsync(Func<TIn, CancellationToken, Task<TOut>> handler)
-        {
-            pipelineBuilder.AddHandlerResolver(DefaultHandlersResolver.Handle(handler));
-            return this;
-        }
-
-        public IPipelineBuilder<TIn, TOut> HandleAsync<TService>(Func<TService, TIn, Task<TOut>> handler)
-        {
-            pipelineBuilder.AddHandlerResolver(DefaultHandlersResolver.Handle(handler));
-            return this;
-        }
-
-        public IPipelineBuilder<TIn, TOut> HandleAsync<TService>(Func<TService, TIn, CancellationToken, Task<TOut>> handler)
-        {
-            pipelineBuilder.AddHandlerResolver(DefaultHandlersResolver.Handle(handler));
-            return this;
-        }
+        public IPipelineBuilderWithService<TService, TIn> WithService<TService>() => new DefaultPipelineBuilderWithService<TService, TIn>(pipelineBuilder);
     }
 
+    public class DefaultPipelineBuilderWithService<TService, TIn> : DefaultPipelineBuilder<TIn>, IPipelineBuilderWithService<TService, TIn>
+    {
+        public DefaultPipelineBuilderWithService(IPipelineBuilder pipelineBuilder) : base(pipelineBuilder) { }
+    }
+
+    public class DefaultPipelineBuilder<TIn, TOut> : PipelineBuilderBase, IPipelineBuilder<TIn, TOut>
+    {
+        public DefaultPipelineBuilder(IPipelineBuilder pipelineBuilder) : base(pipelineBuilder) { }
+
+        public IPipelineBuilderWithService<TService, TIn, TOut> WithService<TService>() => new DefaultPipelineBuilderWithService<TService, TIn, TOut>(pipelineBuilder);
+    }
+
+    public class DefaultPipelineBuilderWithService<TService, TIn, TOut> : DefaultPipelineBuilder<TIn, TOut>, IPipelineBuilderWithService<TService, TIn, TOut>
+    {
+        public DefaultPipelineBuilderWithService(IPipelineBuilder pipelineBuilder) : base(pipelineBuilder) { }
+    }
+
+    internal interface IBuildingSampleService { }
     public class BuildingSample
     {
         public void Buiding(IPipelineBuilder builder)
@@ -125,6 +107,16 @@ namespace RoyalCode.PipelineFlow.Configurations
                 .Handle<BuildingSample>(sample => Task.FromResult(sample));
 
             builder.AddHandlerResolver(resolver);
+
+            builder.Configure<BuildingSample>()
+                .Handle(sample => Task.FromResult(sample));
+
+            builder.Configure<BuildingSample>()
+                .Handle(sample => { })
+                .WithService<IBuildingSampleService>()
+                .Handle((service, sample) => { })
+                .WithService<IBuildingSampleService>()
+                .HandleAsync((service, sample, token) => Task.FromResult(sample));
         }
 
         public void Buiding(IPipelineBuilder<BuildingSample> builder)
