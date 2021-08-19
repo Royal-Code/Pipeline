@@ -60,7 +60,7 @@ namespace RoyalCode.PipelineFlow.Configurations
         public static IHandlerResolver BridgeHandler<TInput, TNextInput>(Func<TInput, Func<TNextInput, Task>, Task> handler)
             => new DelegateBridgeHandlerResolver(handler);
 
-        public static IHandlerResolver BridgeHandler<TInput, TNextInput>(Func<TInput, Func<TNextInput, CancellationToken, Task>, Task> handler)
+        public static IHandlerResolver BridgeHandler<TInput, TNextInput>(Func<TInput, Func<TNextInput, Task>, CancellationToken, Task> handler)
             => new DelegateBridgeHandlerResolver(handler);
 
         public static IHandlerResolver BridgeHandler<TService, TInput, TNextInput>(Action<TService, TInput, Action<TNextInput>> handler)

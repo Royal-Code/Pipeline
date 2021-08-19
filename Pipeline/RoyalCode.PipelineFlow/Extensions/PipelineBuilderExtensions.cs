@@ -240,10 +240,120 @@ namespace RoyalCode.PipelineFlow.Configurations
 
         #region Bridges Handlers TIn
 
-        public static IPipelineBuilder<TIn> BridgeHandler<TIn, TNextInput>(IPipelineBuilder<TIn> builder, Action<TIn, Action<TNextInput>> handler)
+        public static IPipelineBuilder<TIn> BridgeHandle<TIn, TNextInput>(IPipelineBuilder<TIn> builder, Action<TIn, Action<TNextInput>> handler)
         {
             builder.AddHandlerResolver(DefaultHandlersResolver.BridgeHandler(handler));
             return builder;
+        }
+
+        public static IPipelineBuilder<TIn> BridgeHandleAsync<TIn, TNextInput>(IPipelineBuilder<TIn> builder, Func<TIn, Func<TNextInput, Task>, Task> handler)
+        {
+            builder.AddHandlerResolver(DefaultHandlersResolver.BridgeHandler(handler));
+            return builder;
+        }
+
+        public static IPipelineBuilder<TIn> BridgeHandleAsync<TIn, TNextInput>(IPipelineBuilder<TIn> builder, Func<TIn, Func<TNextInput, Task>, CancellationToken, Task> handler)
+        {
+            builder.AddHandlerResolver(DefaultHandlersResolver.BridgeHandler(handler));
+            return builder;
+        }
+
+        public static IPipelineBuilder<TIn> BridgeHandle<TService, TIn, TNextInput>(IPipelineBuilderWithService<TService, TIn> builder, Action<TService, TIn, Action<TNextInput>> handler)
+        {
+            builder.AddHandlerResolver(DefaultHandlersResolver.BridgeHandler(handler));
+            return builder.Configure<TIn>();
+        }
+
+        public static IPipelineBuilder<TIn> BridgeHandleAsync<TService, TIn, TNextInput>(IPipelineBuilderWithService<TService, TIn> builder, Func<TService, TIn, Func<TNextInput, Task>, Task> handler)
+        {
+            builder.AddHandlerResolver(DefaultHandlersResolver.BridgeHandler(handler));
+            return builder.Configure<TIn>();
+        }
+
+        public static IPipelineBuilder<TIn> BridgeHandleAsync<TService, TIn, TNextInput>(IPipelineBuilderWithService<TService, TIn> builder, Func<TService, TIn, Func<TNextInput, Task>, CancellationToken, Task> handler)
+        {
+            builder.AddHandlerResolver(DefaultHandlersResolver.BridgeHandler(handler));
+            return builder.Configure<TIn>();
+        }
+
+        #endregion
+
+        #region Bridges Handlers TIn TOut
+
+        public static IPipelineBuilder<TIn, TOut> BridgeHandle<TIn, TOut, TNextInput>(IPipelineBuilder<TIn, TOut> builder, Func<TIn, Func<TNextInput, TOut>, TOut> handler)
+        {
+            builder.AddHandlerResolver(DefaultHandlersResolver.BridgeHandler<TIn, TOut, TNextInput>(handler));
+            return builder;
+        }
+
+        public static IPipelineBuilder<TIn, TOut> BridgeHandleAsync<TIn, TOut, TNextInput>(IPipelineBuilder<TIn, TOut> builder, Func<TIn, Func<TNextInput, Task<TOut>>, Task<TOut>> handler)
+        {
+            builder.AddHandlerResolver(DefaultHandlersResolver.BridgeHandler<TIn, TOut, TNextInput>(handler));
+            return builder;
+        }
+
+        public static IPipelineBuilder<TIn, TOut> BridgeHandleAsync<TIn, TOut, TNextInput>(IPipelineBuilder<TIn, TOut> builder, Func<TIn, Func<TNextInput, Task<TOut>>, CancellationToken, Task<TOut>> handler)
+        {
+            builder.AddHandlerResolver(DefaultHandlersResolver.BridgeHandler<TIn, TOut, TNextInput>(handler));
+            return builder;
+        }
+
+        public static IPipelineBuilder<TIn, TOut> BridgeHandle<TService, TIn, TOut, TNextInput>(IPipelineBuilderWithService<TService, TIn, TOut> builder, Func<TService, TIn, Func<TNextInput, TOut>, TOut> handler)
+        {
+            builder.AddHandlerResolver(DefaultHandlersResolver.BridgeHandler<TService, TIn, TOut, TNextInput>(handler));
+            return builder.Configure<TIn, TOut>();
+        }
+
+        public static IPipelineBuilder<TIn, TOut> BridgeHandleAsync<TService, TIn, TOut, TNextInput>(IPipelineBuilderWithService<TService, TIn, TOut> builder, Func<TService, TIn, Func<TNextInput, Task<TOut>>, Task<TOut>> handler)
+        {
+            builder.AddHandlerResolver(DefaultHandlersResolver.BridgeHandler<TService, TIn, TOut, TNextInput>(handler));
+            return builder.Configure<TIn, TOut>();
+        }
+
+        public static IPipelineBuilder<TIn, TOut> BridgeHandleAsync<TService, TIn, TOut, TNextInput>(IPipelineBuilderWithService<TService, TIn, TOut> builder, Func<TService, TIn, Func<TNextInput, Task<TOut>>, CancellationToken, Task<TOut>> handler)
+        {
+            builder.AddHandlerResolver(DefaultHandlersResolver.BridgeHandler<TService, TIn, TOut, TNextInput>(handler));
+            return builder.Configure<TIn, TOut>();
+        }
+
+        #endregion
+
+        #region Bridges Handlers TIn TOut, TNextOutput
+
+        public static IPipelineBuilder<TIn, TOut> BridgeHandle<TIn, TOut, TNextInput, TNextOutput>(IPipelineBuilder<TIn, TOut> builder, Func<TIn, Func<TNextInput, TNextOutput>, TOut> handler)
+        {
+            builder.AddHandlerResolver(DefaultHandlersResolver.BridgeHandler<TIn, TOut, TNextInput, TNextOutput>(handler));
+            return builder;
+        }
+
+        public static IPipelineBuilder<TIn, TOut> BridgeHandleAsync<TIn, TOut, TNextInput, TNextOutput>(IPipelineBuilder<TIn, TOut> builder, Func<TIn, Func<TNextInput, Task<TNextOutput>>, Task<TOut>> handler)
+        {
+            builder.AddHandlerResolver(DefaultHandlersResolver.BridgeHandler<TIn, TOut, TNextInput, TNextOutput>(handler));
+            return builder;
+        }
+
+        public static IPipelineBuilder<TIn, TOut> BridgeHandleAsync<TIn, TOut, TNextInput, TNextOutput>(IPipelineBuilder<TIn, TOut> builder, Func<TIn, Func<TNextInput, Task<TNextOutput>>, CancellationToken, Task<TOut>> handler)
+        {
+            builder.AddHandlerResolver(DefaultHandlersResolver.BridgeHandler<TIn, TOut, TNextInput, TNextOutput>(handler));
+            return builder;
+        }
+
+        public static IPipelineBuilder<TIn, TOut> BridgeHandle<TService, TIn, TOut, TNextInput, TNextOutput>(IPipelineBuilderWithService<TService, TIn, TOut> builder, Func<TService, TIn, Func<TNextInput, TNextOutput>, TOut> handler)
+        {
+            builder.AddHandlerResolver(DefaultHandlersResolver.BridgeHandler<TService, TIn, TOut, TNextInput, TNextOutput>(handler));
+            return builder.Configure<TIn, TOut>();
+        }
+
+        public static IPipelineBuilder<TIn, TOut> BridgeHandleAsync<TService, TIn, TOut, TNextInput, TNextOutput>(IPipelineBuilderWithService<TService, TIn, TOut> builder, Func<TService, TIn, Func<TNextInput, Task<TNextOutput>>, Task<TOut>> handler)
+        {
+            builder.AddHandlerResolver(DefaultHandlersResolver.BridgeHandler<TService, TIn, TOut, TNextInput, TNextOutput>(handler));
+            return builder.Configure<TIn, TOut>();
+        }
+
+        public static IPipelineBuilder<TIn, TOut> BridgeHandleAsync<TService, TIn, TOut, TNextInput, TNextOutput>(IPipelineBuilderWithService<TService, TIn, TOut> builder, Func<TService, TIn, Func<TNextInput, Task<TNextOutput>>, CancellationToken, Task<TOut>> handler)
+        {
+            builder.AddHandlerResolver(DefaultHandlersResolver.BridgeHandler<TService, TIn, TOut, TNextInput, TNextOutput>(handler));
+            return builder.Configure<TIn, TOut>();
         }
 
         #endregion
