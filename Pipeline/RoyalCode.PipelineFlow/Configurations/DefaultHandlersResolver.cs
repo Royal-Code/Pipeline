@@ -114,5 +114,10 @@ namespace RoyalCode.PipelineFlow.Configurations
 
 
         #endregion
+
+
+        #region Decorators
+
+        #endregion
     }
 }

@@ -357,5 +357,21 @@ namespace RoyalCode.PipelineFlow.Configurations
         }
 
         #endregion
+
+        #region Method Bridges Handlers
+
+        #endregion
+
+        #region Decorators Handlers TIn
+
+        #endregion
+
+        #region Decorators Handlers TIn TOut
+
+        #endregion
+
+        #region Method Decorators Handlers
+
+        #endregion
     }
 }
