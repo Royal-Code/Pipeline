@@ -9,6 +9,8 @@ namespace RoyalCode.PipelineFlow.Configurations
     {
         void AddHandlerResolver(IHandlerResolver resolver);
 
+        void AddDecoratorResolver(IDecoratorResolver resolver);
+
         IPipelineBuilder<TIn> Configure<TIn>();
 
         IPipelineBuilder<TIn, TOut> Configure<TIn, TOut>();
@@ -44,6 +46,11 @@ namespace RoyalCode.PipelineFlow.Configurations
             configuration.Handlers.Add(resolver);
         }
 
+        public void AddDecoratorResolver(IDecoratorResolver resolver)
+        {
+            configuration.Decorators.Add(resolver);
+        }
+
         public IPipelineBuilder<TIn> Configure<TIn>() => new DefaultPipelineBuilder<TIn>(this);
 
         public IPipelineBuilder<TIn, TOut> Configure<TIn, TOut>() => new DefaultPipelineBuilder<TIn, TOut>(this);
@@ -59,6 +66,8 @@ namespace RoyalCode.PipelineFlow.Configurations
         }
 
         public void AddHandlerResolver(IHandlerResolver resolver) => pipelineBuilder.AddHandlerResolver(resolver);
+
+        public void AddDecoratorResolver(IDecoratorResolver resolver) => pipelineBuilder.AddDecoratorResolver(resolver);
 
         public IPipelineBuilder<TInput> Configure<TInput>() => pipelineBuilder.Configure<TInput>();
 

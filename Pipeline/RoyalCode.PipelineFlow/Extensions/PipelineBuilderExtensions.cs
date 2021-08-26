@@ -124,7 +124,7 @@ namespace RoyalCode.PipelineFlow.Configurations
         /// <param name="builder">The pipeline builder for configure.</param>
         /// <param name="methods">The handlers methods</param>
         /// <returns>The same instance of <paramref name="builder"/> for chain calls.</returns>
-        public static IPipelineBuilder AddHandlerMethods(this IPipelineBuilder builder, params MethodInfo[] methods)
+        public static IPipelineBuilder AddHandlersMethods(this IPipelineBuilder builder, params MethodInfo[] methods)
         {
             if (builder is null)
                 throw new ArgumentNullException(nameof(builder));
@@ -148,7 +148,7 @@ namespace RoyalCode.PipelineFlow.Configurations
         /// <param name="serviceType">The service with handlers methods.</param>
         /// <param name="attributeType">The attribute that define a method as handler.</param>
         /// <returns>The same instance of <paramref name="builder"/> for chain calls.</returns>
-        public static IPipelineBuilder AddHandlerMethodsDefined(
+        public static IPipelineBuilder AddHandlersMethodsDefined(
             this IPipelineBuilder builder,
             Type serviceType, 
             Type attributeType)
@@ -166,7 +166,7 @@ namespace RoyalCode.PipelineFlow.Configurations
                 .Where(m => m.IsDefined(attributeType))
                 .ToArray();
 
-            return builder.AddHandlerMethods(methods);
+            return builder.AddHandlersMethods(methods);
         }
 
         /// <summary>
@@ -177,11 +177,26 @@ namespace RoyalCode.PipelineFlow.Configurations
         /// <param name="builder">The <see cref="IPipelineBuilder"/> to configure.</param>
         /// <param name="attributeType">The attribute that define a method as handler.</param>
         /// <returns>The same instance of <paramref name="builder"/> for chain calls.</returns>
-        public static IPipelineBuilder AddHandlerMethodsDefined<TService>(
+        public static IPipelineBuilder AddHandlersMethodsDefined<TService>(
             this IPipelineBuilderWithService<TService> builder,
             Type attributeType)
         {
-            return builder.AddHandlerMethodsDefined(typeof(TService), attributeType);
+            return builder.AddHandlersMethodsDefined(typeof(TService), attributeType);
+        }
+
+        /// <summary>
+        /// Adds all methods from a service to <paramref name="builder"/> as handlers
+        /// where the methods are defined with some attribute.
+        /// </summary>
+        /// <typeparam name="TService">The service with handlers methods.</typeparam>
+        /// <typeparam name="TAttribute">The attribute that define a method as handler.</typeparam>
+        /// <param name="builder">The <see cref="IPipelineBuilder"/> to configure.</param>
+        /// <returns>The same instance of <paramref name="builder"/> for chain calls.</returns>
+        public static IPipelineBuilder AddHandlersMethodsDefined<TService, TAttribute>(
+            this IPipelineBuilderWithService<TService> builder)
+            where TAttribute: Attribute
+        {
+            return builder.AddHandlersMethodsDefined(typeof(TService), typeof(TAttribute));
         }
 
         /// <summary>
@@ -219,7 +234,7 @@ namespace RoyalCode.PipelineFlow.Configurations
                     "Error when creating a pipeline handler resolver."
                     + $" There are more then one method with name '{methodName}' for service '{serviceType.FullName}'.");
 
-            return builder.AddHandlerMethods(methods[0]);
+            return builder.Handle(methods[0]);
         }
 
         /// <summary>
@@ -360,17 +375,383 @@ namespace RoyalCode.PipelineFlow.Configurations
 
         #region Method Bridges Handlers
 
+        /// <summary>
+        /// Add a method as a bridge handler into pipeline builder.
+        /// </summary>
+        /// <param name="builder">The pipeline builder for configure.</param>
+        /// <param name="method">The bridge handler method.</param>
+        /// <returns>The same instance of <paramref name="builder"/> for chain calls.</returns>
+        public static IPipelineBuilder BridgeHandle(this IPipelineBuilder builder, MethodInfo method)
+        {
+            builder.AddHandlerResolver(new MethodBridgeHandlerResolver(method));
+            return builder;
+        }
+
+        /// <summary>
+        /// Adds many methods as bridge handlers into the pipeline builder.
+        /// </summary>
+        /// <param name="builder">The pipeline builder for configure.</param>
+        /// <param name="methods">The bridge handlers methods</param>
+        /// <returns>The same instance of <paramref name="builder"/> for chain calls.</returns>
+        public static IPipelineBuilder AddBridgeHandlersMethods(this IPipelineBuilder builder, params MethodInfo[] methods)
+        {
+            if (builder is null)
+                throw new ArgumentNullException(nameof(builder));
+
+            if (methods is null)
+                throw new ArgumentNullException(nameof(methods));
+
+            foreach (var method in methods)
+            {
+                builder.AddHandlerResolver(new MethodBridgeHandlerResolver(method));
+            }
+
+            return builder;
+        }
+
+        /// <summary>
+        /// Adds all methods from a service to <paramref name="builder"/> as bridge handlers
+        /// where the methods are defined with some attribute.
+        /// </summary>
+        /// <param name="builder">The <see cref="IPipelineBuilder"/> to configure.</param>
+        /// <param name="serviceType">The service with bridge handlers methods.</param>
+        /// <param name="attributeType">The attribute that define a method as bridge handler.</param>
+        /// <returns>The same instance of <paramref name="builder"/> for chain calls.</returns>
+        public static IPipelineBuilder AddBridgeHandlersMethodsDefined(
+            this IPipelineBuilder builder,
+            Type serviceType,
+            Type attributeType)
+        {
+            if (builder is null)
+                throw new ArgumentNullException(nameof(builder));
+
+            if (serviceType is null)
+                throw new ArgumentNullException(nameof(serviceType));
+
+            if (attributeType is null)
+                throw new ArgumentNullException(nameof(attributeType));
+
+            var methods = serviceType.GetTypeInfo().GetRuntimeMethods()
+                .Where(m => m.IsDefined(attributeType))
+                .ToArray();
+
+            return builder.AddBridgeHandlersMethods(methods);
+        }
+
+        /// <summary>
+        /// Adds all methods from a service to <paramref name="builder"/> as bridge handlers
+        /// where the methods are defined with some attribute.
+        /// </summary>
+        /// <typeparam name="TService">The service with bridge handlers methods.</typeparam>
+        /// <param name="builder">The <see cref="IPipelineBuilder"/> to configure.</param>
+        /// <param name="attributeType">The attribute that define a method as bridge handler.</param>
+        /// <returns>The same instance of <paramref name="builder"/> for chain calls.</returns>
+        public static IPipelineBuilder AddBridgeHandlersMethodsDefined<TService>(
+            this IPipelineBuilderWithService<TService> builder,
+            Type attributeType)
+        {
+            return builder.AddBridgeHandlersMethodsDefined(typeof(TService), attributeType);
+        }
+
+        /// <summary>
+        /// Adds all methods from a service to <paramref name="builder"/> as bridge handlers
+        /// where the methods are defined with some attribute.
+        /// </summary>
+        /// <typeparam name="TService">The service with bridge handlers methods.</typeparam>
+        /// <typeparam name="TAttribute">The attribute that define a method as bridge handler.</typeparam>
+        /// <param name="builder">The <see cref="IPipelineBuilder"/> to configure.</param>
+        /// <returns>The same instance of <paramref name="builder"/> for chain calls.</returns>
+        public static IPipelineBuilder AddBridgeHandlersMethodsDefined<TService, TAttribute>(
+            this IPipelineBuilderWithService<TService> builder)
+            where TAttribute : Attribute
+        {
+            return builder.AddBridgeHandlersMethodsDefined(typeof(TService), typeof(TAttribute));
+        }
+
+        /// <summary>
+        /// Add a bridge handler method to <paramref name="builder"/> from a service finding the method by name.
+        /// </summary>
+        /// <param name="builder">The <see cref="IPipelineBuilder"/> to configure.</param>
+        /// <param name="serviceType">The service with one bridge handler method.</param>
+        /// <param name="methodName">The name of bridge handler method.</param>
+        /// <returns>The same instance of <paramref name="builder"/> for chain calls.</returns>
+        public static IPipelineBuilder AddBridgeHandlerMethodDefined(
+            this IPipelineBuilder builder,
+            Type serviceType,
+            string methodName)
+        {
+            if (builder is null)
+                throw new ArgumentNullException(nameof(builder));
+
+            if (serviceType is null)
+                throw new ArgumentNullException(nameof(serviceType));
+
+            if (methodName is null)
+                throw new ArgumentNullException(nameof(methodName));
+
+            var methods = serviceType.GetTypeInfo().GetRuntimeMethods()
+                .Where(m => m.Name == methodName)
+                .ToList();
+
+            if (methods.Count == 0)
+                throw new InvalidOperationException(
+                    "Error when creating a pipeline bridge handler resolver."
+                    + $" Can't find the bridge handler method with name '{methodName}' for service '{serviceType.FullName}'.");
+
+            if (methods.Count > 1)
+                throw new InvalidOperationException(
+                    "Error when creating a pipeline bridge handler resolver."
+                    + $" There are more then one method with name '{methodName}' for service '{serviceType.FullName}'.");
+
+            return builder.BridgeHandle(methods[0]);
+        }
+
+        /// <summary>
+        /// Add a handler method to <paramref name="builder"/> from a service finding the method by name.
+        /// </summary>
+        /// <typeparam name="TService">The service with one handler method.</typeparam>
+        /// <param name="builder">The <see cref="IPipelineBuilder"/> to configure.</param>
+        /// <param name="methodName">The name of handler method.</param>
+        /// <returns>The same instance of <paramref name="builder"/> for chain calls.</returns>
+        public static IPipelineBuilder AddBridgeHandlerMethodDefined<TService>(
+            this IPipelineBuilder<TService> builder,
+            string methodName)
+        {
+            return builder.AddBridgeHandlerMethodDefined(typeof(TService), methodName);
+        }
+
         #endregion
 
         #region Decorators Handlers TIn
+
+        public static IPipelineBuilder<TInput> Decorate<TInput>(this IPipelineBuilder<TInput> builder, Action<TInput, Action> handler)
+        {
+            builder.AddDecoratorResolver(DefaultDecoratorsResolver.Decorate(handler));
+            return builder;
+        }
+
+        public static IPipelineBuilder<TInput> Decorate<TInput>(this IPipelineBuilder<TInput> builder, Func<TInput, Func<Task>, Task> handler)
+        {
+            builder.AddDecoratorResolver(DefaultDecoratorsResolver.Decorate(handler));
+            return builder;
+        }
+
+        public static IPipelineBuilder<TInput> Decorate<TInput>(this IPipelineBuilder<TInput> builder, Func<TInput, Func<Task>, CancellationToken, Task> handler)
+        {
+            builder.AddDecoratorResolver(DefaultDecoratorsResolver.Decorate(handler));
+            return builder;
+        }
+
+
+
+        public static IPipelineBuilder<TInput> Decorate<TService, TInput>(this IPipelineBuilderWithService<TService, TInput> builder, Action<TService, TInput, Action> handler)
+        {
+            builder.AddDecoratorResolver(DefaultDecoratorsResolver.Decorate(handler));
+            return builder.Configure<TInput>();
+        }
+
+        public static IPipelineBuilder<TInput> Decorate<TService, TInput>(this IPipelineBuilderWithService<TService, TInput> builder, Func<TService, TInput, Func<Task>, Task> handler)
+        {
+            builder.AddDecoratorResolver(DefaultDecoratorsResolver.Decorate(handler));
+            return builder.Configure<TInput>();
+        }
+
+        public static IPipelineBuilder<TInput> Decorate<TService, TInput>(this IPipelineBuilderWithService<TService, TInput> builder, Func<TService, TInput, Func<Task>, CancellationToken, Task> handler)
+        {
+            builder.AddDecoratorResolver(DefaultDecoratorsResolver.Decorate(handler));
+            return builder.Configure<TInput>();
+        }
 
         #endregion
 
         #region Decorators Handlers TIn TOut
 
+        public static IPipelineBuilder<TInput, TOutput> Decorate<TInput, TOutput>(this IPipelineBuilder<TInput, TOutput> builder, Func<TInput, Func<TOutput>, TOutput> handler)
+        {
+            builder.AddDecoratorResolver(DefaultDecoratorsResolver.Decorate(handler));
+            return builder;
+        }
+
+        public static IPipelineBuilder<TInput, TOutput> Decorate<TInput, TOutput>(this IPipelineBuilder<TInput, TOutput> builder, Func<TInput, Func<Task<TOutput>>, Task<TOutput>> handler)
+        {
+            builder.AddDecoratorResolver(DefaultDecoratorsResolver.Decorate(handler));
+            return builder;
+        }
+
+        public static IPipelineBuilder<TInput, TOutput> Decorate<TInput, TOutput>(this IPipelineBuilder<TInput, TOutput> builder, Func<TInput, Func<Task<TOutput>>, CancellationToken, Task<TOutput>> handler)
+        {
+            builder.AddDecoratorResolver(DefaultDecoratorsResolver.Decorate(handler));
+            return builder;
+        }
+
+
+
+        public static IPipelineBuilder<TInput, TOutput> Decorate<TService, TInput, TOutput>(this IPipelineBuilderWithService<TService, TInput, TOutput> builder, Func<TService, TInput, Func<TOutput>, TOutput> handler)
+        {
+            builder.AddDecoratorResolver(DefaultDecoratorsResolver.Decorate(handler));
+            return builder.Configure<TInput, TOutput>();
+        }
+
+        public static IPipelineBuilder<TInput, TOutput> Decorate<TService, TInput, TOutput>(this IPipelineBuilderWithService<TService, TInput, TOutput> builder, Func<TService, TInput, Func<Task<TOutput>>, Task<TOutput>> handler)
+        {
+            builder.AddDecoratorResolver(DefaultDecoratorsResolver.Decorate(handler));
+            return builder.Configure<TInput, TOutput>();
+        }
+
+        public static IPipelineBuilder<TInput, TOutput> Decorate<TService, TInput, TOutput>(this IPipelineBuilderWithService<TService, TInput, TOutput> builder, Func<TService, TInput, Func<Task<TOutput>>, CancellationToken, Task<TOutput>> handler)
+        {
+            builder.AddDecoratorResolver(DefaultDecoratorsResolver.Decorate(handler));
+            return builder.Configure<TInput, TOutput>();
+        }
+
         #endregion
 
         #region Method Decorators Handlers
+
+        /// <summary>
+        /// Add a method as a decorator handler into pipeline builder.
+        /// </summary>
+        /// <param name="builder">The pipeline builder for configure.</param>
+        /// <param name="method">The decorator handler method.</param>
+        /// <returns>The same instance of <paramref name="builder"/> for chain calls.</returns>
+        public static IPipelineBuilder Decorate(this IPipelineBuilder builder, MethodInfo method)
+        {
+            builder.AddDecoratorResolver(new MethodDecoratorResolver(method));
+            return builder;
+        }
+
+        /// <summary>
+        /// Adds many methods as decorator handlers into the pipeline builder.
+        /// </summary>
+        /// <param name="builder">The pipeline builder for configure.</param>
+        /// <param name="methods">The decorator handlers methods</param>
+        /// <returns>The same instance of <paramref name="builder"/> for chain calls.</returns>
+        public static IPipelineBuilder AddDecoratorsMethods(this IPipelineBuilder builder, params MethodInfo[] methods)
+        {
+            if (builder is null)
+                throw new ArgumentNullException(nameof(builder));
+
+            if (methods is null)
+                throw new ArgumentNullException(nameof(methods));
+
+            foreach (var method in methods)
+            {
+                builder.AddDecoratorResolver(new MethodDecoratorResolver(method));
+            }
+
+            return builder;
+        }
+
+        /// <summary>
+        /// Adds all methods from a service to <paramref name="builder"/> as decorators handlers
+        /// where the methods are defined with some attribute.
+        /// </summary>
+        /// <param name="builder">The <see cref="IPipelineBuilder"/> to configure.</param>
+        /// <param name="serviceType">The service with decorators handlers methods.</param>
+        /// <param name="attributeType">The attribute that define a method as decorator handler.</param>
+        /// <returns>The same instance of <paramref name="builder"/> for chain calls.</returns>
+        public static IPipelineBuilder AddDecoratorsMethodsDefined(
+            this IPipelineBuilder builder,
+            Type serviceType,
+            Type attributeType)
+        {
+            if (builder is null)
+                throw new ArgumentNullException(nameof(builder));
+
+            if (serviceType is null)
+                throw new ArgumentNullException(nameof(serviceType));
+
+            if (attributeType is null)
+                throw new ArgumentNullException(nameof(attributeType));
+
+            var methods = serviceType.GetTypeInfo().GetRuntimeMethods()
+                .Where(m => m.IsDefined(attributeType))
+                .ToArray();
+
+            return builder.AddDecoratorsMethods(methods);
+        }
+
+        /// <summary>
+        /// Adds all methods from a service to <paramref name="builder"/> as decorators handlers
+        /// where the methods are defined with some attribute.
+        /// </summary>
+        /// <typeparam name="TService">The service with decorators handlers methods.</typeparam>
+        /// <param name="builder">The <see cref="IPipelineBuilder"/> to configure.</param>
+        /// <param name="attributeType">The attribute that define a method as decorator handler.</param>
+        /// <returns>The same instance of <paramref name="builder"/> for chain calls.</returns>
+        public static IPipelineBuilder AddDecoratorsMethodsDefined<TService>(
+            this IPipelineBuilderWithService<TService> builder,
+            Type attributeType)
+        {
+            return builder.AddDecoratorsMethodsDefined(typeof(TService), attributeType);
+        }
+
+        /// <summary>
+        /// Adds all methods from a service to <paramref name="builder"/> as decorators handlers
+        /// where the methods are defined with some attribute.
+        /// </summary>
+        /// <typeparam name="TService">The service with decorators handlers methods.</typeparam>
+        /// <typeparam name="TAttribute">The attribute that define a method as decorator handler.</typeparam>
+        /// <param name="builder">The <see cref="IPipelineBuilder"/> to configure.</param>
+        /// <returns>The same instance of <paramref name="builder"/> for chain calls.</returns>
+        public static IPipelineBuilder AddDecoratorsMethodsDefined<TService, TAttribute>(
+            this IPipelineBuilderWithService<TService> builder)
+            where TAttribute : Attribute
+        {
+            return builder.AddDecoratorsMethodsDefined(typeof(TService), typeof(TAttribute));
+        }
+
+        /// <summary>
+        /// Add a decorator handler method to <paramref name="builder"/> from a service finding the method by name.
+        /// </summary>
+        /// <param name="builder">The <see cref="IPipelineBuilder"/> to configure.</param>
+        /// <param name="serviceType">The service with one decorator handler method.</param>
+        /// <param name="methodName">The name of decorator handler method.</param>
+        /// <returns>The same instance of <paramref name="builder"/> for chain calls.</returns>
+        public static IPipelineBuilder AddDecoratorMethodDefined(
+            this IPipelineBuilder builder,
+            Type serviceType,
+            string methodName)
+        {
+            if (builder is null)
+                throw new ArgumentNullException(nameof(builder));
+
+            if (serviceType is null)
+                throw new ArgumentNullException(nameof(serviceType));
+
+            if (methodName is null)
+                throw new ArgumentNullException(nameof(methodName));
+
+            var methods = serviceType.GetTypeInfo().GetRuntimeMethods()
+                .Where(m => m.Name == methodName)
+                .ToList();
+
+            if (methods.Count == 0)
+                throw new InvalidOperationException(
+                    "Error when creating a pipeline decorator handler resolver."
+                    + $" Can't find the decorator handler method with name '{methodName}' for service '{serviceType.FullName}'.");
+
+            if (methods.Count > 1)
+                throw new InvalidOperationException(
+                    "Error when creating a pipeline decorator handler resolver."
+                    + $" There are more then one method with name '{methodName}' for service '{serviceType.FullName}'.");
+
+            return builder.Decorate(methods[0]);
+        }
+
+        /// <summary>
+        /// Add a decorator handler method to <paramref name="builder"/> from a service finding the method by name.
+        /// </summary>
+        /// <typeparam name="TService">The service with one decorator handler method.</typeparam>
+        /// <param name="builder">The <see cref="IPipelineBuilder"/> to configure.</param>
+        /// <param name="methodName">The name of decorator handler method.</param>
+        /// <returns>The same instance of <paramref name="builder"/> for chain calls.</returns>
+        public static IPipelineBuilder AddDecoratorMethodDefined<TService>(
+            this IPipelineBuilder<TService> builder,
+            string methodName)
+        {
+            return builder.AddDecoratorMethodDefined(typeof(TService), methodName);
+        }
 
         #endregion
     }
