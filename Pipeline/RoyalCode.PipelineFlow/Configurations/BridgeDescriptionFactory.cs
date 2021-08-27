@@ -14,18 +14,18 @@ namespace RoyalCode.PipelineFlow.Configurations
             return builder.BuildBridgeDescription();
         }
 
-        internal static BridgeDescription GetBridgeDescription(this Delegate decoratorHandler, Type serviceType)
+        internal static BridgeDescription GetBridgeDescription(this Delegate bridgeHandler, Type serviceType)
         {
-            var builder = DescriptionBuilder.Create(decoratorHandler, serviceType);
+            var builder = DescriptionBuilder.Create(bridgeHandler, serviceType);
             builder.ReadBridgeParameters();
             builder.ReadBridgeNextHandler();
             builder.ValidateBridgeParameters();
             return builder.BuildBridgeDescription();
         }
 
-        internal static BridgeDescription GetBridgeDescription(this MethodInfo decoratorMethod)
+        internal static BridgeDescription GetBridgeDescription(this MethodInfo bridgeMethod)
         {
-            var builder = DescriptionBuilder.Create(decoratorMethod);
+            var builder = DescriptionBuilder.Create(bridgeMethod);
             builder.ReadBridgeParameters();
             builder.ReadBridgeNextHandler();
             builder.ValidateBridgeParameters();

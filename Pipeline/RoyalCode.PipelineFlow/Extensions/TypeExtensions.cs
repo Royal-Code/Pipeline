@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace RoyalCode.PipelineFlow.Extensions
 {
@@ -9,6 +7,9 @@ namespace RoyalCode.PipelineFlow.Extensions
 
         public static bool Implements(this Type type, Type other)
         {
+            if (type == other)
+                return true;
+
             if (other.IsGenericType && other.IsGenericTypeDefinition)
             {
                 var closeGeneric = other.GetSubclassOfRawGeneric(type);

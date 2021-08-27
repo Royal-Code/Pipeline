@@ -247,7 +247,7 @@ namespace RoyalCode.PipelineFlow.Configurations
                     throw new InvalidDecoratorDelegateException();
 
                 // check that first param must be the service
-                if (parms[0].ParameterType.Implements(serviceType!))
+                if (!parms[0].ParameterType.Implements(serviceType!))
                 {
                     throw new InvalidServiceHandlerDelegateException();
                 }

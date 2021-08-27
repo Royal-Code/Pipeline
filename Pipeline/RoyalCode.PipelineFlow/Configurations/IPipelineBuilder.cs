@@ -113,7 +113,7 @@ namespace RoyalCode.PipelineFlow.Configurations
         public void Buiding(IPipelineBuilder builder)
         {
             IHandlerResolver resolver = DefaultHandlersResolver
-                .Handle<BuildingSample>(sample => Task.FromResult(sample));
+                .HandleAsync<BuildingSample>(sample => Task.FromResult(sample));
 
             builder.AddHandlerResolver(resolver);
 

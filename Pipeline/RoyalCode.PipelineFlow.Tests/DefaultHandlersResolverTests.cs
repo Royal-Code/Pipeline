@@ -33,7 +33,7 @@ namespace RoyalCode.PipelineFlow.Tests
         {
             int backValue = 0;
 
-            var resolver = DefaultHandlersResolver.Handle<int>(i => { backValue = i; return Task.CompletedTask; });
+            var resolver = DefaultHandlersResolver.HandleAsync<int>(i => { backValue = i; return Task.CompletedTask; });
             var description = resolver.TryResolve(typeof(int));
             Assert.NotNull(description);
 
@@ -53,7 +53,7 @@ namespace RoyalCode.PipelineFlow.Tests
         {
             int backValue = 0;
 
-            var resolver = DefaultHandlersResolver.Handle<int>((i, t) => { backValue = i; return Task.CompletedTask; });
+            var resolver = DefaultHandlersResolver.HandleAsync<int>((i, t) => { backValue = i; return Task.CompletedTask; });
             var description = resolver.TryResolve(typeof(int));
             Assert.NotNull(description);
 
@@ -93,7 +93,7 @@ namespace RoyalCode.PipelineFlow.Tests
         {
             BackValueService backValueService = new();
 
-            var resolver = DefaultHandlersResolver.Handle<BackValueService, int>((s, i) => { s.Value = i; return Task.CompletedTask; });
+            var resolver = DefaultHandlersResolver.HandleAsync<BackValueService, int>((s, i) => { s.Value = i; return Task.CompletedTask; });
             var description = resolver.TryResolve(typeof(int));
             Assert.NotNull(description);
 
@@ -113,7 +113,7 @@ namespace RoyalCode.PipelineFlow.Tests
         {
             BackValueService backValueService = new();
 
-            var resolver = DefaultHandlersResolver.Handle<BackValueService, int>((s, i, t) => { s.Value = i; return Task.CompletedTask; });
+            var resolver = DefaultHandlersResolver.HandleAsync<BackValueService, int>((s, i, t) => { s.Value = i; return Task.CompletedTask; });
             var description = resolver.TryResolve(typeof(int));
             Assert.NotNull(description);
 
@@ -154,7 +154,7 @@ namespace RoyalCode.PipelineFlow.Tests
         {
             int backValue = 0;
 
-            var resolver = DefaultHandlersResolver.Handle<int, string>(i => { backValue = i; return Task.FromResult(i.ToString()); });
+            var resolver = DefaultHandlersResolver.HandleAsync<int, string>(i => { backValue = i; return Task.FromResult(i.ToString()); });
             var description = resolver.TryResolve(typeof(int), typeof(string));
             Assert.NotNull(description);
 
@@ -175,7 +175,7 @@ namespace RoyalCode.PipelineFlow.Tests
         {
             int backValue = 0;
 
-            var resolver = DefaultHandlersResolver.Handle<int, string>((i, t) => { backValue = i; return Task.FromResult(i.ToString()); });
+            var resolver = DefaultHandlersResolver.HandleAsync<int, string>((i, t) => { backValue = i; return Task.FromResult(i.ToString()); });
             var description = resolver.TryResolve(typeof(int), typeof(string));
             Assert.NotNull(description);
 
@@ -217,7 +217,7 @@ namespace RoyalCode.PipelineFlow.Tests
         {
             BackValueService backValueService = new();
 
-            var resolver = DefaultHandlersResolver.Handle<BackValueService, int, string>((s, i) => { backValueService.Value = i; return Task.FromResult(i.ToString()); });
+            var resolver = DefaultHandlersResolver.HandleAsync<BackValueService, int, string>((s, i) => { backValueService.Value = i; return Task.FromResult(i.ToString()); });
             var description = resolver.TryResolve(typeof(int), typeof(string));
             Assert.NotNull(description);
 
@@ -238,7 +238,7 @@ namespace RoyalCode.PipelineFlow.Tests
         {
             BackValueService backValueService = new();
 
-            var resolver = DefaultHandlersResolver.Handle<BackValueService, int, string>((s, i, t) => { backValueService.Value = i; return Task.FromResult(i.ToString()); });
+            var resolver = DefaultHandlersResolver.HandleAsync<BackValueService, int, string>((s, i, t) => { backValueService.Value = i; return Task.FromResult(i.ToString()); });
             var description = resolver.TryResolve(typeof(int), typeof(string));
             Assert.NotNull(description);
 
