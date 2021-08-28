@@ -17,13 +17,13 @@ namespace RoyalCode.PipelineFlow.Tests
             var description = resolver.TryResolve(typeof(int));
             Assert.NotNull(description);
 
-            var @delegate = description.HandlerDelegateProvider(typeof(int), typeof(void));
+            var @delegate = description!.HandlerDelegateProvider(typeof(int), typeof(void));
             Assert.NotNull(@delegate);
 
             var action = @delegate as Action<int>;
             Assert.NotNull(action);
 
-            action(1);
+            action!(1);
 
             Assert.Equal(1, backValue);
         }
@@ -37,13 +37,13 @@ namespace RoyalCode.PipelineFlow.Tests
             var description = resolver.TryResolve(typeof(int));
             Assert.NotNull(description);
 
-            var @delegate = description.HandlerDelegateProvider(typeof(int), typeof(void));
+            var @delegate = description!.HandlerDelegateProvider(typeof(int), typeof(void));
             Assert.NotNull(@delegate);
 
             var action = @delegate as Func<int, Task>;
             Assert.NotNull(action);
 
-            action(1);
+            action!(1);
 
             Assert.Equal(1, backValue);
         }
@@ -57,13 +57,13 @@ namespace RoyalCode.PipelineFlow.Tests
             var description = resolver.TryResolve(typeof(int));
             Assert.NotNull(description);
 
-            var @delegate = description.HandlerDelegateProvider(typeof(int), typeof(void));
+            var @delegate = description!.HandlerDelegateProvider(typeof(int), typeof(void));
             Assert.NotNull(@delegate);
 
             var action = @delegate as Func<int, CancellationToken, Task>;
             Assert.NotNull(action);
 
-            action(1, default);
+            action!(1, default);
 
             Assert.Equal(1, backValue);
         }
@@ -77,13 +77,13 @@ namespace RoyalCode.PipelineFlow.Tests
             var description = resolver.TryResolve(typeof(int));
             Assert.NotNull(description);
 
-            var @delegate = description.HandlerDelegateProvider(typeof(int), typeof(void));
+            var @delegate = description!.HandlerDelegateProvider(typeof(int), typeof(void));
             Assert.NotNull(@delegate);
 
             var action = @delegate as Action<BackValueService, int>;
             Assert.NotNull(action);
 
-            action(backValueService, 1);
+            action!(backValueService, 1);
 
             Assert.Equal(1, backValueService.Value);
         }
@@ -97,13 +97,13 @@ namespace RoyalCode.PipelineFlow.Tests
             var description = resolver.TryResolve(typeof(int));
             Assert.NotNull(description);
 
-            var @delegate = description.HandlerDelegateProvider(typeof(int), typeof(void));
+            var @delegate = description!.HandlerDelegateProvider(typeof(int), typeof(void));
             Assert.NotNull(@delegate);
 
             var action = @delegate as Func<BackValueService, int, Task>;
             Assert.NotNull(action);
 
-            action(backValueService, 1);
+            action!(backValueService, 1);
 
             Assert.Equal(1, backValueService.Value);
         }
@@ -117,13 +117,13 @@ namespace RoyalCode.PipelineFlow.Tests
             var description = resolver.TryResolve(typeof(int));
             Assert.NotNull(description);
 
-            var @delegate = description.HandlerDelegateProvider(typeof(int), typeof(void));
+            var @delegate = description!.HandlerDelegateProvider(typeof(int), typeof(void));
             Assert.NotNull(@delegate);
 
             var action = @delegate as Func<BackValueService, int, CancellationToken, Task>;
             Assert.NotNull(action);
 
-            action(backValueService, 1, default);
+            action!(backValueService, 1, default);
 
             Assert.Equal(1, backValueService.Value);
         }
@@ -137,13 +137,13 @@ namespace RoyalCode.PipelineFlow.Tests
             var description = resolver.TryResolve(typeof(int), typeof(string));
             Assert.NotNull(description);
 
-            var @delegate = description.HandlerDelegateProvider(typeof(int), typeof(string));
+            var @delegate = description!.HandlerDelegateProvider(typeof(int), typeof(string));
             Assert.NotNull(@delegate);
 
             var func = @delegate as Func<int, string>;
             Assert.NotNull(func);
 
-            var resultValue = func(1);
+            var resultValue = func!(1);
 
             Assert.Equal(1, backValue);
             Assert.Equal("1", resultValue);
@@ -158,13 +158,13 @@ namespace RoyalCode.PipelineFlow.Tests
             var description = resolver.TryResolve(typeof(int), typeof(string));
             Assert.NotNull(description);
 
-            var @delegate = description.HandlerDelegateProvider(typeof(int), typeof(string));
+            var @delegate = description!.HandlerDelegateProvider(typeof(int), typeof(string));
             Assert.NotNull(@delegate);
 
             var func = @delegate as Func<int, Task<string>>;
             Assert.NotNull(func);
 
-            var resultValue = func(1).Result;
+            var resultValue = func!(1).Result;
 
             Assert.Equal(1, backValue);
             Assert.Equal("1", resultValue);
@@ -179,13 +179,13 @@ namespace RoyalCode.PipelineFlow.Tests
             var description = resolver.TryResolve(typeof(int), typeof(string));
             Assert.NotNull(description);
 
-            var @delegate = description.HandlerDelegateProvider(typeof(int), typeof(string));
+            var @delegate = description!.HandlerDelegateProvider(typeof(int), typeof(string));
             Assert.NotNull(@delegate);
 
             var func = @delegate as Func<int, CancellationToken, Task<string>>;
             Assert.NotNull(func);
 
-            var resultValue = func(1, default).Result;
+            var resultValue = func!(1, default).Result;
 
             Assert.Equal(1, backValue);
             Assert.Equal("1", resultValue);
@@ -200,13 +200,13 @@ namespace RoyalCode.PipelineFlow.Tests
             var description = resolver.TryResolve(typeof(int), typeof(string));
             Assert.NotNull(description);
 
-            var @delegate = description.HandlerDelegateProvider(typeof(int), typeof(string));
+            var @delegate = description!.HandlerDelegateProvider(typeof(int), typeof(string));
             Assert.NotNull(@delegate);
 
             var func = @delegate as Func<BackValueService, int, string>;
             Assert.NotNull(func);
 
-            var resultValue = func(backValueService, 1);
+            var resultValue = func!(backValueService, 1);
 
             Assert.Equal(1, backValueService.Value);
             Assert.Equal("1", resultValue);
@@ -221,13 +221,13 @@ namespace RoyalCode.PipelineFlow.Tests
             var description = resolver.TryResolve(typeof(int), typeof(string));
             Assert.NotNull(description);
 
-            var @delegate = description.HandlerDelegateProvider(typeof(int), typeof(string));
+            var @delegate = description!.HandlerDelegateProvider(typeof(int), typeof(string));
             Assert.NotNull(@delegate);
 
             var func = @delegate as Func<BackValueService, int, Task<string>>;
             Assert.NotNull(func);
 
-            var resultValue = func(backValueService, 1).Result;
+            var resultValue = func!(backValueService, 1).Result;
 
             Assert.Equal(1, backValueService.Value);
             Assert.Equal("1", resultValue);
@@ -242,13 +242,13 @@ namespace RoyalCode.PipelineFlow.Tests
             var description = resolver.TryResolve(typeof(int), typeof(string));
             Assert.NotNull(description);
 
-            var @delegate = description.HandlerDelegateProvider(typeof(int), typeof(string));
+            var @delegate = description!.HandlerDelegateProvider(typeof(int), typeof(string));
             Assert.NotNull(@delegate);
 
             var func = @delegate as Func<BackValueService, int, CancellationToken, Task<string>>;
             Assert.NotNull(func);
 
-            var resultValue = func(backValueService, 1, default).Result;
+            var resultValue = func!(backValueService, 1, default).Result;
 
             Assert.Equal(1, backValueService.Value);
             Assert.Equal("1", resultValue);
@@ -259,12 +259,13 @@ namespace RoyalCode.PipelineFlow.Tests
         {
             var type = typeof(GenericMethodHandlerService<>);
             var method = type.GetMethod("Handle");
-            var resolver = new MethodHandlerResolver(method);
+            Assert.NotNull(method);
+            var resolver = new MethodHandlerResolver(method!);
 
             var description = resolver.TryResolve(typeof(int));
             Assert.NotNull(description);
 
-            var @delegate = description.HandlerDelegateProvider(typeof(int), typeof(void));
+            var @delegate = description!.HandlerDelegateProvider(typeof(int), typeof(void));
             Assert.NotNull(@delegate);
 
             var action = @delegate as Action<GenericMethodHandlerService<int>, int>;
@@ -272,7 +273,7 @@ namespace RoyalCode.PipelineFlow.Tests
 
             int backValue = 0;
             var service = new GenericMethodHandlerService<int>(i => backValue = i);
-            action(service, 1);
+            action!(service, 1);
 
             Assert.Equal(1, backValue);
         }
@@ -282,12 +283,13 @@ namespace RoyalCode.PipelineFlow.Tests
         {
             var type = typeof(GenericMethodHandlerService<,>);
             var method = type.GetMethod("Handle");
-            var resolver = new MethodHandlerResolver(method);
+            Assert.NotNull(method);
+            var resolver = new MethodHandlerResolver(method!);
 
             var description = resolver.TryResolve(typeof(int), typeof(string));
             Assert.NotNull(description);
 
-            var @delegate = description.HandlerDelegateProvider(typeof(int), typeof(string));
+            var @delegate = description!.HandlerDelegateProvider(typeof(int), typeof(string));
             Assert.NotNull(@delegate);
 
             var func = @delegate as Func<GenericMethodHandlerService<int, string>, int, string>;
@@ -295,7 +297,7 @@ namespace RoyalCode.PipelineFlow.Tests
 
             int backValue = 0;
             var service = new GenericMethodHandlerService<int, string>(i => { backValue = i; return i.ToString(); });
-            var resultValue = func(service, 1);
+            var resultValue = func!(service, 1);
 
             Assert.Equal(1, backValue);
             Assert.Equal("1", resultValue);
