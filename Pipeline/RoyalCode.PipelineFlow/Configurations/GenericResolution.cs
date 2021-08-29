@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RoyalCode.PipelineFlow.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -14,6 +15,11 @@ namespace RoyalCode.PipelineFlow.Configurations
         // deve conter uma relação/mapeamento dos parametros genéricos do serviço em relação
         // aos parâmetros genéricos do input e em relação ao output ou parâmetros genéricos do output.
         private readonly List<GenericParameterBinding> bindings;
+
+        // se o método conter mais de um parâmetro, e algum destes outros parâmetros forem genéricos,
+        // deverá ser criado uma resolução para os tipos genéricos deles
+        // esta lista conterá a resolução.
+        private readonly List<GenericTypeArgumentsBinding>? methodGenericTypeParametersBindings;
 
         private readonly bool isAsync;
         private readonly bool hasOutput;
@@ -112,6 +118,19 @@ namespace RoyalCode.PipelineFlow.Configurations
 
             if (bindings.Any(b => b.Match == BindingMatch.None))
                 throw new InvalidOperationException("TODO create exception for case");
+
+            var parameters = handlerMethod.GetParameters();
+            for (int i = 1; i < parameters.Length; i++)
+            {
+                var parameter = parameters[i];
+                if (parameter.ParameterType.IsGenericType)
+                {
+                    var gtab = new GenericTypeArgumentsBinding(parameter.ParameterType);
+                    gtab.CheckGenericParameter(i, serviceGenerics);
+                    methodGenericTypeParametersBindings ??= new();
+                    methodGenericTypeParametersBindings.Add(gtab);
+                }
+            }
         }
 
         private class GenericParameterBinding
@@ -128,6 +147,102 @@ namespace RoyalCode.PipelineFlow.Configurations
             {
                 Index = index;
                 ServiceGenericType = serviceGenericType ?? throw new ArgumentNullException(nameof(serviceGenericType));
+            }
+        }
+
+        private class GenericTypeArgumentsBinding
+        {
+            public int ParameterIndex { get; private set; }
+
+            public Type GenericType { get; }
+
+            public IEnumerable<GenericArgumentBinding> ArgumentBindings { get; }
+
+            public GenericTypeArgumentsBinding(Type genericType)
+            {
+                GenericType = genericType ?? throw new ArgumentNullException(nameof(genericType));
+                if (!genericType.IsGenericType)
+                    throw new ArgumentException("A generic type is required", nameof(genericType));
+
+                var argumentsBindigs = new List<GenericArgumentBinding>();
+                var arguments = genericType.GetGenericArguments();
+                for (int i = 0; i < arguments.Length; i++)
+                {
+                    var argument = arguments[i];
+                    argumentsBindigs.Add(new GenericArgumentBinding(i, argument));
+                }
+                ArgumentBindings = argumentsBindigs;
+            }
+
+            public void CheckGenericParameter(int parameterIndex, Type[] serviceGenericArguments)
+            {
+                ParameterIndex = parameterIndex;
+                foreach (var binding in ArgumentBindings)
+                {
+                    binding.CheckGenericParameter(serviceGenericArguments);
+                }
+            }
+
+            public Type MakeParamterType(Type[] genericTypes)
+            {
+                var arguments = ArgumentBindings.Select(b => b.MakeArgumentType(genericTypes)).ToArray();
+                var typeToMake = GenericType.IsConstructedGenericType ? GenericType.GetGenericTypeDefinition() : GenericType;
+                return typeToMake.MakeGenericType(arguments);
+            }
+        }
+
+        private class GenericArgumentBinding
+        {
+            public int Index { get; }
+
+            public Type ArgumentType { get; }
+
+            public int ServiceGenericParameterIndex { get; private set; } = -1;
+
+            public bool IsGenericType => ArgumentType.IsGenericType;
+
+            public bool IsGenericParameter => ArgumentType.IsGenericParameter;
+
+            public GenericTypeArgumentsBinding? ArgumentsBinding { get; }
+
+            public GenericArgumentBinding(int index, Type argumentType)
+            {
+                Index = index;
+                ArgumentType = argumentType ?? throw new ArgumentNullException(nameof(argumentType));
+
+                if (argumentType.IsGenericType)
+                {
+                    ArgumentsBinding = new GenericTypeArgumentsBinding(argumentType);
+                }
+            }
+
+            public void CheckGenericParameter(Type[] serviceGenericArguments)
+            {
+                if (ArgumentsBinding is not null)
+                {
+                    ArgumentsBinding.CheckGenericParameter(-1, serviceGenericArguments);
+                }
+                else if (IsGenericParameter)
+                {
+                    for (int i = 0; i < serviceGenericArguments.Length; i++)
+                    {
+                        var argument = serviceGenericArguments[i];
+                        if (argument == ArgumentType) { 
+                            ServiceGenericParameterIndex = i;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            public Type MakeArgumentType(Type[] genericTypes)
+            {
+                if (ArgumentsBinding is not null)
+                    return ArgumentsBinding.MakeParamterType(genericTypes);
+                if (IsGenericParameter)
+                    return genericTypes[ServiceGenericParameterIndex];
+                else
+                    return ArgumentType;
             }
         }
 
@@ -176,7 +291,10 @@ namespace RoyalCode.PipelineFlow.Configurations
             if (parameters.Length > 1)
                 for (int i = 1; i < parameters.Length; i++)
                 {
-                    parametersTypes[i] = parameters[i].ParameterType;
+                    var binding = methodGenericTypeParametersBindings?.FirstOrDefault(a => a.ParameterIndex == i);
+                    parametersTypes[i] = binding is not null 
+                        ? binding.MakeParamterType(genericTypes) 
+                        : parameters[i].ParameterType;
                 }
 
             // resolve the real method.

@@ -403,7 +403,7 @@ namespace RoyalCode.PipelineFlow.Tests
             var @delegate = description!.HandlerDelegateProvider(typeof(int), typeof(OutputValue));
             Assert.NotNull(@delegate);
 
-            var function = @delegate as Func<GenericMethodBridgeHandlerService<int, OutputValue>, int, Action<string>, OutputValue>;
+            var function = @delegate as Func<GenericMethodBridgeHandlerService<int, OutputValue>, int, Func<string, OutputValue>, OutputValue>;
             Assert.NotNull(function);
 
             string? backValue = null;
