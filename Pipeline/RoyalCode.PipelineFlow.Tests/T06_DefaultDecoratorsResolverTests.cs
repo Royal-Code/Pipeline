@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RoyalCode.PipelineFlow.Tests
 {
-    public class DefaultDecoratorsResolverTests
+    public class T06_DefaultDecoratorsResolverTests
     {
     }
 }

@@ -6,10 +6,10 @@ using Xunit;
 
 namespace RoyalCode.PipelineFlow.Tests
 {
-    public class DefaultHandlersResolverTests
+    public class T04_DefaultHandlersResolverTests
     {
         [Fact]
-        public void _01_Action_Handler()
+        public void T01_Action_Handler()
         {
             int backValue = 0;
 
@@ -29,7 +29,7 @@ namespace RoyalCode.PipelineFlow.Tests
         }
 
         [Fact]
-        public void _02_Func_Handler_Async()
+        public void T02_Func_Handler_Async()
         {
             int backValue = 0;
 
@@ -49,7 +49,7 @@ namespace RoyalCode.PipelineFlow.Tests
         }
 
         [Fact]
-        public void _03_Func_Handler_Async_WithToken()
+        public void T03_Func_Handler_Async_WithToken()
         {
             int backValue = 0;
 
@@ -69,7 +69,7 @@ namespace RoyalCode.PipelineFlow.Tests
         }
 
         [Fact]
-        public void _04_Service_Action_Handler()
+        public void T04_Service_Action_Handler()
         {
             BackValueService backValueService = new();
 
@@ -89,7 +89,7 @@ namespace RoyalCode.PipelineFlow.Tests
         }
 
         [Fact]
-        public void _05_Service_Func_Handler_Async()
+        public void T05_Service_Func_Handler_Async()
         {
             BackValueService backValueService = new();
 
@@ -109,7 +109,7 @@ namespace RoyalCode.PipelineFlow.Tests
         }
 
         [Fact]
-        public void _06_Service_Func_Handler_Async_WithToken()
+        public void T06_Service_Func_Handler_Async_WithToken()
         {
             BackValueService backValueService = new();
 
@@ -129,7 +129,7 @@ namespace RoyalCode.PipelineFlow.Tests
         }
 
         [Fact]
-        public void _07_Func_Result_Handler()
+        public void T07_Func_Result_Handler()
         {
             int backValue = 0;
 
@@ -150,7 +150,7 @@ namespace RoyalCode.PipelineFlow.Tests
         }
 
         [Fact]
-        public void _08_Func_Result_Handler_Async()
+        public void T08_Func_Result_Handler_Async()
         {
             int backValue = 0;
 
@@ -171,7 +171,7 @@ namespace RoyalCode.PipelineFlow.Tests
         }
 
         [Fact]
-        public void _09_Func_Result_Handler_Async_WithToken()
+        public void T09_Func_Result_Handler_Async_WithToken()
         {
             int backValue = 0;
 
@@ -192,7 +192,7 @@ namespace RoyalCode.PipelineFlow.Tests
         }
 
         [Fact]
-        public void _10_Service_Func_Result_Handler()
+        public void T10_Service_Func_Result_Handler()
         {
             BackValueService backValueService = new();
 
@@ -213,7 +213,7 @@ namespace RoyalCode.PipelineFlow.Tests
         }
 
         [Fact]
-        public void _11_Service_Func_Result_Handler_Async()
+        public void T11_Service_Func_Result_Handler_Async()
         {
             BackValueService backValueService = new();
 
@@ -234,7 +234,7 @@ namespace RoyalCode.PipelineFlow.Tests
         }
 
         [Fact]
-        public void _12_Service_Func_Result_Handler_Async_WithToken()
+        public void T12_Service_Func_Result_Handler_Async_WithToken()
         {
             BackValueService backValueService = new();
 
@@ -255,7 +255,7 @@ namespace RoyalCode.PipelineFlow.Tests
         }
 
         [Fact]
-        public void _13_Method_Handler()
+        public void T13_Method_Handler()
         {
             var type = typeof(GenericMethodHandlerService<>);
             var method = type.GetMethod("Handle");
@@ -279,7 +279,7 @@ namespace RoyalCode.PipelineFlow.Tests
         }
 
         [Fact]
-        public void _14_Method_Result_Handler()
+        public void T14_Method_Result_Handler()
         {
             var type = typeof(GenericMethodHandlerService<,>);
             var method = type.GetMethod("Handle");
@@ -303,6 +303,103 @@ namespace RoyalCode.PipelineFlow.Tests
             Assert.Equal("1", resultValue);
         }
 
+        [Fact]
+        public void T15_Method_Handler_Async()
+        {
+            var type = typeof(GenericMethodHandlerAsyncService<>);
+            var method = type.GetMethod("Handle");
+            Assert.NotNull(method);
+            var resolver = new MethodHandlerResolver(method!);
+
+            var description = resolver.TryResolve(typeof(int));
+            Assert.NotNull(description);
+
+            var @delegate = description!.HandlerDelegateProvider(typeof(int), typeof(void));
+            Assert.NotNull(@delegate);
+
+            var function = @delegate as Func<GenericMethodHandlerAsyncService<int>, int, Task>;
+            Assert.NotNull(function);
+
+            int backValue = 0;
+            var service = new GenericMethodHandlerAsyncService<int>(i => backValue = i);
+            function!(service, 1);
+
+            Assert.Equal(1, backValue);
+        }
+
+        [Fact]
+        public void T16_Method_Result_Handler_Async()
+        {
+            var type = typeof(GenericMethodHandlerAsyncService<,>);
+            var method = type.GetMethod("Handle");
+            Assert.NotNull(method);
+            var resolver = new MethodHandlerResolver(method!);
+
+            var description = resolver.TryResolve(typeof(int), typeof(string));
+            Assert.NotNull(description);
+
+            var @delegate = description!.HandlerDelegateProvider(typeof(int), typeof(string));
+            Assert.NotNull(@delegate);
+
+            var func = @delegate as Func<GenericMethodHandlerAsyncService<int, string>, int, Task<string>>;
+            Assert.NotNull(func);
+
+            int backValue = 0;
+            var service = new GenericMethodHandlerAsyncService<int, string>(i => { backValue = i; return i.ToString(); });
+            var resultValue = func!(service, 1).Result;
+
+            Assert.Equal(1, backValue);
+            Assert.Equal("1", resultValue);
+        }
+
+        [Fact]
+        public void T17_Method_Handler_Async_WithToken()
+        {
+            var type = typeof(GenericMethodHandlerAsyncWithTokenService<>);
+            var method = type.GetMethod("Handle");
+            Assert.NotNull(method);
+            var resolver = new MethodHandlerResolver(method!);
+
+            var description = resolver.TryResolve(typeof(int));
+            Assert.NotNull(description);
+
+            var @delegate = description!.HandlerDelegateProvider(typeof(int), typeof(void));
+            Assert.NotNull(@delegate);
+
+            var function = @delegate as Func<GenericMethodHandlerAsyncWithTokenService<int>, int, CancellationToken, Task>;
+            Assert.NotNull(function);
+
+            int backValue = 0;
+            var service = new GenericMethodHandlerAsyncWithTokenService<int>(i => backValue = i);
+            function!(service, 1, default);
+
+            Assert.Equal(1, backValue);
+        }
+
+        [Fact]
+        public void T18_Method_Result_Handler_Async_WithToken()
+        {
+            var type = typeof(GenericMethodHandlerAsyncWithTokenService<,>);
+            var method = type.GetMethod("Handle");
+            Assert.NotNull(method);
+            var resolver = new MethodHandlerResolver(method!);
+
+            var description = resolver.TryResolve(typeof(int), typeof(string));
+            Assert.NotNull(description);
+
+            var @delegate = description!.HandlerDelegateProvider(typeof(int), typeof(string));
+            Assert.NotNull(@delegate);
+
+            var func = @delegate as Func<GenericMethodHandlerAsyncWithTokenService<int, string>, int, CancellationToken, Task<string>>;
+            Assert.NotNull(func);
+
+            int backValue = 0;
+            var service = new GenericMethodHandlerAsyncWithTokenService<int, string>(i => { backValue = i; return i.ToString(); });
+            var resultValue = func!(service, 1, default).Result;
+
+            Assert.Equal(1, backValue);
+            Assert.Equal("1", resultValue);
+        }
 
         private class BackValueService
         {
@@ -341,6 +438,68 @@ namespace RoyalCode.PipelineFlow.Tests
             public TOut Handle(TIn input)
             {
                 return testCallback(input);
+            }
+        }
+
+        private class GenericMethodHandlerAsyncService<TIn>
+        {
+            private readonly Action<TIn> testCallback;
+
+            public GenericMethodHandlerAsyncService(Action<TIn> testCallback)
+            {
+                this.testCallback = testCallback ?? throw new ArgumentNullException(nameof(testCallback));
+            }
+
+            public Task Handle(TIn input)
+            {
+                testCallback(input);
+                return Task.CompletedTask;
+            }
+        }
+
+        private class GenericMethodHandlerAsyncService<TIn, TOut>
+        {
+            private readonly Func<TIn, TOut> testCallback;
+
+            public GenericMethodHandlerAsyncService(Func<TIn, TOut> testCallback)
+            {
+                this.testCallback = testCallback ?? throw new ArgumentNullException(nameof(testCallback));
+            }
+
+            public Task<TOut> Handle(TIn input)
+            {
+                return Task.FromResult(testCallback(input));
+            }
+        }
+
+        private class GenericMethodHandlerAsyncWithTokenService<TIn>
+        {
+            private readonly Action<TIn> testCallback;
+
+            public GenericMethodHandlerAsyncWithTokenService(Action<TIn> testCallback)
+            {
+                this.testCallback = testCallback ?? throw new ArgumentNullException(nameof(testCallback));
+            }
+
+            public Task Handle(TIn input, CancellationToken token)
+            {
+                testCallback(input);
+                return Task.CompletedTask;
+            }
+        }
+
+        private class GenericMethodHandlerAsyncWithTokenService<TIn, TOut>
+        {
+            private readonly Func<TIn, TOut> testCallback;
+
+            public GenericMethodHandlerAsyncWithTokenService(Func<TIn, TOut> testCallback)
+            {
+                this.testCallback = testCallback ?? throw new ArgumentNullException(nameof(testCallback));
+            }
+
+            public Task<TOut> Handle(TIn input, CancellationToken token)
+            {
+                return Task.FromResult(testCallback(input));
             }
         }
     }

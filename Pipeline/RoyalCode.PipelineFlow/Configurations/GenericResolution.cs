@@ -315,11 +315,12 @@ namespace RoyalCode.PipelineFlow.Configurations
             // make the delegate type
             Type delegateType = MakeDelegateType(
                 serviceType,
-                parametersTypes, 
+                parametersTypes,
                 (hasOutput || isAsync) ? executableMethod.ReturnType : null);
 
             // create the lambda for call the service method.
-            var body = Expression.Call(serviceParam, executableMethod, delegateParameters.Skip(1));
+            var methodArgs = delegateParameters.Skip(1).ToArray();
+            var body = Expression.Call(serviceParam, executableMethod, methodArgs);
             var lambda = Expression.Lambda(delegateType, body, delegateParameters);
             var methodDelegate = lambda.Compile();
 

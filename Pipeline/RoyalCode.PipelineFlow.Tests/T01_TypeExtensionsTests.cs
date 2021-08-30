@@ -8,10 +8,10 @@ using Xunit;
 
 namespace RoyalCode.PipelineFlow.Tests
 {
-    public class TypeExtensionsTests
+    public class T01_TypeExtensionsTests
     {
         [Fact]
-        public void _01_Implements_Not_Generic()
+        public void T01_Implements_Not_Generic()
         {
             var typeGeneric = typeof(IGenericResolution_Test_01);
             var typeConstructed = typeof(GenericResolution_Test_00<string>);
@@ -20,7 +20,7 @@ namespace RoyalCode.PipelineFlow.Tests
         }
 
         [Fact]
-        public void _02_Implements_With_Generics()
+        public void T02_Implements_With_Generics()
         {
             var typeGeneric = typeof(IGenericResolution_Test_02<>);
             var typeConstructed = typeof(GenericResolution_Test_00<string>);

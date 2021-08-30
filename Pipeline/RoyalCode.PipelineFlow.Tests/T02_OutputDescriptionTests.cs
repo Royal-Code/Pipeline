@@ -8,14 +8,14 @@ using Xunit;
 
 namespace RoyalCode.PipelineFlow.Tests
 {
-    public class OutputDescriptionTests
+    public class T02_OutputDescriptionTests
     {
         [Fact]
-        public void _01_Void()
+        public void T01_Void()
         {
             var method = typeof(OutputDescriptionTests_01).GetMethod("Handler");
-
-            var output = new OutputDescription(method);
+            Assert.NotNull(method);
+            var output = new OutputDescription(method!);
 
             Assert.False(output.HasOutput);
             Assert.False(output.IsAsync);
@@ -24,11 +24,11 @@ namespace RoyalCode.PipelineFlow.Tests
         }
 
         [Fact]
-        public void _02_String()
+        public void T02_String()
         {
             var method = typeof(OutputDescriptionTests_02).GetMethod("Handler");
-
-            var output = new OutputDescription(method);
+            Assert.NotNull(method);
+            var output = new OutputDescription(method!);
 
             Assert.True(output.HasOutput);
             Assert.False(output.IsAsync);
@@ -37,11 +37,11 @@ namespace RoyalCode.PipelineFlow.Tests
         }
 
         [Fact]
-        public void _03_Task()
+        public void T03_Task()
         {
             var method = typeof(OutputDescriptionTests_03).GetMethod("Handler");
-
-            var output = new OutputDescription(method);
+            Assert.NotNull(method);
+            var output = new OutputDescription(method!);
 
             Assert.False(output.HasOutput);
             Assert.True(output.IsAsync);
@@ -50,11 +50,11 @@ namespace RoyalCode.PipelineFlow.Tests
         }
 
         [Fact]
-        public void _04_String()
+        public void T04_String()
         {
             var method = typeof(OutputDescriptionTests_04).GetMethod("Handler");
-
-            var output = new OutputDescription(method);
+            Assert.NotNull(method);
+            var output = new OutputDescription(method!);
 
             Assert.True(output.HasOutput);
             Assert.True(output.IsAsync);

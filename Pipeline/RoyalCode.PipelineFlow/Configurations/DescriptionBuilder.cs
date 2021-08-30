@@ -244,18 +244,18 @@ namespace RoyalCode.PipelineFlow.Configurations
             if (handlerHasService)
             {
                 if (parms.Length is not 3 and not 4)
-                    throw new InvalidDecoratorDelegateException();
+                    throw new InvalidDecoratorDelegateException(); // TODO: Requer uma exception para bridge
 
                 // check that first param must be the service
                 if (!parms[0].ParameterType.Implements(serviceType!))
                 {
-                    throw new InvalidServiceHandlerDelegateException();
+                    throw new InvalidServiceHandlerDelegateException(); // TODO: Requer uma exception para bridge
                 }
             }
             else
             {
                 if (parms.Length is not 2 and not 3)
-                    throw new InvalidDecoratorDelegateException();
+                    throw new InvalidDecoratorDelegateException(); // TODO: Requer uma exception para bridge
             }
 
             // the input type.
@@ -338,7 +338,6 @@ namespace RoyalCode.PipelineFlow.Configurations
 
         public BridgeDescription BuildBridgeDescription()
         {
-
             if (kind is not ChainKind.Bridge)
                 throw new InvalidOperationException("The builder is not for decorator.");
 

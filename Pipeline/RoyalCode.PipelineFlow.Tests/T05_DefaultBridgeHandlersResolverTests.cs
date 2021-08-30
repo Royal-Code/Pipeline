@@ -9,10 +9,10 @@ using Xunit;
 
 namespace RoyalCode.PipelineFlow.Tests
 {
-    public class DefaultBridgeHandlersResolverTests
+    public class T05_DefaultBridgeHandlersResolverTests
     {
         [Fact]
-        public void _01_Action_Bridge()
+        public void T01_Action_Bridge()
         {
             string? backValue = null;
 
@@ -33,7 +33,7 @@ namespace RoyalCode.PipelineFlow.Tests
         }
 
         [Fact]
-        public void _02_Func_Bridge_Async()
+        public void T02_Func_Bridge_Async()
         {
             string? backValue = null;
 
@@ -54,7 +54,7 @@ namespace RoyalCode.PipelineFlow.Tests
         }
 
         [Fact]
-        public void _03_Func_Bridge_Async_WithToken()
+        public void T03_Func_Bridge_Async_WithToken()
         {
             string? backValue = null;
 
@@ -75,7 +75,7 @@ namespace RoyalCode.PipelineFlow.Tests
         }
 
         [Fact]
-        public void _04_Service_Action_Bridge()
+        public void T04_Service_Action_Bridge()
         {
             BackValueService backValue = new();
 
@@ -96,7 +96,7 @@ namespace RoyalCode.PipelineFlow.Tests
         }
 
         [Fact]
-        public void _05_Service_Bridge_Async()
+        public void T05_Service_Bridge_Async()
         {
             BackValueService backValue = new();
 
@@ -117,7 +117,7 @@ namespace RoyalCode.PipelineFlow.Tests
         }
 
         [Fact]
-        public void _05_Service_Bridge_Async_WithToken()
+        public void T06_Service_Bridge_Async_WithToken()
         {
             BackValueService backValue = new();
 
@@ -138,7 +138,7 @@ namespace RoyalCode.PipelineFlow.Tests
         }
 
         [Fact]
-        public void _07_Func_Result_Bridge()
+        public void T07_Func_Result_Bridge()
         {
             var resolver = DefaultHandlersResolver.BridgeHandler<int, OutputValue, string>((i, next) => { return next(i.ToString()); });
 
@@ -157,7 +157,7 @@ namespace RoyalCode.PipelineFlow.Tests
         }
 
         [Fact]
-        public void _08_Func_Result_Bridge_Async()
+        public void T08_Func_Result_Bridge_Async()
         {
             var resolver = DefaultHandlersResolver.BridgeHandlerAsync<int, OutputValue, string>((i, next) => { return next(i.ToString()); });
 
@@ -176,7 +176,7 @@ namespace RoyalCode.PipelineFlow.Tests
         }
 
         [Fact]
-        public void _09_Func_Result_Bridge_Async_WithToken()
+        public void T09_Func_Result_Bridge_Async_WithToken()
         {
             var resolver = DefaultHandlersResolver.BridgeHandlerAsync<int, OutputValue, string>((i, next, token) => { return next(i.ToString()); });
 
@@ -195,7 +195,7 @@ namespace RoyalCode.PipelineFlow.Tests
         }
 
         [Fact]
-        public void _10_Service_Result_Bridge()
+        public void T10_Service_Result_Bridge()
         {
             var resolver = DefaultHandlersResolver.BridgeHandler<BackValueService, int, OutputValue, string>((s, i, next) => { return next((i + s.InputValue).ToString()); });
 
@@ -214,7 +214,7 @@ namespace RoyalCode.PipelineFlow.Tests
         }
 
         [Fact]
-        public void _11_Service_Result_Bridge_Async()
+        public void T11_Service_Result_Bridge_Async()
         {
             var resolver = DefaultHandlersResolver.BridgeHandlerAsync<BackValueService, int, OutputValue, string>((s, i, next) => { return next((i + s.InputValue).ToString()); });
 
@@ -233,7 +233,7 @@ namespace RoyalCode.PipelineFlow.Tests
         }
 
         [Fact]
-        public void _12_Service_Result_Bridge_Async_WithToken()
+        public void T12_Service_Result_Bridge_Async_WithToken()
         {
             var resolver = DefaultHandlersResolver.BridgeHandlerAsync<BackValueService, int, OutputValue, string>((s, i, next, token) => { return next((i + s.InputValue).ToString()); });
 
@@ -252,7 +252,7 @@ namespace RoyalCode.PipelineFlow.Tests
         }
 
         [Fact]
-        public void _13_Func_Result_NextResult_Bridge()
+        public void T13_Func_Result_NextResult_Bridge()
         {
             var resolver = DefaultHandlersResolver.BridgeHandler<int, string, string, OutputValue>((i, next) => { return next(i.ToString()).Value; });
 
@@ -271,7 +271,7 @@ namespace RoyalCode.PipelineFlow.Tests
         }
 
         [Fact]
-        public void _14_Func_Result_NextResult_Bridge_Async()
+        public void T14_Func_Result_NextResult_Bridge_Async()
         {
             var resolver = DefaultHandlersResolver.BridgeHandlerAsync<int, string, string, OutputValue>((i, next) => { return Task.FromResult(next(i.ToString()).Result.Value); });
 
@@ -290,7 +290,7 @@ namespace RoyalCode.PipelineFlow.Tests
         }
 
         [Fact]
-        public void _15_Func_Result_NextResult_Bridge_Async_WithResult()
+        public void T15_Func_Result_NextResult_Bridge_Async_WithResult()
         {
             var resolver = DefaultHandlersResolver.BridgeHandlerAsync<int, string, string, OutputValue>((i, next, token) => { return Task.FromResult(next(i.ToString()).Result.Value); });
 
@@ -309,7 +309,7 @@ namespace RoyalCode.PipelineFlow.Tests
         }
 
         [Fact]
-        public void _16_Service_Result_NextResult_Bridge()
+        public void T16_Service_Result_NextResult_Bridge()
         {
             var resolver = DefaultHandlersResolver.BridgeHandler<BackValueService, int, string, string, OutputValue>((s, i, next) => { return next((s.InputValue + i).ToString()).Value; });
 
@@ -328,7 +328,7 @@ namespace RoyalCode.PipelineFlow.Tests
         }
 
         [Fact]
-        public void _17_Service_Result_NextResult_BridgeAsync()
+        public void T17_Service_Result_NextResult_BridgeAsync()
         {
             var resolver = DefaultHandlersResolver.BridgeHandlerAsync<BackValueService, int, string, string, OutputValue>((s, i, next) => { return Task.FromResult(next((s.InputValue + i).ToString()).Result.Value); });
 
@@ -347,7 +347,7 @@ namespace RoyalCode.PipelineFlow.Tests
         }
 
         [Fact]
-        public void _18_Service_Result_NextResult_BridgeAsync_WithToken()
+        public void T18_Service_Result_NextResult_BridgeAsync_WithToken()
         {
             var resolver = DefaultHandlersResolver.BridgeHandlerAsync<BackValueService, int, string, string, OutputValue>((s, i, next, token) => { return Task.FromResult(next((s.InputValue + i).ToString()).Result.Value); });
 
@@ -366,7 +366,7 @@ namespace RoyalCode.PipelineFlow.Tests
         }
 
         [Fact]
-        public void _19_Method_Bridge()
+        public void T19_Method_Bridge()
         {
             var type = typeof(GenericMethodBridgeHandlerService<>);
             var method = type.GetMethod("Handle");
@@ -390,7 +390,7 @@ namespace RoyalCode.PipelineFlow.Tests
         }
 
         [Fact]
-        public void _20_Method_Result_Bridge()
+        public void T20_Method_Result_Bridge()
         {
             var type = typeof(GenericMethodBridgeHandlerService<,>);
             var method = type.GetMethod("Handle");
@@ -411,6 +411,171 @@ namespace RoyalCode.PipelineFlow.Tests
             function!(service, 1, s => new OutputValue(s));
 
             Assert.Equal("1", backValue);
+        }
+
+        [Fact]
+        public void T21_Method_Result_NextResult_Bridge()
+        {
+            var type = typeof(GenericMethodBridgeHandlerServiceWithNextOutput<,>);
+            var method = type.GetMethod("Handle");
+            Assert.NotNull(method);
+            var resolver = new MethodBridgeHandlerResolver(method!);
+
+            var description = resolver.TryResolve(typeof(int), typeof(OutputValue));
+            Assert.NotNull(description);
+
+            var @delegate = description!.HandlerDelegateProvider(typeof(int), typeof(OutputValue));
+            Assert.NotNull(@delegate);
+
+            var function = @delegate as Func<GenericMethodBridgeHandlerServiceWithNextOutput<int, OutputValue>, int, Func<string, string>, OutputValue>;
+            Assert.NotNull(function);
+
+            var service = new GenericMethodBridgeHandlerServiceWithNextOutput<int, OutputValue>(i => i.ToString(), s => new OutputValue(s));
+            var backValue = function!(service, 1, s => s + "1");
+
+            Assert.Equal("11", backValue.Value);
+        }
+
+        [Fact]
+        public void T22_Method_Bridge_Async()
+        {
+            var type = typeof(GenericMethodBridgeHandlerAsyncService<>);
+            var method = type.GetMethod("Handle");
+            Assert.NotNull(method);
+            var resolver = new MethodBridgeHandlerResolver(method!);
+
+            var description = resolver.TryResolve(typeof(int));
+            Assert.NotNull(description);
+
+            var @delegate = description!.HandlerDelegateProvider(typeof(int), typeof(void));
+            Assert.NotNull(@delegate);
+
+            var funtion = @delegate as Func<GenericMethodBridgeHandlerAsyncService<int>, int, Action<string>, Task>;
+            Assert.NotNull(funtion);
+
+            string? backValue = null;
+            var service = new GenericMethodBridgeHandlerAsyncService<int>(i => i.ToString(), s => backValue = s);
+            funtion!(service, 1, s => { });
+
+            Assert.Equal("1", backValue);
+        }
+
+        [Fact]
+        public void T23_Method_Result_Bridge_Async()
+        {
+            var type = typeof(GenericMethodBridgeHandlerAsyncService<,>);
+            var method = type.GetMethod("Handle");
+            Assert.NotNull(method);
+            var resolver = new MethodBridgeHandlerResolver(method!);
+
+            var description = resolver.TryResolve(typeof(int), typeof(OutputValue));
+            Assert.NotNull(description);
+
+            var @delegate = description!.HandlerDelegateProvider(typeof(int), typeof(OutputValue));
+            Assert.NotNull(@delegate);
+
+            var function = @delegate as Func<GenericMethodBridgeHandlerAsyncService<int, OutputValue>, int, Func<string, Task<OutputValue>>, Task<OutputValue>>;
+            Assert.NotNull(function);
+
+            string? backValue = null;
+            var service = new GenericMethodBridgeHandlerAsyncService<int, OutputValue>(i => i.ToString(), s => backValue = s.Value);
+            function!(service, 1, s => Task.FromResult(new OutputValue(s)));
+
+            Assert.Equal("1", backValue);
+        }
+
+        [Fact]
+        public void T24_Method_Result_NextResult_Bridge_Async()
+        {
+            var type = typeof(GenericMethodBridgeHandlerAsyncServiceWithNextOutput<,>);
+            var method = type.GetMethod("Handle");
+            Assert.NotNull(method);
+            var resolver = new MethodBridgeHandlerResolver(method!);
+
+            var description = resolver.TryResolve(typeof(int), typeof(OutputValue));
+            Assert.NotNull(description);
+
+            var @delegate = description!.HandlerDelegateProvider(typeof(int), typeof(OutputValue));
+            Assert.NotNull(@delegate);
+
+            var function = @delegate as Func<GenericMethodBridgeHandlerAsyncServiceWithNextOutput<int, OutputValue>, int, Func<string, Task<string>>, Task<OutputValue>>;
+            Assert.NotNull(function);
+
+            var service = new GenericMethodBridgeHandlerAsyncServiceWithNextOutput<int, OutputValue>(i => i.ToString(), s => new OutputValue(s));
+            var backValue = function!(service, 1, s => Task.FromResult(s + "1")).Result;
+
+            Assert.Equal("11", backValue.Value);
+        }
+
+        [Fact]
+        public void T25_Method_Bridge_Async_WithToken()
+        {
+            var type = typeof(GenericMethodBridgeHandlerAsyncWithTokenService<>);
+            var method = type.GetMethod("Handle");
+            Assert.NotNull(method);
+            var resolver = new MethodBridgeHandlerResolver(method!);
+
+            var description = resolver.TryResolve(typeof(int));
+            Assert.NotNull(description);
+
+            var @delegate = description!.HandlerDelegateProvider(typeof(int), typeof(void));
+            Assert.NotNull(@delegate);
+
+            var funtion = @delegate as Func<GenericMethodBridgeHandlerAsyncWithTokenService<int>, int, Action<string>, CancellationToken, Task>;
+            Assert.NotNull(funtion);
+
+            string? backValue = null;
+            var service = new GenericMethodBridgeHandlerAsyncWithTokenService<int>(i => i.ToString(), s => backValue = s);
+            funtion!(service, 1, s => { }, default);
+
+            Assert.Equal("1", backValue);
+        }
+
+        [Fact]
+        public void T26_Method_Result_Bridge_Async_WithToken()
+        {
+            var type = typeof(GenericMethodBridgeHandlerAsyncWithTokenService<,>);
+            var method = type.GetMethod("Handle");
+            Assert.NotNull(method);
+            var resolver = new MethodBridgeHandlerResolver(method!);
+
+            var description = resolver.TryResolve(typeof(int), typeof(OutputValue));
+            Assert.NotNull(description);
+
+            var @delegate = description!.HandlerDelegateProvider(typeof(int), typeof(OutputValue));
+            Assert.NotNull(@delegate);
+
+            var function = @delegate as Func<GenericMethodBridgeHandlerAsyncWithTokenService<int, OutputValue>, int, Func<string, Task<OutputValue>>, CancellationToken, Task<OutputValue>>;
+            Assert.NotNull(function);
+
+            string? backValue = null;
+            var service = new GenericMethodBridgeHandlerAsyncWithTokenService<int, OutputValue>(i => i.ToString(), s => backValue = s.Value);
+            function!(service, 1, s => Task.FromResult(new OutputValue(s)), default);
+
+            Assert.Equal("1", backValue);
+        }
+
+        [Fact]
+        public void T27_Method_Result_NextResult_Bridge_Async_WithToken()
+        {
+            var type = typeof(GenericMethodBridgeHandlerAsyncWithTokenServiceWithNextOutput<,>);
+            var method = type.GetMethod("Handle");
+            Assert.NotNull(method);
+            var resolver = new MethodBridgeHandlerResolver(method!);
+
+            var description = resolver.TryResolve(typeof(int), typeof(OutputValue));
+            Assert.NotNull(description);
+
+            var @delegate = description!.HandlerDelegateProvider(typeof(int), typeof(OutputValue));
+            Assert.NotNull(@delegate);
+
+            var function = @delegate as Func<GenericMethodBridgeHandlerAsyncWithTokenServiceWithNextOutput<int, OutputValue>, int, Func<string, Task<string>>, CancellationToken, Task<OutputValue>>;
+            Assert.NotNull(function);
+
+            var service = new GenericMethodBridgeHandlerAsyncWithTokenServiceWithNextOutput<int, OutputValue>(i => i.ToString(), s => new OutputValue(s));
+            var backValue = function!(service, 1, s => Task.FromResult(s + "1"), default).Result;
+
+            Assert.Equal("11", backValue.Value);
         }
 
         private class BackValueService
@@ -491,6 +656,126 @@ namespace RoyalCode.PipelineFlow.Tests
                 var nextResult = next(nextInput);
                 var finalResult = outputAdapter(nextResult);
                 return finalResult;
+            }
+        }
+
+        private class GenericMethodBridgeHandlerAsyncService<TIn>
+        {
+            private readonly Func<TIn, string> inputAdapter;
+            private readonly Action<string> testCallback;
+
+            public GenericMethodBridgeHandlerAsyncService(Func<TIn, string> inputAdapter, Action<string> testCallback)
+            {
+                this.inputAdapter = inputAdapter;
+                this.testCallback = testCallback;
+            }
+
+            public Task Handle(TIn input, Action<string> next)
+            {
+                var nextInput = inputAdapter(input);
+                next(nextInput);
+                testCallback(nextInput);
+                return Task.CompletedTask;
+            }
+        }
+
+        private class GenericMethodBridgeHandlerAsyncService<TIn, TOut>
+        {
+            private readonly Func<TIn, string> inputAdapter;
+            private readonly Action<TOut> testCallback;
+
+            public GenericMethodBridgeHandlerAsyncService(Func<TIn, string> inputAdapter, Action<TOut> testCallback)
+            {
+                this.inputAdapter = inputAdapter;
+                this.testCallback = testCallback;
+            }
+
+            public Task<TOut> Handle(TIn input, Func<string, Task<TOut>> next)
+            {
+                var nextInput = inputAdapter(input);
+                var result = next(nextInput).Result;
+                testCallback(result);
+                return Task.FromResult(result);
+            }
+        }
+
+        private class GenericMethodBridgeHandlerAsyncServiceWithNextOutput<TIn, TOut>
+        {
+            private readonly Func<TIn, string> inputAdapter;
+            private readonly Func<string, TOut> outputAdapter;
+
+            public GenericMethodBridgeHandlerAsyncServiceWithNextOutput(Func<TIn, string> inputAdapter, Func<string, TOut> outputAdapter)
+            {
+                this.inputAdapter = inputAdapter;
+                this.outputAdapter = outputAdapter;
+            }
+
+            public Task<TOut> Handle(TIn input, Func<string, Task<string>> next)
+            {
+                var nextInput = inputAdapter(input);
+                var nextResult = next(nextInput).Result;
+                var finalResult = outputAdapter(nextResult);
+                return Task.FromResult(finalResult);
+            }
+        }
+
+        private class GenericMethodBridgeHandlerAsyncWithTokenService<TIn>
+        {
+            private readonly Func<TIn, string> inputAdapter;
+            private readonly Action<string> testCallback;
+
+            public GenericMethodBridgeHandlerAsyncWithTokenService(Func<TIn, string> inputAdapter, Action<string> testCallback)
+            {
+                this.inputAdapter = inputAdapter;
+                this.testCallback = testCallback;
+            }
+
+            public Task Handle(TIn input, Action<string> next, CancellationToken cancellationToken)
+            {
+                var nextInput = inputAdapter(input);
+                next(nextInput);
+                testCallback(nextInput);
+                return Task.CompletedTask;
+            }
+        }
+
+        private class GenericMethodBridgeHandlerAsyncWithTokenService<TIn, TOut>
+        {
+            private readonly Func<TIn, string> inputAdapter;
+            private readonly Action<TOut> testCallback;
+
+            public GenericMethodBridgeHandlerAsyncWithTokenService(Func<TIn, string> inputAdapter, Action<TOut> testCallback)
+            {
+                this.inputAdapter = inputAdapter;
+                this.testCallback = testCallback;
+            }
+
+            public Task<TOut> Handle(TIn input, Func<string, Task<TOut>> next, CancellationToken cancellationToken)
+            {
+                var nextInput = inputAdapter(input);
+                var result = next(nextInput).Result;
+                testCallback(result);
+                return Task.FromResult(result);
+            }
+        }
+
+        private class GenericMethodBridgeHandlerAsyncWithTokenServiceWithNextOutput<TIn, TOut>
+        {
+            private readonly Func<TIn, string> inputAdapter;
+            private readonly Func<string, TOut> outputAdapter;
+
+            public GenericMethodBridgeHandlerAsyncWithTokenServiceWithNextOutput(Func<TIn, string> inputAdapter, Func<string, TOut> outputAdapter)
+            {
+                this.inputAdapter = inputAdapter;
+                this.outputAdapter = outputAdapter;
+            }
+
+            public Task<TOut> Handle(TIn input, Func<string, Task<string>> next, CancellationToken cancellationToken)
+            {
+                var nextInput = inputAdapter(input);
+                var nextResult = next(nextInput).Result;
+                var finalResult = outputAdapter(nextResult);
+                return Task.FromResult(finalResult);
             }
         }
     }
