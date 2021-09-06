@@ -12,7 +12,7 @@ namespace RoyalCode.PipelineFlow.Tests
     public class T05_DefaultBridgeHandlersResolverTests
     {
         [Fact]
-        public void T01_Action_Bridge()
+        public void T01_In_Bridge()
         {
             string? backValue = null;
 
@@ -33,7 +33,7 @@ namespace RoyalCode.PipelineFlow.Tests
         }
 
         [Fact]
-        public void T02_Func_Bridge_Async()
+        public void T02_In_Bridge_Async()
         {
             string? backValue = null;
 
@@ -54,7 +54,7 @@ namespace RoyalCode.PipelineFlow.Tests
         }
 
         [Fact]
-        public void T03_Func_Bridge_Async_WithToken()
+        public void T03_In_Bridge_Async_WithToken()
         {
             string? backValue = null;
 
@@ -75,7 +75,7 @@ namespace RoyalCode.PipelineFlow.Tests
         }
 
         [Fact]
-        public void T04_Service_Action_Bridge()
+        public void T04_Service_In_Bridge()
         {
             BackValueService backValue = new();
 
@@ -96,7 +96,7 @@ namespace RoyalCode.PipelineFlow.Tests
         }
 
         [Fact]
-        public void T05_Service_Bridge_Async()
+        public void T05_Service_In_Bridge_Async()
         {
             BackValueService backValue = new();
 
@@ -117,7 +117,7 @@ namespace RoyalCode.PipelineFlow.Tests
         }
 
         [Fact]
-        public void T06_Service_Bridge_Async_WithToken()
+        public void T06_Service_In_Bridge_Async_WithToken()
         {
             BackValueService backValue = new();
 
@@ -138,7 +138,7 @@ namespace RoyalCode.PipelineFlow.Tests
         }
 
         [Fact]
-        public void T07_Func_Result_Bridge()
+        public void T07_In_Out_Bridge()
         {
             var resolver = DefaultHandlersResolver.BridgeHandler<int, OutputValue, string>((i, next) => { return next(i.ToString()); });
 
@@ -157,7 +157,7 @@ namespace RoyalCode.PipelineFlow.Tests
         }
 
         [Fact]
-        public void T08_Func_Result_Bridge_Async()
+        public void T08_In_Out_Bridge_Async()
         {
             var resolver = DefaultHandlersResolver.BridgeHandlerAsync<int, OutputValue, string>((i, next) => { return next(i.ToString()); });
 
@@ -176,7 +176,7 @@ namespace RoyalCode.PipelineFlow.Tests
         }
 
         [Fact]
-        public void T09_Func_Result_Bridge_Async_WithToken()
+        public void T09_In_Out_Bridge_Async_WithToken()
         {
             var resolver = DefaultHandlersResolver.BridgeHandlerAsync<int, OutputValue, string>((i, next, token) => { return next(i.ToString()); });
 
@@ -195,7 +195,7 @@ namespace RoyalCode.PipelineFlow.Tests
         }
 
         [Fact]
-        public void T10_Service_Result_Bridge()
+        public void T10_Service_In_Out_Bridge()
         {
             var resolver = DefaultHandlersResolver.BridgeHandler<BackValueService, int, OutputValue, string>((s, i, next) => { return next((i + s.InputValue).ToString()); });
 
@@ -214,7 +214,7 @@ namespace RoyalCode.PipelineFlow.Tests
         }
 
         [Fact]
-        public void T11_Service_Result_Bridge_Async()
+        public void T11_Service_In_Out_Bridge_Async()
         {
             var resolver = DefaultHandlersResolver.BridgeHandlerAsync<BackValueService, int, OutputValue, string>((s, i, next) => { return next((i + s.InputValue).ToString()); });
 
@@ -233,7 +233,7 @@ namespace RoyalCode.PipelineFlow.Tests
         }
 
         [Fact]
-        public void T12_Service_Result_Bridge_Async_WithToken()
+        public void T12_Service_In_Out_Bridge_Async_WithToken()
         {
             var resolver = DefaultHandlersResolver.BridgeHandlerAsync<BackValueService, int, OutputValue, string>((s, i, next, token) => { return next((i + s.InputValue).ToString()); });
 
@@ -252,7 +252,7 @@ namespace RoyalCode.PipelineFlow.Tests
         }
 
         [Fact]
-        public void T13_Func_Result_NextResult_Bridge()
+        public void T13_In_Out_NextOut_Bridge()
         {
             var resolver = DefaultHandlersResolver.BridgeHandler<int, string, string, OutputValue>((i, next) => { return next(i.ToString()).Value; });
 
@@ -271,7 +271,7 @@ namespace RoyalCode.PipelineFlow.Tests
         }
 
         [Fact]
-        public void T14_Func_Result_NextResult_Bridge_Async()
+        public void T14_In_Out_NextOut_Bridge_Async()
         {
             var resolver = DefaultHandlersResolver.BridgeHandlerAsync<int, string, string, OutputValue>((i, next) => { return Task.FromResult(next(i.ToString()).Result.Value); });
 
@@ -290,7 +290,7 @@ namespace RoyalCode.PipelineFlow.Tests
         }
 
         [Fact]
-        public void T15_Func_Result_NextResult_Bridge_Async_WithResult()
+        public void T15_In_Out_NextOut_Bridge_Async_WithResult()
         {
             var resolver = DefaultHandlersResolver.BridgeHandlerAsync<int, string, string, OutputValue>((i, next, token) => { return Task.FromResult(next(i.ToString()).Result.Value); });
 
@@ -309,7 +309,7 @@ namespace RoyalCode.PipelineFlow.Tests
         }
 
         [Fact]
-        public void T16_Service_Result_NextResult_Bridge()
+        public void T16_Service_In_Out_NextOut_Bridge()
         {
             var resolver = DefaultHandlersResolver.BridgeHandler<BackValueService, int, string, string, OutputValue>((s, i, next) => { return next((s.InputValue + i).ToString()).Value; });
 
@@ -328,7 +328,7 @@ namespace RoyalCode.PipelineFlow.Tests
         }
 
         [Fact]
-        public void T17_Service_Result_NextResult_BridgeAsync()
+        public void T17_Service_In_Out_NextOut_BridgeAsync()
         {
             var resolver = DefaultHandlersResolver.BridgeHandlerAsync<BackValueService, int, string, string, OutputValue>((s, i, next) => { return Task.FromResult(next((s.InputValue + i).ToString()).Result.Value); });
 
@@ -347,7 +347,7 @@ namespace RoyalCode.PipelineFlow.Tests
         }
 
         [Fact]
-        public void T18_Service_Result_NextResult_BridgeAsync_WithToken()
+        public void T18_Service_In_Out_NextOut_BridgeAsync_WithToken()
         {
             var resolver = DefaultHandlersResolver.BridgeHandlerAsync<BackValueService, int, string, string, OutputValue>((s, i, next, token) => { return Task.FromResult(next((s.InputValue + i).ToString()).Result.Value); });
 
@@ -366,7 +366,7 @@ namespace RoyalCode.PipelineFlow.Tests
         }
 
         [Fact]
-        public void T19_Method_Bridge()
+        public void T19_In_Method_Bridge()
         {
             var type = typeof(GenericMethodBridgeHandlerService<>);
             var method = type.GetMethod("Handle");
@@ -390,7 +390,7 @@ namespace RoyalCode.PipelineFlow.Tests
         }
 
         [Fact]
-        public void T20_Method_Result_Bridge()
+        public void T20_In_Out_Method_Bridge()
         {
             var type = typeof(GenericMethodBridgeHandlerService<,>);
             var method = type.GetMethod("Handle");
@@ -414,7 +414,7 @@ namespace RoyalCode.PipelineFlow.Tests
         }
 
         [Fact]
-        public void T21_Method_Result_NextResult_Bridge()
+        public void T21_In_Out_NextOut_Method_Bridge()
         {
             var type = typeof(GenericMethodBridgeHandlerServiceWithNextOutput<,>);
             var method = type.GetMethod("Handle");
@@ -437,7 +437,7 @@ namespace RoyalCode.PipelineFlow.Tests
         }
 
         [Fact]
-        public void T22_Method_Bridge_Async()
+        public void T22_In_Method_Bridge_Async()
         {
             var type = typeof(GenericMethodBridgeHandlerAsyncService<>);
             var method = type.GetMethod("Handle");
@@ -461,7 +461,7 @@ namespace RoyalCode.PipelineFlow.Tests
         }
 
         [Fact]
-        public void T23_Method_Result_Bridge_Async()
+        public void T23_In_Out_Method_Bridge_Async()
         {
             var type = typeof(GenericMethodBridgeHandlerAsyncService<,>);
             var method = type.GetMethod("Handle");
@@ -485,7 +485,7 @@ namespace RoyalCode.PipelineFlow.Tests
         }
 
         [Fact]
-        public void T24_Method_Result_NextResult_Bridge_Async()
+        public void T24_In_Out_NextOut_Method_Bridge_Async()
         {
             var type = typeof(GenericMethodBridgeHandlerAsyncServiceWithNextOutput<,>);
             var method = type.GetMethod("Handle");
@@ -508,7 +508,7 @@ namespace RoyalCode.PipelineFlow.Tests
         }
 
         [Fact]
-        public void T25_Method_Bridge_Async_WithToken()
+        public void T25_In_Method_Bridge_Async_WithToken()
         {
             var type = typeof(GenericMethodBridgeHandlerAsyncWithTokenService<>);
             var method = type.GetMethod("Handle");
@@ -532,7 +532,7 @@ namespace RoyalCode.PipelineFlow.Tests
         }
 
         [Fact]
-        public void T26_Method_Result_Bridge_Async_WithToken()
+        public void T26_In_Out_Method_Bridge_Async_WithToken()
         {
             var type = typeof(GenericMethodBridgeHandlerAsyncWithTokenService<,>);
             var method = type.GetMethod("Handle");
@@ -556,7 +556,7 @@ namespace RoyalCode.PipelineFlow.Tests
         }
 
         [Fact]
-        public void T27_Method_Result_NextResult_Bridge_Async_WithToken()
+        public void T27_In_Out_NextOut_Method_Bridge_Async_WithToken()
         {
             var type = typeof(GenericMethodBridgeHandlerAsyncWithTokenServiceWithNextOutput<,>);
             var method = type.GetMethod("Handle");

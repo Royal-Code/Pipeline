@@ -11,23 +11,20 @@ namespace RoyalCode.PipelineFlow.Configurations
 
         public bool Match(Type inputType)
         {
-            if (HasOutput)
-                return false;
-
             return InputType.IsGenericType
-                ? inputType.Implements(InputType.GetGenericTypeDefinition()) && !HasOutput
-                : inputType.Implements(InputType) && !HasOutput;
+                ? InputType.GetGenericTypeDefinition() == inputType.GetGenericTypeDefinition() && !HasOutput
+                : InputType.IsGenericParameter || InputType == inputType && !HasOutput;
         }
 
         public bool Match(Type inputType, Type outputType)
         {
             return
                 (InputType.IsGenericType
-                    ? inputType.Implements(InputType.GetGenericTypeDefinition())
-                    : inputType.Implements(InputType))
+                    ? InputType.GetGenericTypeDefinition() == inputType.GetGenericTypeDefinition()
+                    : InputType.IsGenericParameter || InputType == inputType)
                 && (OutputType.IsGenericType
-                    ? outputType.Implements(OutputType.GetGenericTypeDefinition())
-                    : outputType.Implements(OutputType));
+                    ? OutputType.GetGenericTypeDefinition() == outputType.GetGenericTypeDefinition()
+                    : OutputType.IsGenericParameter || OutputType == outputType);
         }
     }
 }

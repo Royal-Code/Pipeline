@@ -532,13 +532,13 @@ namespace RoyalCode.PipelineFlow.Configurations
 
         public static IPipelineBuilder<TInput> Decorate<TInput>(this IPipelineBuilder<TInput> builder, Func<TInput, Func<Task>, Task> handler)
         {
-            builder.AddDecoratorResolver(DefaultDecoratorsResolver.Decorate(handler));
+            builder.AddDecoratorResolver(DefaultDecoratorsResolver.DecorateAsync(handler));
             return builder;
         }
 
         public static IPipelineBuilder<TInput> Decorate<TInput>(this IPipelineBuilder<TInput> builder, Func<TInput, Func<Task>, CancellationToken, Task> handler)
         {
-            builder.AddDecoratorResolver(DefaultDecoratorsResolver.Decorate(handler));
+            builder.AddDecoratorResolver(DefaultDecoratorsResolver.DecorateAsync(handler));
             return builder;
         }
 
@@ -552,13 +552,13 @@ namespace RoyalCode.PipelineFlow.Configurations
 
         public static IPipelineBuilder<TInput> Decorate<TService, TInput>(this IPipelineBuilderWithService<TService, TInput> builder, Func<TService, TInput, Func<Task>, Task> handler)
         {
-            builder.AddDecoratorResolver(DefaultDecoratorsResolver.Decorate(handler));
+            builder.AddDecoratorResolver(DefaultDecoratorsResolver.DecorateAsync(handler));
             return builder.Configure<TInput>();
         }
 
         public static IPipelineBuilder<TInput> Decorate<TService, TInput>(this IPipelineBuilderWithService<TService, TInput> builder, Func<TService, TInput, Func<Task>, CancellationToken, Task> handler)
         {
-            builder.AddDecoratorResolver(DefaultDecoratorsResolver.Decorate(handler));
+            builder.AddDecoratorResolver(DefaultDecoratorsResolver.DecorateAsync(handler));
             return builder.Configure<TInput>();
         }
 
@@ -574,13 +574,13 @@ namespace RoyalCode.PipelineFlow.Configurations
 
         public static IPipelineBuilder<TInput, TOutput> Decorate<TInput, TOutput>(this IPipelineBuilder<TInput, TOutput> builder, Func<TInput, Func<Task<TOutput>>, Task<TOutput>> handler)
         {
-            builder.AddDecoratorResolver(DefaultDecoratorsResolver.Decorate(handler));
+            builder.AddDecoratorResolver(DefaultDecoratorsResolver.DecorateAsync(handler));
             return builder;
         }
 
         public static IPipelineBuilder<TInput, TOutput> Decorate<TInput, TOutput>(this IPipelineBuilder<TInput, TOutput> builder, Func<TInput, Func<Task<TOutput>>, CancellationToken, Task<TOutput>> handler)
         {
-            builder.AddDecoratorResolver(DefaultDecoratorsResolver.Decorate(handler));
+            builder.AddDecoratorResolver(DefaultDecoratorsResolver.DecorateAsync(handler));
             return builder;
         }
 
@@ -594,13 +594,13 @@ namespace RoyalCode.PipelineFlow.Configurations
 
         public static IPipelineBuilder<TInput, TOutput> Decorate<TService, TInput, TOutput>(this IPipelineBuilderWithService<TService, TInput, TOutput> builder, Func<TService, TInput, Func<Task<TOutput>>, Task<TOutput>> handler)
         {
-            builder.AddDecoratorResolver(DefaultDecoratorsResolver.Decorate(handler));
+            builder.AddDecoratorResolver(DefaultDecoratorsResolver.DecorateAsync(handler));
             return builder.Configure<TInput, TOutput>();
         }
 
         public static IPipelineBuilder<TInput, TOutput> Decorate<TService, TInput, TOutput>(this IPipelineBuilderWithService<TService, TInput, TOutput> builder, Func<TService, TInput, Func<Task<TOutput>>, CancellationToken, Task<TOutput>> handler)
         {
-            builder.AddDecoratorResolver(DefaultDecoratorsResolver.Decorate(handler));
+            builder.AddDecoratorResolver(DefaultDecoratorsResolver.DecorateAsync(handler));
             return builder.Configure<TInput, TOutput>();
         }
 

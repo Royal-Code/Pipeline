@@ -9,7 +9,7 @@ namespace RoyalCode.PipelineFlow.Tests
     public class T04_DefaultHandlersResolverTests
     {
         [Fact]
-        public void T01_Action_Handler()
+        public void T01_In_Handler()
         {
             int backValue = 0;
 
@@ -29,7 +29,7 @@ namespace RoyalCode.PipelineFlow.Tests
         }
 
         [Fact]
-        public void T02_Func_Handler_Async()
+        public void T02_In_Handler_Async()
         {
             int backValue = 0;
 
@@ -40,16 +40,16 @@ namespace RoyalCode.PipelineFlow.Tests
             var @delegate = description!.HandlerDelegateProvider(typeof(int), typeof(void));
             Assert.NotNull(@delegate);
 
-            var action = @delegate as Func<int, Task>;
-            Assert.NotNull(action);
+            var funtion = @delegate as Func<int, Task>;
+            Assert.NotNull(funtion);
 
-            action!(1);
+            funtion!(1);
 
             Assert.Equal(1, backValue);
         }
 
         [Fact]
-        public void T03_Func_Handler_Async_WithToken()
+        public void T03_In_Handler_Async_WithToken()
         {
             int backValue = 0;
 
@@ -60,16 +60,16 @@ namespace RoyalCode.PipelineFlow.Tests
             var @delegate = description!.HandlerDelegateProvider(typeof(int), typeof(void));
             Assert.NotNull(@delegate);
 
-            var action = @delegate as Func<int, CancellationToken, Task>;
-            Assert.NotNull(action);
+            var function = @delegate as Func<int, CancellationToken, Task>;
+            Assert.NotNull(function);
 
-            action!(1, default);
+            function!(1, default);
 
             Assert.Equal(1, backValue);
         }
 
         [Fact]
-        public void T04_Service_Action_Handler()
+        public void T04_Service_In_Handler()
         {
             BackValueService backValueService = new();
 
@@ -89,7 +89,7 @@ namespace RoyalCode.PipelineFlow.Tests
         }
 
         [Fact]
-        public void T05_Service_Func_Handler_Async()
+        public void T05_Service_In_Handler_Async()
         {
             BackValueService backValueService = new();
 
@@ -100,16 +100,16 @@ namespace RoyalCode.PipelineFlow.Tests
             var @delegate = description!.HandlerDelegateProvider(typeof(int), typeof(void));
             Assert.NotNull(@delegate);
 
-            var action = @delegate as Func<BackValueService, int, Task>;
-            Assert.NotNull(action);
+            var function = @delegate as Func<BackValueService, int, Task>;
+            Assert.NotNull(function);
 
-            action!(backValueService, 1);
+            function!(backValueService, 1);
 
             Assert.Equal(1, backValueService.Value);
         }
 
         [Fact]
-        public void T06_Service_Func_Handler_Async_WithToken()
+        public void T06_Service_In_Handler_Async_WithToken()
         {
             BackValueService backValueService = new();
 
@@ -120,16 +120,16 @@ namespace RoyalCode.PipelineFlow.Tests
             var @delegate = description!.HandlerDelegateProvider(typeof(int), typeof(void));
             Assert.NotNull(@delegate);
 
-            var action = @delegate as Func<BackValueService, int, CancellationToken, Task>;
-            Assert.NotNull(action);
+            var function = @delegate as Func<BackValueService, int, CancellationToken, Task>;
+            Assert.NotNull(function);
 
-            action!(backValueService, 1, default);
+            function!(backValueService, 1, default);
 
             Assert.Equal(1, backValueService.Value);
         }
 
         [Fact]
-        public void T07_Func_Result_Handler()
+        public void T07_In_Out_Handler()
         {
             int backValue = 0;
 
@@ -150,7 +150,7 @@ namespace RoyalCode.PipelineFlow.Tests
         }
 
         [Fact]
-        public void T08_Func_Result_Handler_Async()
+        public void T08_In_Out_Handler_Async()
         {
             int backValue = 0;
 
@@ -171,7 +171,7 @@ namespace RoyalCode.PipelineFlow.Tests
         }
 
         [Fact]
-        public void T09_Func_Result_Handler_Async_WithToken()
+        public void T09_In_Out_Handler_Async_WithToken()
         {
             int backValue = 0;
 
@@ -192,7 +192,7 @@ namespace RoyalCode.PipelineFlow.Tests
         }
 
         [Fact]
-        public void T10_Service_Func_Result_Handler()
+        public void T10_Service_In_Out_Handler()
         {
             BackValueService backValueService = new();
 
@@ -213,7 +213,7 @@ namespace RoyalCode.PipelineFlow.Tests
         }
 
         [Fact]
-        public void T11_Service_Func_Result_Handler_Async()
+        public void T11_Service_In_Out_Handler_Async()
         {
             BackValueService backValueService = new();
 
@@ -234,7 +234,7 @@ namespace RoyalCode.PipelineFlow.Tests
         }
 
         [Fact]
-        public void T12_Service_Func_Result_Handler_Async_WithToken()
+        public void T12_Service_In_Out_Handler_Async_WithToken()
         {
             BackValueService backValueService = new();
 
@@ -255,7 +255,7 @@ namespace RoyalCode.PipelineFlow.Tests
         }
 
         [Fact]
-        public void T13_Method_Handler()
+        public void T13_In_Method_Handler()
         {
             var type = typeof(GenericMethodHandlerService<>);
             var method = type.GetMethod("Handle");
@@ -279,7 +279,7 @@ namespace RoyalCode.PipelineFlow.Tests
         }
 
         [Fact]
-        public void T14_Method_Result_Handler()
+        public void T14_In_Out_Method_Handler()
         {
             var type = typeof(GenericMethodHandlerService<,>);
             var method = type.GetMethod("Handle");
@@ -304,7 +304,7 @@ namespace RoyalCode.PipelineFlow.Tests
         }
 
         [Fact]
-        public void T15_Method_Handler_Async()
+        public void T15_In_Method_Handler_Async()
         {
             var type = typeof(GenericMethodHandlerAsyncService<>);
             var method = type.GetMethod("Handle");
@@ -328,7 +328,7 @@ namespace RoyalCode.PipelineFlow.Tests
         }
 
         [Fact]
-        public void T16_Method_Result_Handler_Async()
+        public void T16_In_Out_Method_Handler_Async()
         {
             var type = typeof(GenericMethodHandlerAsyncService<,>);
             var method = type.GetMethod("Handle");
@@ -353,7 +353,7 @@ namespace RoyalCode.PipelineFlow.Tests
         }
 
         [Fact]
-        public void T17_Method_Handler_Async_WithToken()
+        public void T17_In_Method_Handler_Async_WithToken()
         {
             var type = typeof(GenericMethodHandlerAsyncWithTokenService<>);
             var method = type.GetMethod("Handle");
@@ -377,7 +377,7 @@ namespace RoyalCode.PipelineFlow.Tests
         }
 
         [Fact]
-        public void T18_Method_Result_Handler_Async_WithToken()
+        public void T18_In_Out_Method_Handler_Async_WithToken()
         {
             var type = typeof(GenericMethodHandlerAsyncWithTokenService<,>);
             var method = type.GetMethod("Handle");
