@@ -13,7 +13,7 @@ namespace RoyalCode.PipelineFlow.Configurations
         private readonly Delegate? handler;
         private readonly MethodInfo method;
         private readonly ParameterInfo[] parms;
-        private readonly bool handlerHasService;
+        private readonly bool handlerHasServiceParameter;
         private readonly Type? serviceType;
 
         private Type? inputType;
@@ -27,7 +27,7 @@ namespace RoyalCode.PipelineFlow.Configurations
             this.handler = handler;
             method = handler.Method;
             parms = method.GetParameters();
-            handlerHasService = false;
+            handlerHasServiceParameter = false;
         }
 
         private DescriptionBuilder(Delegate handler, Type serviceType)
@@ -36,13 +36,13 @@ namespace RoyalCode.PipelineFlow.Configurations
             this.serviceType = serviceType;
             method = handler.Method;
             parms = method.GetParameters();
-            handlerHasService = true;
+            handlerHasServiceParameter = true;
         }
 
         private DescriptionBuilder(MethodInfo method)
         {
             serviceType = method.DeclaringType;
-            handlerHasService = false;
+            handlerHasServiceParameter = false;
             this.method = method;
             parms = method.GetParameters();
             handler = null;
@@ -59,7 +59,7 @@ namespace RoyalCode.PipelineFlow.Configurations
         public void ReadHandlerParameters()
         {
             // first check parameters
-            if (handlerHasService)
+            if (handlerHasServiceParameter)
             {
                 if (parms.Length is not 2 and not 3)
                     throw new InvalidHandlerDelegateException();
@@ -77,7 +77,7 @@ namespace RoyalCode.PipelineFlow.Configurations
             }
 
             // the input type.
-            inputType = parms[handlerHasService ? 1 : 0].ParameterType;
+            inputType = parms[handlerHasServiceParameter ? 1 : 0].ParameterType;
 
             kind = ChainKind.Handler;
 
@@ -92,9 +92,9 @@ namespace RoyalCode.PipelineFlow.Configurations
             // check parameters
             if (output.IsAsync)
             {
-                if (parms.Length == (handlerHasService ? 3 : 2))
+                if (parms.Length == (handlerHasServiceParameter ? 3 : 2))
                 {
-                    if (parms[handlerHasService ? 2 : 1].ParameterType != typeof(CancellationToken))
+                    if (parms[handlerHasServiceParameter ? 2 : 1].ParameterType != typeof(CancellationToken))
                     {
                         throw new InvalidHandlerDelegateException();
                     }
@@ -104,7 +104,7 @@ namespace RoyalCode.PipelineFlow.Configurations
                     }
                 }
             }
-            else if (parms.Length != (handlerHasService ? 2 : 1))
+            else if (parms.Length != (handlerHasServiceParameter ? 2 : 1))
             {
                 throw new InvalidHandlerDelegateException();
             }
@@ -130,7 +130,8 @@ namespace RoyalCode.PipelineFlow.Configurations
             {
                 HasToken = hasToken,
                 HasOutput = output.HasOutput,
-                IsAsync = output.IsAsync
+                IsAsync = output.IsAsync,
+                ServiceType = serviceType,
             };
         }
 
@@ -141,7 +142,7 @@ namespace RoyalCode.PipelineFlow.Configurations
         public void ReadDecoratorParameters()
         {
             // first check parameters
-            if (handlerHasService)
+            if (handlerHasServiceParameter)
             {
                 if (parms.Length is not 3 and not 4)
                     throw new InvalidDecoratorDelegateException();
@@ -159,7 +160,7 @@ namespace RoyalCode.PipelineFlow.Configurations
             }
 
             // the input type.
-            inputType = parms[handlerHasService ? 1 : 0].ParameterType;
+            inputType = parms[handlerHasServiceParameter ? 1 : 0].ParameterType;
 
             kind = ChainKind.Decorator;
 
@@ -176,15 +177,15 @@ namespace RoyalCode.PipelineFlow.Configurations
                 ? typeof(Action)
                 : typeof(Func<>).MakeGenericType(method.ReturnType);
 
-            if (parms[handlerHasService ? 2 : 1].ParameterType != nextType)
+            if (parms[handlerHasServiceParameter ? 2 : 1].ParameterType != nextType)
                 throw new InvalidDecoratorDelegateException();
 
             // check parameters
             if (output.IsAsync)
             {
-                if (parms.Length == (handlerHasService ? 4 : 3))
+                if (parms.Length == (handlerHasServiceParameter ? 4 : 3))
                 {
-                    if (parms[handlerHasService ? 3 : 2].ParameterType != typeof(CancellationToken))
+                    if (parms[handlerHasServiceParameter ? 3 : 2].ParameterType != typeof(CancellationToken))
                     {
                         throw new InvalidDecoratorDelegateException();
                     }
@@ -194,7 +195,7 @@ namespace RoyalCode.PipelineFlow.Configurations
                     }
                 }
             }
-            else if (parms.Length != (handlerHasService ? 3 : 2))
+            else if (parms.Length != (handlerHasServiceParameter ? 3 : 2))
             {
                 throw new InvalidDecoratorDelegateException();
             }
@@ -230,7 +231,8 @@ namespace RoyalCode.PipelineFlow.Configurations
             {
                 HasToken = hasToken,
                 HasOutput = output.HasOutput,
-                IsAsync = output.IsAsync
+                IsAsync = output.IsAsync,
+                ServiceType = serviceType,
             };
         }
 
@@ -241,7 +243,7 @@ namespace RoyalCode.PipelineFlow.Configurations
         public void ReadBridgeParameters()
         {
             // first check parameters
-            if (handlerHasService)
+            if (handlerHasServiceParameter)
             {
                 if (parms.Length is not 3 and not 4)
                     throw new InvalidDecoratorDelegateException(); // TODO: Requer uma exception para bridge
@@ -259,7 +261,7 @@ namespace RoyalCode.PipelineFlow.Configurations
             }
 
             // the input type.
-            inputType = parms[handlerHasService ? 1 : 0].ParameterType;
+            inputType = parms[handlerHasServiceParameter ? 1 : 0].ParameterType;
 
             kind = ChainKind.Bridge;
 
@@ -271,7 +273,7 @@ namespace RoyalCode.PipelineFlow.Configurations
             if (output is null || inputType is null)
                 throw new InvalidOperationException("Read bridge parameters is required.");
 
-            var nextParm = parms[handlerHasService ? 2 : 1];
+            var nextParm = parms[handlerHasServiceParameter ? 2 : 1];
             var nextHandlerType = nextParm.ParameterType;
 
             if (!nextHandlerType.IsGenericType)
@@ -318,9 +320,9 @@ namespace RoyalCode.PipelineFlow.Configurations
             // check parameters
             if (output.IsAsync)
             {
-                if (parms.Length == (handlerHasService ? 4 : 3))
+                if (parms.Length == (handlerHasServiceParameter ? 4 : 3))
                 {
-                    if (parms[handlerHasService ? 3 : 2].ParameterType != typeof(CancellationToken))
+                    if (parms[handlerHasServiceParameter ? 3 : 2].ParameterType != typeof(CancellationToken))
                     {
                         throw new InvalidDecoratorDelegateException();
                     }
@@ -330,7 +332,7 @@ namespace RoyalCode.PipelineFlow.Configurations
                     }
                 }
             }
-            else if (parms.Length != (handlerHasService ? 3 : 2))
+            else if (parms.Length != (handlerHasServiceParameter ? 3 : 2))
             {
                 throw new InvalidDecoratorDelegateException();
             }
@@ -359,7 +361,8 @@ namespace RoyalCode.PipelineFlow.Configurations
             {
                 HasToken = hasToken,
                 HasOutput = output.HasOutput,
-                IsAsync = output.IsAsync
+                IsAsync = output.IsAsync,
+                ServiceType = serviceType,
             };
 
         }

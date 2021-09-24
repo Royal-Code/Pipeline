@@ -1,4 +1,5 @@
-﻿using RoyalCode.Tasks;
+﻿using RoyalCode.PipelineFlow.Configurations;
+using RoyalCode.Tasks;
 using System;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -11,9 +12,9 @@ namespace RoyalCode.PipelineFlow.Chains
         private readonly TService service;
         private readonly Func<TService, TIn, Task> function;
 
-        public HandlerChainServiceWithoutCancellationTokenAsync(Func<TService, TIn, Task> function, TService service)
+        public HandlerChainServiceWithoutCancellationTokenAsync(ChainDelegateProvider<Func<TService, TIn, Task>> functionProvider, TService service)
         {
-            this.function = function ?? throw new ArgumentNullException(nameof(function));
+            function = functionProvider.Delegate;
             this.service = service;
         }
 
@@ -29,9 +30,9 @@ namespace RoyalCode.PipelineFlow.Chains
         private readonly TService service;
         private readonly Func<TService, TIn, Task<TOut>> function;
 
-        public HandlerChainServiceWithoutCancellationTokenAsync(Func<TService, TIn, Task<TOut>> function, TService service)
+        public HandlerChainServiceWithoutCancellationTokenAsync(ChainDelegateProvider<Func<TService, TIn, Task<TOut>>> functionProvider, TService service)
         {
-            this.function = function ?? throw new ArgumentNullException(nameof(function));
+            function = functionProvider.Delegate;
             this.service = service;
         }
 
