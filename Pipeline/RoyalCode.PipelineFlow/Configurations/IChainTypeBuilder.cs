@@ -13,7 +13,14 @@ namespace RoyalCode.PipelineFlow.Configurations
         Type Build(DescriptionBase description, Type? previousChainType);
     }
 
-    public class ChainDelegateProvider<TDelegate>
+    public interface IChainDelegateProvider<TDelegate>
+        where TDelegate : Delegate
+    {
+        TDelegate Delegate { [MethodImpl(MethodImplOptions.AggressiveInlining)] get; }
+    }
+
+    internal class ChainDelegateProvider<TDelegate> : IChainDelegateProvider<TDelegate>
+        where TDelegate : Delegate
     {
         public ChainDelegateProvider(ChainDelegateRegistry registry)
         {

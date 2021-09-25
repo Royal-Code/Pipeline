@@ -12,7 +12,7 @@ namespace RoyalCode.PipelineFlow.Chains
         private readonly TService service;
         private readonly Func<TService, TIn, Task> function;
 
-        public HandlerChainServiceWithoutCancellationTokenAsync(ChainDelegateProvider<Func<TService, TIn, Task>> functionProvider, TService service)
+        public HandlerChainServiceWithoutCancellationTokenAsync(IChainDelegateProvider<Func<TService, TIn, Task>> functionProvider, TService service)
         {
             function = functionProvider.Delegate;
             this.service = service;
@@ -30,7 +30,7 @@ namespace RoyalCode.PipelineFlow.Chains
         private readonly TService service;
         private readonly Func<TService, TIn, Task<TOut>> function;
 
-        public HandlerChainServiceWithoutCancellationTokenAsync(ChainDelegateProvider<Func<TService, TIn, Task<TOut>>> functionProvider, TService service)
+        public HandlerChainServiceWithoutCancellationTokenAsync(IChainDelegateProvider<Func<TService, TIn, Task<TOut>>> functionProvider, TService service)
         {
             function = functionProvider.Delegate;
             this.service = service;
