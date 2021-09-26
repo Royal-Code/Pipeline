@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace RoyalCode.PipelineFlow.Chains
 {
-    public class BridgeChainFuncWithoutCancellationTokenAsync<TIn, TNextIn, TNextChain> : BridgeChain<TIn, TNextIn, TNextChain>
+    public class BridgeChainDelegateWithoutCancellationTokenAsync<TIn, TNextIn, TNextChain> : BridgeChain<TIn, TNextIn, TNextChain>
         where TNextChain : Chain<TNextIn>
     {
         private readonly Func<TIn, Func<TNextIn, Task>, Task> function;
         private readonly TNextChain next;
 
-        public BridgeChainFuncWithoutCancellationTokenAsync(
+        public BridgeChainDelegateWithoutCancellationTokenAsync(
             Func<TIn, Func<TNextIn, Task>, Task> function,
             TNextChain next)
         {
@@ -29,13 +29,13 @@ namespace RoyalCode.PipelineFlow.Chains
             => function(input, nextInput => next.SendAsync(nextInput, token));
     }
 
-    public class BridgeChainFuncWithoutCancellationTokenAsync<TIn, TOut, TNextIn, TNextChain> : BridgeChain<TIn, TOut, TNextIn, TNextChain>
+    public class BridgeChainDelegateWithoutCancellationTokenAsync<TIn, TOut, TNextIn, TNextChain> : BridgeChain<TIn, TOut, TNextIn, TNextChain>
         where TNextChain : Chain<TNextIn, TOut>
     {
         private readonly Func<TIn, Func<TNextIn, Task<TOut>>, Task<TOut>> function;
         private readonly TNextChain next;
 
-        public BridgeChainFuncWithoutCancellationTokenAsync(
+        public BridgeChainDelegateWithoutCancellationTokenAsync(
             Func<TIn, Func<TNextIn, Task<TOut>>, Task<TOut>> function,
             TNextChain next)
         {
@@ -52,14 +52,14 @@ namespace RoyalCode.PipelineFlow.Chains
             => function(input, nextInput => next.SendAsync(nextInput, token));
     }
 
-    public class BridgeChainFuncWithoutCancellationTokenAsync<TIn, TOut, TNextIn, TNextOut, TNextChain>
+    public class BridgeChainDelegateWithoutCancellationTokenAsync<TIn, TOut, TNextIn, TNextOut, TNextChain>
         : BridgeChain<TIn, TOut, TNextIn, TNextOut, TNextChain>
         where TNextChain : Chain<TNextIn, TNextOut>
     {
         private readonly Func<TIn, Func<TNextIn, Task<TNextOut>>, Task<TOut>> function;
         private readonly TNextChain next;
 
-        public BridgeChainFuncWithoutCancellationTokenAsync(
+        public BridgeChainDelegateWithoutCancellationTokenAsync(
             Func<TIn, Func<TNextIn, Task<TNextOut>>, Task<TOut>> function,
             TNextChain next)
         {

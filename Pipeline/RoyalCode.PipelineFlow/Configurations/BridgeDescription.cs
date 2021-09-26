@@ -19,5 +19,11 @@ namespace RoyalCode.PipelineFlow.Configurations
         public override bool IsBridge => true;
 
         public override BridgeNextHandlerDescription GetBridgeNextHandlerDescription() => nextHandlerDescription;
+
+        public bool HasNextOutput => OutputType != nextHandlerDescription.OutputType;
+
+        public Type NextInputType => nextHandlerDescription.InputType;
+
+        public Type NextOutputType => nextHandlerDescription.OutputType;
     }
 }

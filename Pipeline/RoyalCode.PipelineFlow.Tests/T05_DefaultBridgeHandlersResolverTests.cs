@@ -16,7 +16,7 @@ namespace RoyalCode.PipelineFlow.Tests
         {
             string? backValue = null;
 
-            var resolver = DefaultHandlersResolver.BridgeHandler<int, string>((i, next) => next(i.ToString()));
+            var resolver = DefaultBridgeResolver.BridgeHandler<int, string>((i, next) => next(i.ToString()));
 
             var description = resolver.TryResolve(typeof(int));
             Assert.NotNull(description);
@@ -37,7 +37,7 @@ namespace RoyalCode.PipelineFlow.Tests
         {
             string? backValue = null;
 
-            var resolver = DefaultHandlersResolver.BridgeHandlerAsync<int, string>((i, next) => next(i.ToString()));
+            var resolver = DefaultBridgeResolver.BridgeHandlerAsync<int, string>((i, next) => next(i.ToString()));
 
             var description = resolver.TryResolve(typeof(int));
             Assert.NotNull(description);
@@ -58,7 +58,7 @@ namespace RoyalCode.PipelineFlow.Tests
         {
             string? backValue = null;
 
-            var resolver = DefaultHandlersResolver.BridgeHandlerAsync<int, string>((i, next, token) => next(i.ToString()));
+            var resolver = DefaultBridgeResolver.BridgeHandlerAsync<int, string>((i, next, token) => next(i.ToString()));
 
             var description = resolver.TryResolve(typeof(int));
             Assert.NotNull(description);
@@ -79,7 +79,7 @@ namespace RoyalCode.PipelineFlow.Tests
         {
             BackValueService backValue = new();
 
-            var resolver = DefaultHandlersResolver.BridgeHandler<BackValueService, int, string>((s, i, next) => next((i + s.InputValue).ToString()));
+            var resolver = DefaultBridgeResolver.BridgeHandler<BackValueService, int, string>((s, i, next) => next((i + s.InputValue).ToString()));
 
             var description = resolver.TryResolve(typeof(int));
             Assert.NotNull(description);
@@ -100,7 +100,7 @@ namespace RoyalCode.PipelineFlow.Tests
         {
             BackValueService backValue = new();
 
-            var resolver = DefaultHandlersResolver.BridgeHandlerAsync<BackValueService, int, string>((s, i, next) => next((i + s.InputValue).ToString()));
+            var resolver = DefaultBridgeResolver.BridgeHandlerAsync<BackValueService, int, string>((s, i, next) => next((i + s.InputValue).ToString()));
 
             var description = resolver.TryResolve(typeof(int));
             Assert.NotNull(description);
@@ -121,7 +121,7 @@ namespace RoyalCode.PipelineFlow.Tests
         {
             BackValueService backValue = new();
 
-            var resolver = DefaultHandlersResolver.BridgeHandlerAsync<BackValueService, int, string>((s, i, next, token) => next((i + s.InputValue).ToString()));
+            var resolver = DefaultBridgeResolver.BridgeHandlerAsync<BackValueService, int, string>((s, i, next, token) => next((i + s.InputValue).ToString()));
 
             var description = resolver.TryResolve(typeof(int));
             Assert.NotNull(description);
@@ -140,7 +140,7 @@ namespace RoyalCode.PipelineFlow.Tests
         [Fact]
         public void T07_In_Out_Bridge()
         {
-            var resolver = DefaultHandlersResolver.BridgeHandler<int, OutputValue, string>((i, next) => { return next(i.ToString()); });
+            var resolver = DefaultBridgeResolver.BridgeHandler<int, OutputValue, string>((i, next) => { return next(i.ToString()); });
 
             var description = resolver.TryResolve(typeof(int), typeof(OutputValue));
             Assert.NotNull(description);
@@ -159,7 +159,7 @@ namespace RoyalCode.PipelineFlow.Tests
         [Fact]
         public void T08_In_Out_Bridge_Async()
         {
-            var resolver = DefaultHandlersResolver.BridgeHandlerAsync<int, OutputValue, string>((i, next) => { return next(i.ToString()); });
+            var resolver = DefaultBridgeResolver.BridgeHandlerAsync<int, OutputValue, string>((i, next) => { return next(i.ToString()); });
 
             var description = resolver.TryResolve(typeof(int), typeof(OutputValue));
             Assert.NotNull(description);
@@ -178,7 +178,7 @@ namespace RoyalCode.PipelineFlow.Tests
         [Fact]
         public void T09_In_Out_Bridge_Async_WithToken()
         {
-            var resolver = DefaultHandlersResolver.BridgeHandlerAsync<int, OutputValue, string>((i, next, token) => { return next(i.ToString()); });
+            var resolver = DefaultBridgeResolver.BridgeHandlerAsync<int, OutputValue, string>((i, next, token) => { return next(i.ToString()); });
 
             var description = resolver.TryResolve(typeof(int), typeof(OutputValue));
             Assert.NotNull(description);
@@ -197,7 +197,7 @@ namespace RoyalCode.PipelineFlow.Tests
         [Fact]
         public void T10_Service_In_Out_Bridge()
         {
-            var resolver = DefaultHandlersResolver.BridgeHandler<BackValueService, int, OutputValue, string>((s, i, next) => { return next((i + s.InputValue).ToString()); });
+            var resolver = DefaultBridgeResolver.BridgeHandler<BackValueService, int, OutputValue, string>((s, i, next) => { return next((i + s.InputValue).ToString()); });
 
             var description = resolver.TryResolve(typeof(int), typeof(OutputValue));
             Assert.NotNull(description);
@@ -216,7 +216,7 @@ namespace RoyalCode.PipelineFlow.Tests
         [Fact]
         public void T11_Service_In_Out_Bridge_Async()
         {
-            var resolver = DefaultHandlersResolver.BridgeHandlerAsync<BackValueService, int, OutputValue, string>((s, i, next) => { return next((i + s.InputValue).ToString()); });
+            var resolver = DefaultBridgeResolver.BridgeHandlerAsync<BackValueService, int, OutputValue, string>((s, i, next) => { return next((i + s.InputValue).ToString()); });
 
             var description = resolver.TryResolve(typeof(int), typeof(OutputValue));
             Assert.NotNull(description);
@@ -235,7 +235,7 @@ namespace RoyalCode.PipelineFlow.Tests
         [Fact]
         public void T12_Service_In_Out_Bridge_Async_WithToken()
         {
-            var resolver = DefaultHandlersResolver.BridgeHandlerAsync<BackValueService, int, OutputValue, string>((s, i, next, token) => { return next((i + s.InputValue).ToString()); });
+            var resolver = DefaultBridgeResolver.BridgeHandlerAsync<BackValueService, int, OutputValue, string>((s, i, next, token) => { return next((i + s.InputValue).ToString()); });
 
             var description = resolver.TryResolve(typeof(int), typeof(OutputValue));
             Assert.NotNull(description);
@@ -254,7 +254,7 @@ namespace RoyalCode.PipelineFlow.Tests
         [Fact]
         public void T13_In_Out_NextOut_Bridge()
         {
-            var resolver = DefaultHandlersResolver.BridgeHandler<int, string, string, OutputValue>((i, next) => { return next(i.ToString()).Value; });
+            var resolver = DefaultBridgeResolver.BridgeHandler<int, string, string, OutputValue>((i, next) => { return next(i.ToString()).Value; });
 
             var description = resolver.TryResolve(typeof(int), typeof(string));
             Assert.NotNull(description);
@@ -273,7 +273,7 @@ namespace RoyalCode.PipelineFlow.Tests
         [Fact]
         public void T14_In_Out_NextOut_Bridge_Async()
         {
-            var resolver = DefaultHandlersResolver.BridgeHandlerAsync<int, string, string, OutputValue>((i, next) => { return Task.FromResult(next(i.ToString()).Result.Value); });
+            var resolver = DefaultBridgeResolver.BridgeHandlerAsync<int, string, string, OutputValue>((i, next) => { return Task.FromResult(next(i.ToString()).Result.Value); });
 
             var description = resolver.TryResolve(typeof(int), typeof(string));
             Assert.NotNull(description);
@@ -292,7 +292,7 @@ namespace RoyalCode.PipelineFlow.Tests
         [Fact]
         public void T15_In_Out_NextOut_Bridge_Async_WithResult()
         {
-            var resolver = DefaultHandlersResolver.BridgeHandlerAsync<int, string, string, OutputValue>((i, next, token) => { return Task.FromResult(next(i.ToString()).Result.Value); });
+            var resolver = DefaultBridgeResolver.BridgeHandlerAsync<int, string, string, OutputValue>((i, next, token) => { return Task.FromResult(next(i.ToString()).Result.Value); });
 
             var description = resolver.TryResolve(typeof(int), typeof(string));
             Assert.NotNull(description);
@@ -311,7 +311,7 @@ namespace RoyalCode.PipelineFlow.Tests
         [Fact]
         public void T16_Service_In_Out_NextOut_Bridge()
         {
-            var resolver = DefaultHandlersResolver.BridgeHandler<BackValueService, int, string, string, OutputValue>((s, i, next) => { return next((s.InputValue + i).ToString()).Value; });
+            var resolver = DefaultBridgeResolver.BridgeHandler<BackValueService, int, string, string, OutputValue>((s, i, next) => { return next((s.InputValue + i).ToString()).Value; });
 
             var description = resolver.TryResolve(typeof(int), typeof(string));
             Assert.NotNull(description);
@@ -330,7 +330,7 @@ namespace RoyalCode.PipelineFlow.Tests
         [Fact]
         public void T17_Service_In_Out_NextOut_BridgeAsync()
         {
-            var resolver = DefaultHandlersResolver.BridgeHandlerAsync<BackValueService, int, string, string, OutputValue>((s, i, next) => { return Task.FromResult(next((s.InputValue + i).ToString()).Result.Value); });
+            var resolver = DefaultBridgeResolver.BridgeHandlerAsync<BackValueService, int, string, string, OutputValue>((s, i, next) => { return Task.FromResult(next((s.InputValue + i).ToString()).Result.Value); });
 
             var description = resolver.TryResolve(typeof(int), typeof(string));
             Assert.NotNull(description);
@@ -349,7 +349,7 @@ namespace RoyalCode.PipelineFlow.Tests
         [Fact]
         public void T18_Service_In_Out_NextOut_BridgeAsync_WithToken()
         {
-            var resolver = DefaultHandlersResolver.BridgeHandlerAsync<BackValueService, int, string, string, OutputValue>((s, i, next, token) => { return Task.FromResult(next((s.InputValue + i).ToString()).Result.Value); });
+            var resolver = DefaultBridgeResolver.BridgeHandlerAsync<BackValueService, int, string, string, OutputValue>((s, i, next, token) => { return Task.FromResult(next((s.InputValue + i).ToString()).Result.Value); });
 
             var description = resolver.TryResolve(typeof(int), typeof(string));
             Assert.NotNull(description);

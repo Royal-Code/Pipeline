@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace RoyalCode.PipelineFlow.Chains
 {
-    public class BridgeChainFuncAsync<TIn, TNextIn, TNextChain> : BridgeChain<TIn, TNextIn, TNextChain>
+    public class BridgeChainDelegateAsync<TIn, TNextIn, TNextChain> : BridgeChain<TIn, TNextIn, TNextChain>
         where TNextChain : Chain<TNextIn>
     {
         private readonly Func<TIn, Func<TNextIn, Task>, CancellationToken, Task> function;
         private readonly TNextChain next;
 
-        public BridgeChainFuncAsync(
+        public BridgeChainDelegateAsync(
             Func<TIn, Func<TNextIn, Task>, CancellationToken, Task> function,
             TNextChain next)
         {
@@ -29,13 +29,13 @@ namespace RoyalCode.PipelineFlow.Chains
             => function(input, nextInput => next.SendAsync(nextInput, token), token);
     }
 
-    public class BridgeChainFuncAsync<TIn, TOut, TNextIn, TNextChain> : BridgeChain<TIn, TOut, TNextIn, TNextChain>
+    public class BridgeChainDelegateAsync<TIn, TOut, TNextIn, TNextChain> : BridgeChain<TIn, TOut, TNextIn, TNextChain>
         where TNextChain : Chain<TNextIn, TOut>
     {
         private readonly Func<TIn, Func<TNextIn, Task<TOut>>, CancellationToken, Task<TOut>> function;
         private readonly TNextChain next;
 
-        public BridgeChainFuncAsync(
+        public BridgeChainDelegateAsync(
             Func<TIn, Func<TNextIn, Task<TOut>>, CancellationToken, Task<TOut>> function,
             TNextChain next)
         {
@@ -52,14 +52,14 @@ namespace RoyalCode.PipelineFlow.Chains
             => function(input, nextInput => next.SendAsync(nextInput, token), token);
     }
 
-    public class BridgeChainFuncAsync<TIn, TOut, TNextIn, TNextOut, TNextChain>
+    public class BridgeChainDelegateAsync<TIn, TOut, TNextIn, TNextOut, TNextChain>
         : BridgeChain<TIn, TOut, TNextIn, TNextOut, TNextChain>
         where TNextChain : Chain<TNextIn, TNextOut>
     {
         private readonly Func<TIn, Func<TNextIn, Task<TNextOut>>, CancellationToken, Task<TOut>> function;
         private readonly TNextChain next;
 
-        public BridgeChainFuncAsync(
+        public BridgeChainDelegateAsync(
             Func<TIn, Func<TNextIn, Task<TNextOut>>, CancellationToken, Task<TOut>> function,
             TNextChain next)
         {

@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 
 namespace RoyalCode.PipelineFlow.Configurations
 {
@@ -13,32 +12,122 @@ namespace RoyalCode.PipelineFlow.Configurations
         Type Build(DescriptionBase description, Type? previousChainType = null);
     }
 
-    public interface IChainDelegateProvider<TDelegate>
-        where TDelegate : Delegate
+    internal class BridgeChainKindBuilder : IChainTypeBuilder
     {
-        TDelegate Delegate { [MethodImpl(MethodImplOptions.AggressiveInlining)] get; }
-    }
+        public ChainKind Kind => ChainKind.Bridge;
 
-    internal class ChainDelegateProvider<TDelegate> : IChainDelegateProvider<TDelegate>
-        where TDelegate : Delegate
-    {
-        public ChainDelegateProvider(ChainDelegateRegistry registry)
+        public Type Build(DescriptionBase baseDescription, Type? previousChainType)
         {
-            Delegate = registry.GetDelegate<TDelegate>();
-        }
+            if (baseDescription is null)
+                throw new ArgumentNullException(nameof(baseDescription));
+            if (previousChainType is null)
+                throw new ArgumentNullException(nameof(previousChainType));
 
-        public TDelegate Delegate { [MethodImpl(MethodImplOptions.AggressiveInlining)] get; }
-    }
+            if (baseDescription is not BridgeDescription description)
+                throw new InvalidOperationException(
+                    $"{nameof(BridgeChainKindBuilder)} only accepts {nameof(BridgeDescription)}" +
+                    $" and the current instance is type of {baseDescription.GetType().Name}");
 
-    internal class ChainDelegateRegistry
-    {
-        private readonly ICollection<Delegate> delegates = new LinkedList<Delegate>();
-
-        internal void AddDelegate(Delegate chainDelegate) => delegates.Add(chainDelegate);
-
-        internal TDelegate GetDelegate<TDelegate>()
-        {
-            return delegates.OfType<TDelegate>().FirstOrDefault();
+            if (description.ServiceType is null)
+            {
+                if (description.IsAsync)
+                {
+                    if (description.HasToken)
+                    {
+                        if (description.HasOutput)
+                        {
+                            if (description.HasNextOutput)
+                            {
+                                return typeof(BridgeChainDelegateAsync<,,,,>)
+                                    .MakeGenericType(description.InputType, description.OutputType,
+                                    description.NextInputType, description.NextOutputType, previousChainType);
+                            }
+                            else
+                            {
+                                return typeof(BridgeChainDelegateAsync<,,,>)
+                                    .MakeGenericType(description.InputType, description.OutputType,
+                                    description.NextInputType, previousChainType);
+                            }
+                        }
+                        else
+                        {
+                            return typeof(HandlerChainDelegateAsync<>)
+                                .MakeGenericType(description.InputType);
+                        }
+                    }
+                    else
+                    {
+                        if (description.HasOutput)
+                        {
+                            return typeof(HandlerChainDelegteWithoutCancellationTokenAsync<,>)
+                                .MakeGenericType(description.InputType, description.OutputType);
+                        }
+                        else
+                        {
+                            return typeof(HandlerChainDelegateWithoutCancellationTokenAsync<>)
+                                .MakeGenericType(description.InputType);
+                        }
+                    }
+                }
+                else
+                {
+                    if (description.HasOutput)
+                    {
+                        return typeof(HandlerChainDelegateSync<,>)
+                            .MakeGenericType(description.InputType, description.OutputType);
+                    }
+                    else
+                    {
+                        return typeof(HandlerChainDelegateSync<>)
+                            .MakeGenericType(description.InputType);
+                    }
+                }
+            }
+            else
+            {
+                if (description.IsAsync)
+                {
+                    if (description.HasToken)
+                    {
+                        if (description.HasOutput)
+                        {
+                            return typeof(HandlerChainServiceAsync<,,>)
+                                .MakeGenericType(description.InputType, description.OutputType, description.ServiceType);
+                        }
+                        else
+                        {
+                            return typeof(HandlerChainServiceAsync<,>)
+                                .MakeGenericType(description.InputType);
+                        }
+                    }
+                    else
+                    {
+                        if (description.HasOutput)
+                        {
+                            return typeof(HandlerChainServiceWithoutCancellationTokenAsync<,,>)
+                                .MakeGenericType(description.InputType, description.OutputType);
+                        }
+                        else
+                        {
+                            return typeof(HandlerChainServiceWithoutCancellationTokenAsync<,>)
+                                .MakeGenericType(description.InputType);
+                        }
+                    }
+                }
+                else
+                {
+                    if (description.HasOutput)
+                    {
+                        return typeof(HandlerChainServiceSync<,,>)
+                            .MakeGenericType(description.InputType, description.OutputType);
+                    }
+                    else
+                    {
+                        return typeof(HandlerChainServiceSync<,>)
+                            .MakeGenericType(description.InputType);
+                    }
+                }
+            }
         }
     }
 
@@ -138,21 +227,6 @@ namespace RoyalCode.PipelineFlow.Configurations
                     }
                 }
             }
-        }
-
-        public Type Build(DecoratorDescription decoratorDescription, Type previousChainType)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Type Build(HandlerDescription handlerDescription, Type previousChainType)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Type Build(HandlerDescription handlerDescription)
-        {
-            throw new NotImplementedException();
         }
     }
 }
