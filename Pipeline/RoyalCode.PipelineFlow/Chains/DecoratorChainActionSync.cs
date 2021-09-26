@@ -23,7 +23,7 @@ namespace RoyalCode.PipelineFlow.Chains
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override Task SendAsync(TIn input, CancellationToken token)
         {
-            Task resultTask = null;
+            Task? resultTask = null;
             action(input, () => { resultTask = next.SendAsync(input, token); });
             return resultTask ?? Task.CompletedTask;
         }

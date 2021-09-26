@@ -1,4 +1,5 @@
-﻿using RoyalCode.Tasks;
+﻿using RoyalCode.PipelineFlow.Configurations;
+using RoyalCode.Tasks;
 using System;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -6,13 +7,13 @@ using System.Threading.Tasks;
 
 namespace RoyalCode.PipelineFlow.Chains
 {
-    public class HandlerChainFuncAsync<TIn> : Chain<TIn>
+    public class HandlerChainDelegateAsync<TIn> : Chain<TIn>
     {
         private readonly Func<TIn, CancellationToken, Task> function;
 
-        public HandlerChainFuncAsync(Func<TIn, CancellationToken, Task> function)
+        public HandlerChainDelegateAsync(IChainDelegateProvider<Func<TIn, CancellationToken, Task>> function)
         {
-            this.function = function ?? throw new ArgumentNullException(nameof(function));
+            this.function = function?.Delegate ?? throw new ArgumentNullException(nameof(function));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -22,13 +23,13 @@ namespace RoyalCode.PipelineFlow.Chains
         public override Task SendAsync(TIn input, CancellationToken token) => function(input, token);
     }
 
-    public class HandlerChainFuncAsync<TIn, TOut> : Chain<TIn, TOut>
+    public class HandlerChainDelegateAsync<TIn, TOut> : Chain<TIn, TOut>
     {
         private readonly Func<TIn, CancellationToken, Task<TOut>> function;
 
-        public HandlerChainFuncAsync(Func<TIn, CancellationToken, Task<TOut>> function)
+        public HandlerChainDelegateAsync(IChainDelegateProvider<Func<TIn, CancellationToken, Task<TOut>>> function)
         {
-            this.function = function ?? throw new ArgumentNullException(nameof(function));
+            this.function = function?.Delegate ?? throw new ArgumentNullException(nameof(function));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -12,7 +12,7 @@ namespace RoyalCode.PipelineFlow.Configurations
         #region Handlers
 
 
-        public static IHandlerResolver Handle<TInput>(InputHandlerSync<TInput> handler)
+        public static IHandlerResolver Handle<TInput>(Action<TInput> handler)
             => new DelegateHandlerResolver(handler);
 
         public static IHandlerResolver HandleAsync<TInput>(Func<TInput, Task> handler)

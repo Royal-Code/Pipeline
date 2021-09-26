@@ -10,7 +10,7 @@ namespace RoyalCode.PipelineFlow.Configurations
     {
         ChainKind Kind { get; }
 
-        Type Build(DescriptionBase description, Type? previousChainType);
+        Type Build(DescriptionBase description, Type? previousChainType = null);
     }
 
     public interface IChainDelegateProvider<TDelegate>
@@ -56,12 +56,12 @@ namespace RoyalCode.PipelineFlow.Configurations
                     {
                         if (description.HasOutput)
                         {
-                            return typeof(HandlerChainFuncAsync<,>)
+                            return typeof(HandlerChainDelegateAsync<,>)
                                 .MakeGenericType(description.InputType, description.OutputType);
                         }
                         else
                         {
-                            return typeof(HandlerChainFuncAsync<>)
+                            return typeof(HandlerChainDelegateAsync<>)
                                 .MakeGenericType(description.InputType);
                         }
                     }
@@ -69,12 +69,12 @@ namespace RoyalCode.PipelineFlow.Configurations
                     {
                         if (description.HasOutput)
                         {
-                            return typeof(HandlerChainFuncWithoutCancellationTokenAsync<,>)
+                            return typeof(HandlerChainDelegteWithoutCancellationTokenAsync<,>)
                                 .MakeGenericType(description.InputType, description.OutputType);
                         }
                         else
                         {
-                            return typeof(HandlerChainFuncWithoutCancellationTokenAsync<>)
+                            return typeof(HandlerChainDelegateWithoutCancellationTokenAsync<>)
                                 .MakeGenericType(description.InputType);
                         }
                     }
@@ -83,12 +83,12 @@ namespace RoyalCode.PipelineFlow.Configurations
                 {
                     if (description.HasOutput)
                     {
-                        return typeof(HandlerChainFuncSync<,>)
+                        return typeof(HandlerChainDelegateSync<,>)
                             .MakeGenericType(description.InputType, description.OutputType);
                     }
                     else
                     {
-                        return typeof(HandlerChainActionSync<>)
+                        return typeof(HandlerChainDelegateSync<>)
                             .MakeGenericType(description.InputType);
                     }
                 }
