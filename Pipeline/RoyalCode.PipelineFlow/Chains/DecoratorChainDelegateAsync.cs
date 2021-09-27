@@ -1,4 +1,5 @@
-﻿using RoyalCode.Tasks;
+﻿using RoyalCode.PipelineFlow.Configurations;
+using RoyalCode.Tasks;
 using System;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -6,15 +7,17 @@ using System.Threading.Tasks;
 
 namespace RoyalCode.PipelineFlow.Chains
 {
-    public class DecoratorChainFuncAsync<TIn, TNext> : DecoratorChain<TIn, TNext>
+    public class DecoratorChainDelegateAsync<TIn, TNext> : DecoratorChain<TIn, TNext>
         where TNext : Chain<TIn>
     {
         private readonly Func<TIn, Func<Task>, CancellationToken, Task> function;
         private readonly TNext next;
 
-        public DecoratorChainFuncAsync(Func<TIn, Func<Task>, CancellationToken, Task> function, TNext next)
+        public DecoratorChainDelegateAsync(
+            IChainDelegateProvider<Func<TIn, Func<Task>, CancellationToken, Task>> functionProvider,
+            TNext next)
         {
-            this.function = function ?? throw new ArgumentNullException(nameof(function));
+            function = functionProvider?.Delegate ?? throw new ArgumentNullException(nameof(functionProvider));
             this.next = next ?? throw new ArgumentNullException(nameof(next));
         }
 
@@ -27,15 +30,17 @@ namespace RoyalCode.PipelineFlow.Chains
             => function(input, () => next.SendAsync(input, token), token);
     }
 
-    public class DecoratorChainFuncAsync<TIn, TOut, TNext> : DecoratorChain<TIn, TOut, TNext>
+    public class DecoratorChainDelegateAsync<TIn, TOut, TNext> : DecoratorChain<TIn, TOut, TNext>
         where TNext : Chain<TIn, TOut>
     {
         private readonly Func<TIn, Func<Task<TOut>>, CancellationToken, Task<TOut>> function;
         private readonly TNext next;
 
-        public DecoratorChainFuncAsync(Func<TIn, Func<Task<TOut>>, CancellationToken, Task<TOut>> function, TNext next)
+        public DecoratorChainDelegateAsync(
+            IChainDelegateProvider<Func<TIn, Func<Task<TOut>>, CancellationToken, Task<TOut>>> functionProvider, 
+            TNext next)
         {
-            this.function = function ?? throw new ArgumentNullException(nameof(function));
+            function = functionProvider?.Delegate ?? throw new ArgumentNullException(nameof(functionProvider));
             this.next = next ?? throw new ArgumentNullException(nameof(next));
         }
 

@@ -1,4 +1,5 @@
-﻿using RoyalCode.Tasks;
+﻿using RoyalCode.PipelineFlow.Configurations;
+using RoyalCode.Tasks;
 using System;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -13,10 +14,13 @@ namespace RoyalCode.PipelineFlow.Chains
         private readonly Func<TService, TIn, Func<Task>, CancellationToken, Task> function;
         private readonly TNext next;
 
-        public DecoratorChainServiceAsync(TService service, Func<TService, TIn, Func<Task>, CancellationToken, Task> function, TNext next)
+        public DecoratorChainServiceAsync(
+            TService service,
+            IChainDelegateProvider<Func<TService, TIn, Func<Task>, CancellationToken, Task>> functionProvider, 
+            TNext next)
         {
             this.service = service;
-            this.function = function ?? throw new ArgumentNullException(nameof(function));
+            function = functionProvider?.Delegate ?? throw new ArgumentNullException(nameof(functionProvider));
             this.next = next ?? throw new ArgumentNullException(nameof(next));
         }
 
@@ -36,10 +40,13 @@ namespace RoyalCode.PipelineFlow.Chains
         private readonly Func<TService, TIn, Func<Task<TOut>>, CancellationToken, Task<TOut>> function;
         private readonly TNext next;
 
-        public DecoratorChainServiceAsync(TService service, Func<TService, TIn, Func<Task<TOut>>, CancellationToken, Task<TOut>> function, TNext next)
+        public DecoratorChainServiceAsync(
+            TService service,
+            IChainDelegateProvider<Func<TService, TIn, Func<Task<TOut>>, CancellationToken, Task<TOut>>> functionProvider,
+            TNext next)
         {
             this.service = service;
-            this.function = function ?? throw new ArgumentNullException(nameof(function));
+            function = functionProvider?.Delegate ?? throw new ArgumentNullException(nameof(functionProvider));
             this.next = next ?? throw new ArgumentNullException(nameof(next));
         }
 

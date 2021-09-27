@@ -1,4 +1,5 @@
-﻿using RoyalCode.Tasks;
+﻿using RoyalCode.PipelineFlow.Configurations;
+using RoyalCode.Tasks;
 using System;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -14,10 +15,12 @@ namespace RoyalCode.PipelineFlow.Chains
         private readonly TNext next;
 
         public DecoratorChainServiceWithoutCancellationTokenAsync(
-            TService service, Func<TService, TIn, Func<Task>, Task> function, TNext next)
+            TService service,
+            IChainDelegateProvider<Func<TService, TIn, Func<Task>, Task>> functionProvider,
+            TNext next)
         {
             this.service = service;
-            this.function = function ?? throw new ArgumentNullException(nameof(function));
+            function = functionProvider?.Delegate ?? throw new ArgumentNullException(nameof(functionProvider));
             this.next = next ?? throw new ArgumentNullException(nameof(next));
         }
 
@@ -38,10 +41,12 @@ namespace RoyalCode.PipelineFlow.Chains
         private readonly TNext next;
 
         public DecoratorChainServiceWithoutCancellationTokenAsync(
-            TService service, Func<TService, TIn, Func<Task<TOut>>, Task<TOut>> function, TNext next)
+            TService service,
+            IChainDelegateProvider<Func<TService, TIn, Func<Task<TOut>>, Task<TOut>>> functionProvider,
+            TNext next)
         {
             this.service = service;
-            this.function = function ?? throw new ArgumentNullException(nameof(function));
+            function = functionProvider?.Delegate ?? throw new ArgumentNullException(nameof(functionProvider));
             this.next = next ?? throw new ArgumentNullException(nameof(next));
         }
 
