@@ -9,9 +9,6 @@ namespace RoyalCode.PipelineFlow.Configurations
     /// </summary>
     public static class DefaultHandlersResolver
     {
-        #region Handlers
-
-
         public static IHandlerResolver Handle<TInput>(Action<TInput> handler)
             => new DelegateHandlerResolver(handler);
 
@@ -49,8 +46,5 @@ namespace RoyalCode.PipelineFlow.Configurations
 
         public static IHandlerResolver HandleAsync<TService, TInput, TOutput>(Func<TService, TInput, CancellationToken, Task<TOutput>> handler)
             => new ServiceAndDelegateHandlerResolver(handler, typeof(TService));
-
-
-        #endregion
     }
 }

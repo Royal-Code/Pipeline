@@ -6,8 +6,6 @@ namespace RoyalCode.PipelineFlow.Configurations
 {
     public static class DefaultBridgeResolver
     {
-        #region Bridges
-
         public static IHandlerResolver BridgeHandler<TInput, TNextInput>(Action<TInput, Action<TNextInput>> handler)
             => new DelegateBridgeHandlerResolver(handler);
 
@@ -65,8 +63,5 @@ namespace RoyalCode.PipelineFlow.Configurations
 
         public static IHandlerResolver BridgeHandlerAsync<TService, TInput, TOutput, TNextInput, TNextOuput>(Func<TService, TInput, Func<TNextInput, Task<TNextOuput>>, CancellationToken, Task<TOutput>> handler)
             => new ServiceAndDelegateBridgeHandlerResolver(handler, typeof(TService));
-
-
-        #endregion
     }
 }
