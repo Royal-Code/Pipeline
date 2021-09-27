@@ -11,9 +11,10 @@ namespace RoyalCode.PipelineFlow.Chains
     {
         private readonly Func<TIn, Task> function;
 
-        public HandlerChainDelegateWithoutCancellationTokenAsync(IChainDelegateProvider<Func<TIn, Task>> function)
+        public HandlerChainDelegateWithoutCancellationTokenAsync(
+            IChainDelegateProvider<Func<TIn, Task>> functionProvider)
         {
-            this.function = function?.Delegate ?? throw new ArgumentNullException(nameof(function));
+            function = functionProvider?.Delegate ?? throw new ArgumentNullException(nameof(functionProvider));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -27,9 +28,10 @@ namespace RoyalCode.PipelineFlow.Chains
     {
         private readonly Func<TIn, Task<TOut>> function;
 
-        public HandlerChainDelegteWithoutCancellationTokenAsync(IChainDelegateProvider<Func<TIn, Task<TOut>>> function)
+        public HandlerChainDelegteWithoutCancellationTokenAsync(
+            IChainDelegateProvider<Func<TIn, Task<TOut>>> functionProvider)
         {
-            this.function = function?.Delegate ?? throw new ArgumentNullException(nameof(function));
+            function = functionProvider?.Delegate ?? throw new ArgumentNullException(nameof(functionProvider));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

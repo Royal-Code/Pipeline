@@ -1,4 +1,5 @@
-﻿using RoyalCode.Tasks;
+﻿using RoyalCode.PipelineFlow.Configurations;
+using RoyalCode.Tasks;
 using System;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -15,11 +16,11 @@ namespace RoyalCode.PipelineFlow.Chains
 
         public BridgeChainServiceAsync(
             TService service,
-            Func<TService, TIn, Func<TNextIn, Task>, CancellationToken, Task> function,
+            IChainDelegateProvider<Func<TService, TIn, Func<TNextIn, Task>, CancellationToken, Task>> functionProvider,
             TNextChain next)
         {
             this.service = service;
-            this.function = function ?? throw new ArgumentNullException(nameof(function));
+            function = functionProvider?.Delegate ?? throw new ArgumentNullException(nameof(functionProvider));
             this.next = next ?? throw new ArgumentNullException(nameof(next));
         }
 
@@ -41,11 +42,11 @@ namespace RoyalCode.PipelineFlow.Chains
 
         public BridgeChainServiceAsync(
             TService service,
-            Func<TService, TIn, Func<TNextIn, Task<TOut>>, CancellationToken, Task<TOut>> function,
+            IChainDelegateProvider<Func<TService, TIn, Func<TNextIn, Task<TOut>>, CancellationToken, Task<TOut>>> functionProvider,
             TNextChain next)
         {
             this.service = service;
-            this.function = function ?? throw new ArgumentNullException(nameof(function));
+            function = functionProvider?.Delegate ?? throw new ArgumentNullException(nameof(functionProvider));
             this.next = next ?? throw new ArgumentNullException(nameof(next));
         }
 
@@ -68,11 +69,11 @@ namespace RoyalCode.PipelineFlow.Chains
 
         public BridgeChainServiceAsync(
             TService service,
-            Func<TService, TIn, Func<TNextIn, Task<TNextOut>>, CancellationToken, Task<TOut>> function,
+            IChainDelegateProvider<Func<TService, TIn, Func<TNextIn, Task<TNextOut>>, CancellationToken, Task<TOut>>> functionProvider,
             TNextChain next)
         {
             this.service = service;
-            this.function = function ?? throw new ArgumentNullException(nameof(function));
+            function = functionProvider?.Delegate ?? throw new ArgumentNullException(nameof(functionProvider));
             this.next = next ?? throw new ArgumentNullException(nameof(next));
         }
 

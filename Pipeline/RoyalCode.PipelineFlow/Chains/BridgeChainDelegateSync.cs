@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RoyalCode.PipelineFlow.Configurations;
+using System;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,22 +9,24 @@ namespace RoyalCode.PipelineFlow.Chains
     public class BridgeChainDelegateSync<TIn, TNextIn, TNextChain> : BridgeChain<TIn, TNextIn, TNextChain>
         where TNextChain : Chain<TNextIn>
     {
-        private readonly Action<TIn, Action<TNextIn>> action;
+        private readonly Action<TIn, Action<TNextIn>> function;
         private readonly TNextChain next;
 
-        public BridgeChainDelegateSync(Action<TIn, Action<TNextIn>> action, TNextChain next)
+        public BridgeChainDelegateSync(
+            IChainDelegateProvider<Action<TIn, Action<TNextIn>>> functionProvider,
+            TNextChain next)
         {
-            this.action = action ?? throw new ArgumentNullException(nameof(action));
+            function = functionProvider?.Delegate ?? throw new ArgumentNullException(nameof(functionProvider));
             this.next = next ?? throw new ArgumentNullException(nameof(next));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override void Send(TIn input) => action(input, nextInput => next.Send(nextInput));
+        public override void Send(TIn input) => function(input, nextInput => next.Send(nextInput));
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override Task SendAsync(TIn input, CancellationToken token)
         {
-            action(input, nextInput => next.Send(nextInput));
+            function(input, nextInput => next.Send(nextInput));
             return Task.CompletedTask;
         }
     }
@@ -35,9 +38,11 @@ namespace RoyalCode.PipelineFlow.Chains
         private readonly Func<TIn, Func<TNextIn, TOut>, TOut> function;
         private readonly TNextChain next;
 
-        public BridgeChainDelegateSync(Func<TIn, Func<TNextIn, TOut>, TOut> function, TNextChain next)
+        public BridgeChainDelegateSync(
+            IChainDelegateProvider<Func<TIn, Func<TNextIn, TOut>, TOut>> functionProvider, 
+            TNextChain next)
         {
-            this.function = function ?? throw new ArgumentNullException(nameof(function));
+            function = functionProvider?.Delegate ?? throw new ArgumentNullException(nameof(functionProvider));
             this.next = next ?? throw new ArgumentNullException(nameof(next));
         }
 
@@ -56,9 +61,11 @@ namespace RoyalCode.PipelineFlow.Chains
         private readonly Func<TIn, Func<TNextIn, TNextOut>, TOut> function;
         private readonly TNextChain next;
 
-        public BridgeChainDelegateSync(Func<TIn, Func<TNextIn, TNextOut>, TOut> function, TNextChain next)
+        public BridgeChainDelegateSync(
+            IChainDelegateProvider<Func<TIn, Func<TNextIn, TNextOut>, TOut>> functionProvider,
+            TNextChain next)
         {
-            this.function = function ?? throw new ArgumentNullException(nameof(function));
+            function = functionProvider?.Delegate ?? throw new ArgumentNullException(nameof(functionProvider));
             this.next = next ?? throw new ArgumentNullException(nameof(next));
         }
 

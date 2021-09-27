@@ -9,21 +9,21 @@ namespace RoyalCode.PipelineFlow.Chains
     public class HandlerChainServiceSync<TIn, TService> : Chain<TIn>
     {
         private readonly TService service;
-        private readonly Action<TService, TIn> action;
+        private readonly Action<TService, TIn> function;
 
-        public HandlerChainServiceSync(IChainDelegateProvider<Action<TService, TIn>> action, TService service)
+        public HandlerChainServiceSync(IChainDelegateProvider<Action<TService, TIn>> functionProvider, TService service)
         {
-            this.action = action?.Delegate ?? throw new ArgumentNullException(nameof(action));
+            function = functionProvider?.Delegate ?? throw new ArgumentNullException(nameof(functionProvider));
             this.service = service;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override void Send(TIn input) => action(service, input);
+        public override void Send(TIn input) => function(service, input);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override Task SendAsync(TIn input, CancellationToken token)
         {
-            action(service, input);
+            function(service, input);
             return Task.CompletedTask;
         }
     }
@@ -33,9 +33,11 @@ namespace RoyalCode.PipelineFlow.Chains
         private readonly TService service;
         private readonly Func<TService, TIn, TOut> function;
 
-        public HandlerChainServiceSync(IChainDelegateProvider<Func<TService, TIn, TOut>> function, TService service)
+        public HandlerChainServiceSync(
+            IChainDelegateProvider<Func<TService, TIn, TOut>> functionProvider,
+            TService service)
         {
-            this.function = function?.Delegate ?? throw new ArgumentNullException(nameof(function));
+            function = functionProvider?.Delegate ?? throw new ArgumentNullException(nameof(functionProvider));
             this.service = service;
         }
 

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RoyalCode.PipelineFlow.Configurations;
+using System;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,11 +15,11 @@ namespace RoyalCode.PipelineFlow.Chains
 
         public BridgeChainServiceSync(
             TService service,
-            Action<TService, TIn, Action<TNextIn>> action,
+            IChainDelegateProvider<Action<TService, TIn, Action<TNextIn>>> functionProvider,
             TNextChain next)
         {
             this.service = service;
-            this.action = action ?? throw new ArgumentNullException(nameof(action));
+            action = functionProvider?.Delegate ?? throw new ArgumentNullException(nameof(functionProvider));
             this.next = next ?? throw new ArgumentNullException(nameof(next));
         }
 
@@ -43,11 +44,11 @@ namespace RoyalCode.PipelineFlow.Chains
 
         public BridgeChainServiceSync(
             TService service,
-            Func<TService, TIn, Func<TNextIn, TOut>, TOut> function,
+            IChainDelegateProvider<Func<TService, TIn, Func<TNextIn, TOut>, TOut>> functionProvider,
             TNextChain next)
         {
             this.service = service;
-            this.function = function ?? throw new ArgumentNullException(nameof(function));
+            function = functionProvider?.Delegate ?? throw new ArgumentNullException(nameof(functionProvider));
             this.next = next ?? throw new ArgumentNullException(nameof(next));
         }
 
@@ -69,11 +70,11 @@ namespace RoyalCode.PipelineFlow.Chains
 
         public BridgeChainServiceSync(
             TService service,
-            Func<TService, TIn, Func<TNextIn, TNextOut>, TOut> function,
+            IChainDelegateProvider<Func<TService, TIn, Func<TNextIn, TNextOut>, TOut>> functionProvider,
             TNextChain next)
         {
             this.service = service;
-            this.function = function ?? throw new ArgumentNullException(nameof(function));
+            function = functionProvider?.Delegate ?? throw new ArgumentNullException(nameof(functionProvider));
             this.next = next ?? throw new ArgumentNullException(nameof(next));
         }
 

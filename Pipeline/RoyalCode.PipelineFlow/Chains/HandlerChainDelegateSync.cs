@@ -8,20 +8,20 @@ namespace RoyalCode.PipelineFlow.Chains
 {
     public class HandlerChainDelegateSync<TIn> : Chain<TIn>
     {
-        private readonly Action<TIn> action;
+        private readonly Action<TIn> function;
 
-        public HandlerChainDelegateSync(IChainDelegateProvider<Action<TIn>> action)
+        public HandlerChainDelegateSync(IChainDelegateProvider<Action<TIn>> functionProvider)
         {
-            this.action = action?.Delegate ?? throw new ArgumentNullException(nameof(action));
+            function = functionProvider?.Delegate ?? throw new ArgumentNullException(nameof(functionProvider));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override void Send(TIn input) => action(input);
+        public override void Send(TIn input) => function(input);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override Task SendAsync(TIn input, CancellationToken token)
         {
-            action(input);
+            function(input);
             return Task.CompletedTask;
         }
     }
@@ -30,9 +30,9 @@ namespace RoyalCode.PipelineFlow.Chains
     {
         private readonly Func<TIn, TOut> function;
 
-        public HandlerChainDelegateSync(IChainDelegateProvider<Func<TIn, TOut>> function)
+        public HandlerChainDelegateSync(IChainDelegateProvider<Func<TIn, TOut>> functionProvider)
         {
-            this.function = function?.Delegate ?? throw new ArgumentNullException(nameof(function));
+            function = functionProvider?.Delegate ?? throw new ArgumentNullException(nameof(functionProvider));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
