@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace RoyalCode.Core.Cqs
+namespace RoyalCode.CommandAndQuery
 {
     /// <summary>
     /// Handler intermediário, o qual redirecionará a request a outro handler.

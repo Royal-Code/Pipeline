@@ -1,7 +1,8 @@
 ﻿using System;
 using RoyalCode.PipelineFlow.Chains;
+using RoyalCode.PipelineFlow.Configurations;
 
-namespace RoyalCode.PipelineFlow.Configurations
+namespace RoyalCode.PipelineFlow.Builders
 {
     /// <summary>
     /// <para>
@@ -32,11 +33,5 @@ namespace RoyalCode.PipelineFlow.Configurations
         /// <param name="previousChainType">The chain for the next handler.</param>
         /// <returns>The chain type (<see cref="Chain{TIn}"/>, <see cref="Chain{TIn, TOut}"/>).</returns>
         Type Build(DescriptionBase description, Type? previousChainType = null);
-    }
-
-
-    public interface IPipelineTypeBuilder
-    {
-
     }
 }

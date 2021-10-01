@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace RoyalCode.PipelineFlow.Configurations
 {
@@ -105,89 +102,5 @@ namespace RoyalCode.PipelineFlow.Configurations
     public class DefaultPipelineBuilderWithService<TService, TIn, TOut> : DefaultPipelineBuilder<TIn, TOut>, IPipelineBuilderWithService<TService, TIn, TOut>
     {
         public DefaultPipelineBuilderWithService(IPipelineBuilder pipelineBuilder) : base(pipelineBuilder) { }
-    }
-
-    internal class DefaultPipelineChainBuilder
-    {
-        private readonly IEnumerable<IChainTypeBuilder> chainBuilders;
-        private readonly ChainDelegateRegistry chainDelegateRegistry;
-        private readonly HandlerRegistry handlersRegistry;
-        private readonly DecoratorRegistry decoratorsRegistry;
-        private readonly IDecoratorSorter decoratorSorter;
-
-        public DefaultPipelineChainBuilder(
-            IPipelineConfiguration configuration,
-            IDecoratorSorter decoratorSorter,
-            IEnumerable<IChainTypeBuilder> chainBuilders,
-            ChainDelegateRegistry chainDelegateRegistry)
-        {
-            if (configuration is null)
-                throw new ArgumentNullException(nameof(configuration));
-
-            handlersRegistry = configuration.Handlers;
-            decoratorsRegistry = configuration.Decorators;
-            this.decoratorSorter = decoratorSorter ?? throw new ArgumentNullException(nameof(decoratorSorter));
-            this.chainBuilders = chainBuilders ?? throw new ArgumentNullException(nameof(chainBuilders));
-            this.chainDelegateRegistry = chainDelegateRegistry ?? throw new ArgumentNullException(nameof(chainDelegateRegistry));
-        }
-
-        public Type Build(Type inputType, BridgeChainTypes? bridgeChainTypes = null)
-        {
-            var handlerDescription = handlersRegistry.GetDescription(inputType);
-
-            if (handlerDescription is null)
-                throw new InvalidOperationException($"None handler registrated for type '{inputType.FullName}'.");
-
-            var handlerDelegate = handlerDescription.HandlerDelegateProvider(inputType, typeof(void));
-            chainDelegateRegistry.AddDelegate(handlerDelegate);
-
-            Type chainType;
-
-            if (handlerDescription.IsBridge)
-            {
-                bridgeChainTypes ??= new BridgeChainTypes(inputType);
-
-                // obtém o tipo do próximo input
-                Type bridgeNextInputType = handlerDescription.GetBridgeNextHandlerDescription().InputType;
-
-                // valida o input
-                bridgeChainTypes.Enqueue(bridgeNextInputType);
-
-                // gera o chain para o próximo input
-                chainType = Build(bridgeNextInputType, bridgeChainTypes);
-
-                // adiciona um chain handler para o bridge.
-                var chainBuilder = chainBuilders.FirstOrDefault(c => c.Kind == ChainKind.Bridge);
-                chainType = chainBuilder.Build(handlerDescription, chainType);
-            }
-            else
-            {
-                var chainBuilder = chainBuilders.FirstOrDefault(c => c.Kind == ChainKind.Handler);
-                chainType = chainBuilder.Build(handlerDescription);
-            }
-
-            var decoratorDescriptions = decoratorsRegistry.GetDescriptions(inputType);
-
-            if (decoratorDescriptions.Any())
-            {
-                var chainBuilder = chainBuilders.FirstOrDefault(c => c.Kind == ChainKind.Decorator);
-
-                decoratorSorter.Sort(decoratorDescriptions)
-                    .ToList()
-                    .ForEach(decoratorDescription =>
-                    {
-                        chainType = chainBuilder.Build(decoratorDescription, chainType);
-                    });
-            }
-
-            return chainType;
-        }
-    }
-
-
-
-    public interface IDecoratorSorter
-    {
-        IEnumerable<DecoratorDescription> Sort(IEnumerable<DecoratorDescription> descriptions);
     }
 }

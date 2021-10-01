@@ -1,7 +1,8 @@
 ﻿using RoyalCode.PipelineFlow.Chains;
+using RoyalCode.PipelineFlow.Configurations;
 using System;
 
-namespace RoyalCode.PipelineFlow.Configurations
+namespace RoyalCode.PipelineFlow.Builders
 {
     internal class DecoratorChainTypeBuilder : IChainTypeBuilder
     {
@@ -17,7 +18,7 @@ namespace RoyalCode.PipelineFlow.Configurations
 
             if (baseDescription is not DecoratorDescription description)
                 throw new InvalidOperationException(
-                    $"{nameof(BridgeChainKindBuilder)} only accepts {nameof(BridgeDescription)}" +
+                    $"{nameof(DecoratorChainTypeBuilder)} only accepts {nameof(DecoratorDescription)}" +
                     $" and the current instance is type of {baseDescription.GetType().Name}");
 
             if (description.ServiceType is null)

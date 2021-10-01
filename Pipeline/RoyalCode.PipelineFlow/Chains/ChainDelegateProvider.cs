@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace RoyalCode.PipelineFlow.Configurations
+namespace RoyalCode.PipelineFlow.Chains
 {
     internal class ChainDelegateProvider<TDelegate> : IChainDelegateProvider<TDelegate>
         where TDelegate : Delegate

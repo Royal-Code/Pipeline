@@ -1,7 +1,8 @@
 ﻿using RoyalCode.PipelineFlow.Chains;
+using RoyalCode.PipelineFlow.Configurations;
 using System;
 
-namespace RoyalCode.PipelineFlow.Configurations
+namespace RoyalCode.PipelineFlow.Builders
 {
     internal class HandlerChainTypeBuilder : IChainTypeBuilder
     {

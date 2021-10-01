@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace RoyalCode.Core.Cqs
+namespace RoyalCode.CommandAndQuery
 {
     /// <summary>
     /// <para>

@@ -1,4 +1,4 @@
-﻿namespace RoyalCode.Core.Cqs
+﻿namespace RoyalCode.CommandAndQuery
 {
     /// <summary>
     /// Interface base para <see cref="IBridge{TRequest, TNextRequest}"/> para ser obtida

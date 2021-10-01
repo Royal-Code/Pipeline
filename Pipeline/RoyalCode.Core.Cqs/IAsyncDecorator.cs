@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace RoyalCode.Core.Cqs
+namespace RoyalCode.CommandAndQuery
 {
     /// <summary>
     /// <para>

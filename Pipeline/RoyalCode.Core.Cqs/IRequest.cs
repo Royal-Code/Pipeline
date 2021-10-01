@@ -1,13 +1,17 @@
-﻿namespace RoyalCode.Core.Cqs
+﻿namespace RoyalCode.CommandAndQuery
 {
     /// <summary>
-    /// Requesição de comando ou query que produz um resultado.
+    /// <para>
+    ///     A command or query request that will be handled and produce some result (<typeparamref name="TResult"/>), the response.
+    /// </para>
     /// </summary>
-    /// <typeparam name="TResult">Tipo do resultado produzido pelo processamento do comando ou query.</typeparam>
+    /// <typeparam name="TResult">The type of result produced by processing the command or query.</typeparam>
     public interface IRequest<TResult> { }
 
     /// <summary>
-    /// Requesição de comando ou query sem resultado.
+    /// <para>
+    ///     A command request that produces no result.
+    /// </para>
     /// </summary>
-    public interface IRequest : IRequest<IVoidResult> { }
+    public interface IRequest : IRequest<INothing> { }
 }

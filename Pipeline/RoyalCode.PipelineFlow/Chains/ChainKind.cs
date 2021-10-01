@@ -1,4 +1,4 @@
-﻿namespace RoyalCode.PipelineFlow.Configurations
+﻿namespace RoyalCode.PipelineFlow.Chains
 {
     /// <summary>
     /// Tipos de chains.

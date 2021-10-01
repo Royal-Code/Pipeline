@@ -1,9 +1,10 @@
 ﻿using RoyalCode.PipelineFlow.Chains;
+using RoyalCode.PipelineFlow.Configurations;
 using System;
 
-namespace RoyalCode.PipelineFlow.Configurations
+namespace RoyalCode.PipelineFlow.Builders
 {
-    internal class BridgeChainKindBuilder : IChainTypeBuilder
+    internal class BridgeChainTypeBuilder: IChainTypeBuilder
     {
         public ChainKind Kind => ChainKind.Bridge;
 
@@ -17,7 +18,7 @@ namespace RoyalCode.PipelineFlow.Configurations
 
             if (baseDescription is not BridgeDescription description)
                 throw new InvalidOperationException(
-                    $"{nameof(BridgeChainKindBuilder)} only accepts {nameof(BridgeDescription)}" +
+                    $"{nameof(BridgeChainTypeBuilder)} only accepts {nameof(BridgeDescription)}" +
                     $" and the current instance is type of {baseDescription.GetType().Name}");
 
             if (description.ServiceType is null)
