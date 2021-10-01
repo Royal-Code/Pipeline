@@ -11,8 +11,5 @@ namespace RoyalCode.PipelineFlow.Configurations
         DecoratorRegistry Decorators { get; }
     }
 
-    public interface IPipelineConfiguration<TFor> : IPipelineConfiguration
-    {
-
-    }
+    public interface IPipelineConfiguration<TFor> : IPipelineConfiguration { }
 }
