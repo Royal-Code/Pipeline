@@ -1,18 +1,12 @@
 ﻿using System;
 
-namespace RoyalCode.PipelineFlow.Configurations
+namespace RoyalCode.PipelineFlow.Descriptors
 {
-    public class HandlerDescription : DescriptorBase
+    public class DecoratorDescriptor : DescriptorBase
     {
-        public HandlerDescription(Type inputType, Type outputType, Func<Type, Type, Delegate> handlerDelegateProvider) 
+        public DecoratorDescriptor(Type inputType, Type outputType, Func<Type, Type, Delegate> handlerDelegateProvider)
             : base(inputType, outputType, handlerDelegateProvider)
         { }
-
-        public virtual bool IsBridge => false;
-
-        public virtual BridgeNextHandlerDescription GetBridgeNextHandlerDescription() 
-            => throw new InvalidOperationException("This handler description is not a bridge handler.");
-        
 
         public bool Match(Type inputType)
         {
@@ -23,7 +17,7 @@ namespace RoyalCode.PipelineFlow.Configurations
 
         public bool Match(Type inputType, Type outputType)
         {
-            return 
+            return
                 (InputType.IsGenericType
                     ? InputType.GetGenericTypeDefinition() == inputType.GetGenericTypeDefinition()
                     : InputType.IsGenericParameter || InputType == inputType)

@@ -1,5 +1,5 @@
 ﻿using RoyalCode.PipelineFlow.Chains;
-using RoyalCode.PipelineFlow.Configurations;
+using RoyalCode.PipelineFlow.Descriptors;
 using System;
 
 namespace RoyalCode.PipelineFlow.Builders
@@ -16,9 +16,9 @@ namespace RoyalCode.PipelineFlow.Builders
             if (previousChainType is null)
                 throw new ArgumentNullException(nameof(previousChainType));
 
-            if (descriptor is not BridgeDescription description)
+            if (descriptor is not BridgeDescriptor description)
                 throw new InvalidOperationException(
-                    $"{nameof(BridgeChainTypeBuilder)} only accepts {nameof(BridgeDescription)}" +
+                    $"{nameof(BridgeChainTypeBuilder)} only accepts {nameof(BridgeDescriptor)}" +
                     $" and the current instance is type of {descriptor.GetType().Name}");
 
             if (description.ServiceType is null)

@@ -1,4 +1,5 @@
 ﻿using RoyalCode.PipelineFlow.Chains;
+using RoyalCode.PipelineFlow.Configurations;
 using RoyalCode.PipelineFlow.Exceptions;
 using RoyalCode.PipelineFlow.Extensions;
 using System;
@@ -6,7 +7,7 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace RoyalCode.PipelineFlow.Configurations
+namespace RoyalCode.PipelineFlow.Descriptors
 {
     internal class DescriptorBuilder
     {
@@ -21,7 +22,7 @@ namespace RoyalCode.PipelineFlow.Configurations
         private OutputDescription? output;
         private bool hasToken;
         private GenericResolution? resolution;
-        private BridgeNextHandlerDescription? bridgeNextHandlerDescription;
+        private BridgeNextHandlerDescriptor? bridgeNextHandlerDescription;
 
         private DescriptorBuilder(Delegate handler)
         {
@@ -111,7 +112,7 @@ namespace RoyalCode.PipelineFlow.Configurations
             }
         }
 
-        public HandlerDescription BuildHandlerDescription()
+        public HandlerDescriptor BuildHandlerDescription()
         {
             if (kind is not ChainKind.Handler)
                 throw new InvalidOperationException("The builder is not for handler.");
@@ -127,7 +128,7 @@ namespace RoyalCode.PipelineFlow.Configurations
             else
                 throw new InvalidOperationException("Handler provider can't be resolved");
 
-            return new HandlerDescription(inputType, output.OutputType, provider)
+            return new HandlerDescriptor(inputType, output.OutputType, provider)
             {
                 HasToken = hasToken,
                 HasOutput = output.HasOutput,
@@ -212,7 +213,7 @@ namespace RoyalCode.PipelineFlow.Configurations
                 method);
         }
 
-        public DecoratorDescription BuildDecoratorDescription()
+        public DecoratorDescriptor BuildDecoratorDescription()
         {
             if (kind is not ChainKind.Decorator)
                 throw new InvalidOperationException("The builder is not for decorator.");
@@ -228,7 +229,7 @@ namespace RoyalCode.PipelineFlow.Configurations
             else
                 throw new InvalidOperationException("Handler provider can't be resolved");
 
-            return new DecoratorDescription(inputType, output.OutputType, provider)
+            return new DecoratorDescriptor(inputType, output.OutputType, provider)
             {
                 HasToken = hasToken,
                 HasOutput = output.HasOutput,
@@ -339,7 +340,7 @@ namespace RoyalCode.PipelineFlow.Configurations
             }
         }
 
-        public BridgeDescription BuildBridgeDescription()
+        public BridgeDescriptor BuildBridgeDescription()
         {
             if (kind is not ChainKind.Bridge)
                 throw new InvalidOperationException("The builder is not for decorator.");
@@ -358,7 +359,7 @@ namespace RoyalCode.PipelineFlow.Configurations
             else
                 throw new InvalidOperationException("Handler provider can't be resolved");
 
-            return new BridgeDescription(inputType, output.OutputType, provider, bridgeNextHandlerDescription)
+            return new BridgeDescriptor(inputType, output.OutputType, provider, bridgeNextHandlerDescription)
             {
                 HasToken = hasToken,
                 HasOutput = output.HasOutput,

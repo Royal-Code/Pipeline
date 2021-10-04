@@ -1,10 +1,10 @@
 ﻿using System;
 
-namespace RoyalCode.PipelineFlow.Configurations
+namespace RoyalCode.PipelineFlow.Descriptors
 {
-    public class BridgeNextHandlerDescription
+    public class BridgeNextHandlerDescriptor
     {
-        public BridgeNextHandlerDescription(Type inputType, Type outputType, bool hasOutput, bool isAsync)
+        public BridgeNextHandlerDescriptor(Type inputType, Type outputType, bool hasOutput, bool isAsync)
         {
             InputType = inputType ?? throw new ArgumentNullException(nameof(inputType));
             OutputType = outputType ?? throw new ArgumentNullException(nameof(outputType));

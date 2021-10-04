@@ -1,5 +1,5 @@
 ﻿using RoyalCode.PipelineFlow.Chains;
-using RoyalCode.PipelineFlow.Configurations;
+using RoyalCode.PipelineFlow.Descriptors;
 using System;
 
 namespace RoyalCode.PipelineFlow.Builders

@@ -1,16 +1,16 @@
 ﻿using System;
 
-namespace RoyalCode.PipelineFlow.Configurations
+namespace RoyalCode.PipelineFlow.Descriptors
 {
-    public class BridgeDescription : HandlerDescription
+    public class BridgeDescriptor : HandlerDescriptor
     {
-        private readonly BridgeNextHandlerDescription nextHandlerDescription;
+        private readonly BridgeNextHandlerDescriptor nextHandlerDescription;
 
-        public BridgeDescription(
+        public BridgeDescriptor(
             Type inputType,
             Type outputType,
             Func<Type, Type, Delegate> handlerDelegateProvider,
-            BridgeNextHandlerDescription nextHandlerDescription)
+            BridgeNextHandlerDescriptor nextHandlerDescription)
             : base(inputType, outputType, handlerDelegateProvider)
         {
             this.nextHandlerDescription = nextHandlerDescription;
@@ -18,7 +18,7 @@ namespace RoyalCode.PipelineFlow.Configurations
 
         public override bool IsBridge => true;
 
-        public override BridgeNextHandlerDescription GetBridgeNextHandlerDescription() => nextHandlerDescription;
+        public override BridgeNextHandlerDescriptor GetBridgeNextHandlerDescription() => nextHandlerDescription;
 
         public bool HasNextOutput => OutputType != nextHandlerDescription.OutputType;
 

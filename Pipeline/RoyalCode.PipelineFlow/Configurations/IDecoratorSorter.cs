@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using RoyalCode.PipelineFlow.Descriptors;
+using System.Collections.Generic;
 
 namespace RoyalCode.PipelineFlow.Configurations
 {
     public interface IDecoratorSorter
     {
-        IEnumerable<DecoratorDescription> Sort(IEnumerable<DecoratorDescription> descriptions);
+        IEnumerable<DecoratorDescriptor> Sort(IEnumerable<DecoratorDescriptor> descriptions);
     }
 }

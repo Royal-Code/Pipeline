@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Reflection;
 
-namespace RoyalCode.PipelineFlow.Configurations
+namespace RoyalCode.PipelineFlow.Descriptors
 {
     internal static class DecoratorDescriptionFactory
     {
-        internal static DecoratorDescription GetDecoratorDescription(this Delegate decoratorHandler)
+        internal static DecoratorDescriptor GetDecoratorDescription(this Delegate decoratorHandler)
         {
             var builder = DescriptorBuilder.Create(decoratorHandler);
             builder.ReadDecoratorParameters();
@@ -13,7 +13,7 @@ namespace RoyalCode.PipelineFlow.Configurations
             return builder.BuildDecoratorDescription();
         }
 
-        internal static DecoratorDescription GetDecoratorDescription(this Delegate decoratorHandler, Type serviceType)
+        internal static DecoratorDescriptor GetDecoratorDescription(this Delegate decoratorHandler, Type serviceType)
         {
             var builder = DescriptorBuilder.Create(decoratorHandler, serviceType);
             builder.ReadDecoratorParameters();
@@ -21,7 +21,7 @@ namespace RoyalCode.PipelineFlow.Configurations
             return builder.BuildDecoratorDescription();
         }
 
-        internal static DecoratorDescription GetDecoratorDescription(this MethodInfo decoratorMethod)
+        internal static DecoratorDescriptor GetDecoratorDescription(this MethodInfo decoratorMethod)
         {
             var builder = DescriptorBuilder.Create(decoratorMethod);
             builder.ReadDecoratorParameters();

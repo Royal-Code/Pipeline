@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace RoyalCode.PipelineFlow.Configurations
+namespace RoyalCode.PipelineFlow.Descriptors
 {
     /// <summary>
     /// A base implementation of <see cref="IHandlerDescriptor"/>.
@@ -24,7 +24,7 @@ namespace RoyalCode.PipelineFlow.Configurations
             HandlerDelegateProvider = handlerDelegateProvider ?? throw new ArgumentNullException(nameof(handlerDelegateProvider));
         }
 
-        public Delegate CreateDelegate(Type inputType, Type outputType) 
+        public Delegate CreateDelegate(Type inputType, Type outputType)
             => HandlerDelegateProvider(inputType, outputType);
     }
 }

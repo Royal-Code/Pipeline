@@ -1,11 +1,12 @@
-﻿using System;
+﻿using RoyalCode.PipelineFlow.Descriptors;
+using System;
 using System.Collections.Generic;
 
 namespace RoyalCode.PipelineFlow.Configurations
 {
     /// <summary>
     /// <para>
-    ///     This class work like a collection to store <see cref="IDecoratorResolver"/> and retrieve <see cref="DecoratorDescription"/>.
+    ///     This class work like a collection to store <see cref="IDecoratorResolver"/> and retrieve <see cref="DecoratorDescriptor"/>.
     /// </para>
     /// <para>
     ///     The <see cref="IPipelineConfiguration"/> holds the <see cref="HandlerRegistry"/> and the <see cref="DecoratorRegistry"/>
@@ -24,7 +25,7 @@ namespace RoyalCode.PipelineFlow.Configurations
             resolvers.Add(decoratorResolver);
         }
 
-        public IEnumerable<DecoratorDescription> GetDescriptions(Type inputType)
+        public IEnumerable<DecoratorDescriptor> GetDescriptions(Type inputType)
         {
             foreach (var resolver in resolvers)
             {
@@ -34,7 +35,7 @@ namespace RoyalCode.PipelineFlow.Configurations
             }
         }
 
-        public IEnumerable<DecoratorDescription> GetDescriptions(Type inputType, Type outpuType)
+        public IEnumerable<DecoratorDescriptor> GetDescriptions(Type inputType, Type outpuType)
         {
             foreach (var resolver in resolvers)
             {

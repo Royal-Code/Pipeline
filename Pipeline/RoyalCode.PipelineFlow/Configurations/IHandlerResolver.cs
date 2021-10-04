@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RoyalCode.PipelineFlow.Descriptors;
+using System;
 
 namespace RoyalCode.PipelineFlow.Configurations
 {
@@ -7,8 +8,8 @@ namespace RoyalCode.PipelineFlow.Configurations
     {
         bool IsFallback { get; }
 
-        HandlerDescription? TryResolve(Type inputType);
+        HandlerDescriptor? TryResolve(Type inputType);
 
-        HandlerDescription? TryResolve(Type inputType, Type output);
+        HandlerDescriptor? TryResolve(Type inputType, Type output);
     }
 }

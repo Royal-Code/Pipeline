@@ -10,7 +10,7 @@ namespace RoyalCode.PipelineFlow.Chains
 
         internal void AddDelegate(Delegate chainDelegate) => delegates.Add(chainDelegate);
 
-        internal TDelegate GetDelegate<TDelegate>()
+        internal TDelegate? GetDelegate<TDelegate>()
         {
             return delegates.OfType<TDelegate>().FirstOrDefault();
         }

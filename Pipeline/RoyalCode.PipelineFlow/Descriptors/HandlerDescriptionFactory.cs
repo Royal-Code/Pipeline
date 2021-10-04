@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Reflection;
 
-namespace RoyalCode.PipelineFlow.Configurations
+namespace RoyalCode.PipelineFlow.Descriptors
 {
     internal static class HandlerDescriptionFactory
     {
-        internal static HandlerDescription GetHandlerDescription(this Delegate handler)
+        internal static HandlerDescriptor GetHandlerDescription(this Delegate handler)
         {
             var builder = DescriptorBuilder.Create(handler);
             builder.ReadHandlerParameters();
@@ -13,7 +13,7 @@ namespace RoyalCode.PipelineFlow.Configurations
             return builder.BuildHandlerDescription();
         }
 
-        internal static HandlerDescription GetHandlerDescription(this Delegate handler, Type serviceType)
+        internal static HandlerDescriptor GetHandlerDescription(this Delegate handler, Type serviceType)
         {
             var builder = DescriptorBuilder.Create(handler, serviceType);
             builder.ReadHandlerParameters();
@@ -21,7 +21,7 @@ namespace RoyalCode.PipelineFlow.Configurations
             return builder.BuildHandlerDescription();
         }
 
-        internal static HandlerDescription GetHandlerDescription(this MethodInfo handlerMethod)
+        internal static HandlerDescriptor GetHandlerDescription(this MethodInfo handlerMethod)
         {
             var builder = DescriptorBuilder.Create(handlerMethod);
             builder.ReadHandlerParameters();

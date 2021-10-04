@@ -1,6 +1,6 @@
 ﻿using System;
 using RoyalCode.PipelineFlow.Chains;
-using RoyalCode.PipelineFlow.Configurations;
+using RoyalCode.PipelineFlow.Descriptors;
 
 namespace RoyalCode.PipelineFlow.Builders
 {

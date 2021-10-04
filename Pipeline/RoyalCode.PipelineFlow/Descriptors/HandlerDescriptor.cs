@@ -1,13 +1,18 @@
-﻿using RoyalCode.PipelineFlow.Extensions;
-using System;
+﻿using System;
 
-namespace RoyalCode.PipelineFlow.Configurations
+namespace RoyalCode.PipelineFlow.Descriptors
 {
-    public class DecoratorDescription : DescriptorBase
+    public class HandlerDescriptor : DescriptorBase
     {
-        public DecoratorDescription(Type inputType, Type outputType, Func<Type, Type, Delegate> handlerDelegateProvider) 
+        public HandlerDescriptor(Type inputType, Type outputType, Func<Type, Type, Delegate> handlerDelegateProvider)
             : base(inputType, outputType, handlerDelegateProvider)
         { }
+
+        public virtual bool IsBridge => false;
+
+        public virtual BridgeNextHandlerDescriptor GetBridgeNextHandlerDescription()
+            => throw new InvalidOperationException("This handler description is not a bridge handler.");
+
 
         public bool Match(Type inputType)
         {

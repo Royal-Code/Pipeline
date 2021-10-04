@@ -1,26 +1,27 @@
-﻿using System;
+﻿using RoyalCode.PipelineFlow.Descriptors;
+using System;
 
 namespace RoyalCode.PipelineFlow.Configurations
 {
     public abstract class HandlerResolverBase : IHandlerResolver
     {
-        private readonly HandlerDescription handlerDescription;
+        private readonly HandlerDescriptor handlerDescription;
 
-        protected HandlerResolverBase(HandlerDescription handlerDescription)
+        protected HandlerResolverBase(HandlerDescriptor handlerDescription)
         {
             this.handlerDescription = handlerDescription ?? throw new ArgumentNullException(nameof(handlerDescription));
         }
 
         public bool IsFallback { get; protected set; }
 
-        public HandlerDescription? TryResolve(Type inputType)
+        public HandlerDescriptor? TryResolve(Type inputType)
         {
             return handlerDescription.Match(inputType)
                 ? handlerDescription
                 : null;
         }
 
-        public HandlerDescription? TryResolve(Type inputType, Type output)
+        public HandlerDescriptor? TryResolve(Type inputType, Type output)
         {
             return handlerDescription.Match(inputType, output)
                 ? handlerDescription

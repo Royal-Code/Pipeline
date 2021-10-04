@@ -1,11 +1,12 @@
-﻿using System;
+﻿using RoyalCode.PipelineFlow.Descriptors;
+using System;
 using System.Collections.Generic;
 
 namespace RoyalCode.PipelineFlow.Configurations
 {
     /// <summary>
     /// <para>
-    ///     This class work like a collection to store <see cref="IHandlerResolver"/> and retrieve <see cref="HandlerDescription"/>.
+    ///     This class work like a collection to store <see cref="IHandlerResolver"/> and retrieve <see cref="HandlerDescriptor"/>.
     /// </para>
     /// <para>
     ///     The <see cref="IPipelineConfiguration"/> holds the <see cref="HandlerRegistry"/> and the <see cref="DecoratorRegistry"/>
@@ -28,10 +29,10 @@ namespace RoyalCode.PipelineFlow.Configurations
             resolvers.Add(handlerResolver);
         }
 
-        public HandlerDescription? GetDescription(Type inputType)
+        public HandlerDescriptor? GetDescription(Type inputType)
         {
             LinkedList<IHandlerResolver>? fallbackResolvers = null;
-            HandlerDescription? description = null;
+            HandlerDescriptor? description = null;
 
             foreach (var resolver in resolvers)
             {
@@ -63,10 +64,10 @@ namespace RoyalCode.PipelineFlow.Configurations
             return description;
         }
 
-        public HandlerDescription? GetDescription(Type inputType, Type output)
+        public HandlerDescriptor? GetDescription(Type inputType, Type output)
         {
             LinkedList<IHandlerResolver>? fallbackResolvers = null;
-            HandlerDescription? description = null;
+            HandlerDescriptor? description = null;
 
             foreach (var resolver in resolvers)
             {

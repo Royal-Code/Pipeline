@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace RoyalCode.PipelineFlow.Configurations
+namespace RoyalCode.PipelineFlow.Descriptors
 {
     /// <summary>
     /// The descriptor of a handler contains information to determine the type of chain that will be used 
