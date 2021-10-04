@@ -1,5 +1,7 @@
 ﻿using RoyalCode.PipelineFlow.Descriptors;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace RoyalCode.PipelineFlow.Configurations
 {
@@ -12,7 +14,44 @@ namespace RoyalCode.PipelineFlow.Configurations
     {
         public IEnumerable<DecoratorDescriptor> Sort(IEnumerable<DecoratorDescriptor> descriptions)
         {
-            throw new System.NotImplementedException();
+            var groups = descriptions.GroupBy(d => d.SortDescriptor.Priority)
+                .OrderBy(g => g.Key);
+
+            foreach (var group in groups)
+            {
+                var items = group.ToList();
+                switch (group.Key)
+                {
+                    case SortingPriority.MustBeTheFirst:
+
+                        if (items.Count > 1)
+                            throw new InvalidOperationException("TODO: create an exception for this case");
+
+                        yield return items.First();
+
+                        break;
+                    case SortingPriority.InTheBeginning:
+                    case SortingPriority.InTheMiddle:
+                    case SortingPriority.InTheEnding:
+
+                        foreach (var item in items)
+                        {
+                            yield return item;
+                        }
+
+                        break;
+                    case SortingPriority.MustBeTheLast:
+
+                        if (items.Count > 1)
+                            throw new InvalidOperationException("TODO: create an exception for this case");
+
+                        yield return items.First();
+
+                        break;
+                    default:
+                        break;
+                }
+            }
         }
     }
 
@@ -27,6 +66,15 @@ namespace RoyalCode.PipelineFlow.Configurations
     /// </summary>
     public class SortDescriptor
     {
+        /// <summary>
+        /// The default descriptor for sorting, the priority is in the middle and the position equals 100.
+        /// </summary>
+        public static readonly SortDescriptor Default = new()
+        {
+            Priority = SortingPriority.InTheMiddle,
+            Position = 100
+        };
+
         /// <summary>
         /// The decorator sorting priority.
         /// </summary>

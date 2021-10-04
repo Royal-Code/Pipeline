@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RoyalCode.PipelineFlow.Configurations;
+using System;
 
 namespace RoyalCode.PipelineFlow.Descriptors
 {
@@ -7,6 +8,8 @@ namespace RoyalCode.PipelineFlow.Descriptors
         public DecoratorDescriptor(Type inputType, Type outputType, Func<Type, Type, Delegate> handlerDelegateProvider)
             : base(inputType, outputType, handlerDelegateProvider)
         { }
+
+        public SortDescriptor SortDescriptor { get; set; } = SortDescriptor.Default;
 
         public bool Match(Type inputType)
         {
