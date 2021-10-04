@@ -2,7 +2,7 @@
 
 namespace RoyalCode.PipelineFlow.Configurations
 {
-    public class HandlerDescription : DescriptionBase
+    public class HandlerDescription : DescriptorBase
     {
         public HandlerDescription(Type inputType, Type outputType, Func<Type, Type, Delegate> handlerDelegateProvider) 
             : base(inputType, outputType, handlerDelegateProvider)

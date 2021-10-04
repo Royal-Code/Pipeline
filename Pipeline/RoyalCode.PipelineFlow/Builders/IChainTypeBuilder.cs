@@ -29,9 +29,9 @@ namespace RoyalCode.PipelineFlow.Builders
         /// Determines the type of chain that will mediate the handler call,
         /// from the handler description and, if it exists, the chain to the next handler.
         /// </summary>
-        /// <param name="description">The handler description.</param>
+        /// <param name="descriptor">The handler descriptor.</param>
         /// <param name="previousChainType">The chain for the next handler.</param>
         /// <returns>The chain type (<see cref="Chain{TIn}"/>, <see cref="Chain{TIn, TOut}"/>).</returns>
-        Type Build(DescriptionBase description, Type? previousChainType = null);
+        Type Build(IHandlerDescriptor descriptor, Type? previousChainType = null);
     }
 }

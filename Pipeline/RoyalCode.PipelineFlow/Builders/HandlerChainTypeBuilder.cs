@@ -8,103 +8,103 @@ namespace RoyalCode.PipelineFlow.Builders
     {
         public ChainKind Kind => ChainKind.Handler;
 
-        public Type Build(DescriptionBase description, Type? previousChainType)
+        public Type Build(IHandlerDescriptor descriptor, Type? previousChainType)
         {
-            if (description is null)
-                throw new ArgumentNullException(nameof(description));
+            if (descriptor is null)
+                throw new ArgumentNullException(nameof(descriptor));
 
             if (previousChainType is not null)
                 throw new ArgumentException(
                     "The input handlers can't delegate the processing to a next handler. Previous Chain Type is not allowed.",
                     nameof(previousChainType));
 
-            if (description.ServiceType is null)
+            if (descriptor.ServiceType is null)
             {
-                if (description.IsAsync)
+                if (descriptor.IsAsync)
                 {
-                    if (description.HasToken)
+                    if (descriptor.HasToken)
                     {
-                        if (description.HasOutput)
+                        if (descriptor.HasOutput)
                         {
                             return typeof(HandlerChainDelegateAsync<,>)
-                                .MakeGenericType(description.InputType, description.OutputType);
+                                .MakeGenericType(descriptor.InputType, descriptor.OutputType);
                         }
                         else
                         {
                             return typeof(HandlerChainDelegateAsync<>)
-                                .MakeGenericType(description.InputType);
+                                .MakeGenericType(descriptor.InputType);
                         }
                     }
                     else
                     {
-                        if (description.HasOutput)
+                        if (descriptor.HasOutput)
                         {
                             return typeof(HandlerChainDelegteWithoutCancellationTokenAsync<,>)
-                                .MakeGenericType(description.InputType, description.OutputType);
+                                .MakeGenericType(descriptor.InputType, descriptor.OutputType);
                         }
                         else
                         {
                             return typeof(HandlerChainDelegateWithoutCancellationTokenAsync<>)
-                                .MakeGenericType(description.InputType);
+                                .MakeGenericType(descriptor.InputType);
                         }
                     }
                 }
                 else
                 {
-                    if (description.HasOutput)
+                    if (descriptor.HasOutput)
                     {
                         return typeof(HandlerChainDelegateSync<,>)
-                            .MakeGenericType(description.InputType, description.OutputType);
+                            .MakeGenericType(descriptor.InputType, descriptor.OutputType);
                     }
                     else
                     {
                         return typeof(HandlerChainDelegateSync<>)
-                            .MakeGenericType(description.InputType);
+                            .MakeGenericType(descriptor.InputType);
                     }
                 }
             }
             else
             {
-                if (description.IsAsync)
+                if (descriptor.IsAsync)
                 {
-                    if (description.HasToken)
+                    if (descriptor.HasToken)
                     {
-                        if (description.HasOutput)
+                        if (descriptor.HasOutput)
                         {
                             return typeof(HandlerChainServiceAsync<,,>)
-                                .MakeGenericType(description.InputType, description.OutputType, description.ServiceType);
+                                .MakeGenericType(descriptor.InputType, descriptor.OutputType, descriptor.ServiceType);
                         }
                         else
                         {
                             return typeof(HandlerChainServiceAsync<,>)
-                                .MakeGenericType(description.InputType);
+                                .MakeGenericType(descriptor.InputType);
                         }
                     }
                     else
                     {
-                        if (description.HasOutput)
+                        if (descriptor.HasOutput)
                         {
                             return typeof(HandlerChainServiceWithoutCancellationTokenAsync<,,>)
-                                .MakeGenericType(description.InputType, description.OutputType);
+                                .MakeGenericType(descriptor.InputType, descriptor.OutputType);
                         }
                         else
                         {
                             return typeof(HandlerChainServiceWithoutCancellationTokenAsync<,>)
-                                .MakeGenericType(description.InputType);
+                                .MakeGenericType(descriptor.InputType);
                         }
                     }
                 }
                 else
                 {
-                    if (description.HasOutput)
+                    if (descriptor.HasOutput)
                     {
                         return typeof(HandlerChainServiceSync<,,>)
-                            .MakeGenericType(description.InputType, description.OutputType);
+                            .MakeGenericType(descriptor.InputType, descriptor.OutputType);
                     }
                     else
                     {
                         return typeof(HandlerChainServiceSync<,>)
-                            .MakeGenericType(description.InputType);
+                            .MakeGenericType(descriptor.InputType);
                     }
                 }
             }

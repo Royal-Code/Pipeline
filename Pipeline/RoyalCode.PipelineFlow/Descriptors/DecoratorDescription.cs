@@ -3,7 +3,7 @@ using System;
 
 namespace RoyalCode.PipelineFlow.Configurations
 {
-    public class DecoratorDescription : DescriptionBase
+    public class DecoratorDescription : DescriptorBase
     {
         public DecoratorDescription(Type inputType, Type outputType, Func<Type, Type, Delegate> handlerDelegateProvider) 
             : base(inputType, outputType, handlerDelegateProvider)

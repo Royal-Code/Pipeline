@@ -8,18 +8,18 @@ namespace RoyalCode.PipelineFlow.Builders
     {
         public ChainKind Kind => ChainKind.Bridge;
 
-        public Type Build(DescriptionBase baseDescription, Type? previousChainType)
+        public Type Build(IHandlerDescriptor descriptor, Type? previousChainType)
         {
-            if (baseDescription is null)
-                throw new ArgumentNullException(nameof(baseDescription));
+            if (descriptor is null)
+                throw new ArgumentNullException(nameof(descriptor));
 
             if (previousChainType is null)
                 throw new ArgumentNullException(nameof(previousChainType));
 
-            if (baseDescription is not BridgeDescription description)
+            if (descriptor is not BridgeDescription description)
                 throw new InvalidOperationException(
                     $"{nameof(BridgeChainTypeBuilder)} only accepts {nameof(BridgeDescription)}" +
-                    $" and the current instance is type of {baseDescription.GetType().Name}");
+                    $" and the current instance is type of {descriptor.GetType().Name}");
 
             if (description.ServiceType is null)
             {

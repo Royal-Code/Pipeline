@@ -8,18 +8,18 @@ namespace RoyalCode.PipelineFlow.Builders
     {
         public ChainKind Kind => ChainKind.Decorator;
 
-        public Type Build(DescriptionBase baseDescription, Type? previousChainType)
+        public Type Build(IHandlerDescriptor descriptor, Type? previousChainType)
         {
-            if (baseDescription is null)
-                throw new ArgumentNullException(nameof(baseDescription));
+            if (descriptor is null)
+                throw new ArgumentNullException(nameof(descriptor));
 
             if (previousChainType is null)
                 throw new ArgumentNullException(nameof(previousChainType));
 
-            if (baseDescription is not DecoratorDescription description)
+            if (descriptor is not DecoratorDescription description)
                 throw new InvalidOperationException(
                     $"{nameof(DecoratorChainTypeBuilder)} only accepts {nameof(DecoratorDescription)}" +
-                    $" and the current instance is type of {baseDescription.GetType().Name}");
+                    $" and the current instance is type of {descriptor.GetType().Name}");
 
             if (description.ServiceType is null)
             {

@@ -7,7 +7,7 @@ namespace RoyalCode.PipelineFlow.Configurations
     {
         internal static DecoratorDescription GetDecoratorDescription(this Delegate decoratorHandler)
         {
-            var builder = DescriptionBuilder.Create(decoratorHandler);
+            var builder = DescriptorBuilder.Create(decoratorHandler);
             builder.ReadDecoratorParameters();
             builder.ValidateDecoratorParameters();
             return builder.BuildDecoratorDescription();
@@ -15,7 +15,7 @@ namespace RoyalCode.PipelineFlow.Configurations
 
         internal static DecoratorDescription GetDecoratorDescription(this Delegate decoratorHandler, Type serviceType)
         {
-            var builder = DescriptionBuilder.Create(decoratorHandler, serviceType);
+            var builder = DescriptorBuilder.Create(decoratorHandler, serviceType);
             builder.ReadDecoratorParameters();
             builder.ValidateDecoratorParameters();
             return builder.BuildDecoratorDescription();
@@ -23,7 +23,7 @@ namespace RoyalCode.PipelineFlow.Configurations
 
         internal static DecoratorDescription GetDecoratorDescription(this MethodInfo decoratorMethod)
         {
-            var builder = DescriptionBuilder.Create(decoratorMethod);
+            var builder = DescriptorBuilder.Create(decoratorMethod);
             builder.ReadDecoratorParameters();
             builder.ValidateDecoratorParameters();
             builder.ResolveMethodHandlerProvider();

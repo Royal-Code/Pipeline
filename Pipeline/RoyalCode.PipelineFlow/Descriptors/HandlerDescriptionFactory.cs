@@ -7,7 +7,7 @@ namespace RoyalCode.PipelineFlow.Configurations
     {
         internal static HandlerDescription GetHandlerDescription(this Delegate handler)
         {
-            var builder = DescriptionBuilder.Create(handler);
+            var builder = DescriptorBuilder.Create(handler);
             builder.ReadHandlerParameters();
             builder.ValidateHandlerParameters();
             return builder.BuildHandlerDescription();
@@ -15,7 +15,7 @@ namespace RoyalCode.PipelineFlow.Configurations
 
         internal static HandlerDescription GetHandlerDescription(this Delegate handler, Type serviceType)
         {
-            var builder = DescriptionBuilder.Create(handler, serviceType);
+            var builder = DescriptorBuilder.Create(handler, serviceType);
             builder.ReadHandlerParameters();
             builder.ValidateHandlerParameters();
             return builder.BuildHandlerDescription();
@@ -23,7 +23,7 @@ namespace RoyalCode.PipelineFlow.Configurations
 
         internal static HandlerDescription GetHandlerDescription(this MethodInfo handlerMethod)
         {
-            var builder = DescriptionBuilder.Create(handlerMethod);
+            var builder = DescriptorBuilder.Create(handlerMethod);
             builder.ReadHandlerParameters();
             builder.ValidateHandlerParameters();
             builder.ResolveMethodHandlerProvider();

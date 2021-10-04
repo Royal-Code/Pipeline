@@ -2,7 +2,10 @@
 
 namespace RoyalCode.PipelineFlow.Configurations
 {
-    public class DescriptionBase
+    /// <summary>
+    /// A base implementation of <see cref="IHandlerDescriptor"/>.
+    /// </summary>
+    public class DescriptorBase : IHandlerDescriptor
     {
         public Type InputType { get; }
         public Type OutputType { get; }
@@ -14,11 +17,14 @@ namespace RoyalCode.PipelineFlow.Configurations
 
         public Func<Type, Type, Delegate> HandlerDelegateProvider { get; }
 
-        public DescriptionBase(Type inputType, Type outputType, Func<Type, Type, Delegate> handlerDelegateProvider)
+        public DescriptorBase(Type inputType, Type outputType, Func<Type, Type, Delegate> handlerDelegateProvider)
         {
             InputType = inputType ?? throw new ArgumentNullException(nameof(inputType));
             OutputType = outputType ?? throw new ArgumentNullException(nameof(outputType));
             HandlerDelegateProvider = handlerDelegateProvider ?? throw new ArgumentNullException(nameof(handlerDelegateProvider));
         }
+
+        public Delegate CreateDelegate(Type inputType, Type outputType) 
+            => HandlerDelegateProvider(inputType, outputType);
     }
 }

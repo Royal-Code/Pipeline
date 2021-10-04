@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace RoyalCode.PipelineFlow.Configurations
 {
-    internal class DescriptionBuilder
+    internal class DescriptorBuilder
     {
         private ChainKind kind;
         private readonly Delegate? handler;
@@ -23,7 +23,7 @@ namespace RoyalCode.PipelineFlow.Configurations
         private GenericResolution? resolution;
         private BridgeNextHandlerDescription? bridgeNextHandlerDescription;
 
-        private DescriptionBuilder(Delegate handler)
+        private DescriptorBuilder(Delegate handler)
         {
             this.handler = handler;
             method = handler.Method;
@@ -31,7 +31,7 @@ namespace RoyalCode.PipelineFlow.Configurations
             handlerHasServiceParameter = false;
         }
 
-        private DescriptionBuilder(Delegate handler, Type serviceType)
+        private DescriptorBuilder(Delegate handler, Type serviceType)
         {
             this.handler = handler;
             this.serviceType = serviceType;
@@ -40,7 +40,7 @@ namespace RoyalCode.PipelineFlow.Configurations
             handlerHasServiceParameter = true;
         }
 
-        private DescriptionBuilder(MethodInfo method)
+        private DescriptorBuilder(MethodInfo method)
         {
             serviceType = method.DeclaringType;
             handlerHasServiceParameter = false;
@@ -49,11 +49,11 @@ namespace RoyalCode.PipelineFlow.Configurations
             handler = null;
         }
 
-        public static DescriptionBuilder Create(Delegate handler) => new(handler);
+        public static DescriptorBuilder Create(Delegate handler) => new(handler);
 
-        public static DescriptionBuilder Create(Delegate handler, Type serviceType) => new(handler, serviceType);
+        public static DescriptorBuilder Create(Delegate handler, Type serviceType) => new(handler, serviceType);
 
-        public static DescriptionBuilder Create(MethodInfo method) => new(method);
+        public static DescriptorBuilder Create(MethodInfo method) => new(method);
 
         #region Handler Functions
 

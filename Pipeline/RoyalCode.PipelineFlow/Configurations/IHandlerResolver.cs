@@ -2,6 +2,7 @@
 
 namespace RoyalCode.PipelineFlow.Configurations
 {
+
     public interface IHandlerResolver
     {
         bool IsFallback { get; }
