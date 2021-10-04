@@ -1,4 +1,4 @@
-﻿using RoyalCode.PipelineFlow.Configurations;
+﻿using RoyalCode.PipelineFlow.Resolvers;
 using System;
 using System.Threading;
 using System.Threading.Tasks;

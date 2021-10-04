@@ -1,8 +1,9 @@
-﻿using System;
+﻿using RoyalCode.PipelineFlow.Configurations;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace RoyalCode.PipelineFlow.Configurations
+namespace RoyalCode.PipelineFlow.Resolvers
 {
     public static class DefaultDecoratorsResolver
     {

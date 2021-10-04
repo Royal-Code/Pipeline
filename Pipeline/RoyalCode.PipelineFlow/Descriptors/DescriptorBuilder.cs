@@ -1,5 +1,4 @@
 ﻿using RoyalCode.PipelineFlow.Chains;
-using RoyalCode.PipelineFlow.Configurations;
 using RoyalCode.PipelineFlow.Exceptions;
 using RoyalCode.PipelineFlow.Extensions;
 using System;
@@ -19,7 +18,7 @@ namespace RoyalCode.PipelineFlow.Descriptors
         private readonly Type? serviceType;
 
         private Type? inputType;
-        private OutputDescription? output;
+        private OutputDescriptor? output;
         private bool hasToken;
         private GenericResolution? resolution;
         private BridgeNextHandlerDescriptor? bridgeNextHandlerDescription;
@@ -83,7 +82,7 @@ namespace RoyalCode.PipelineFlow.Descriptors
 
             kind = ChainKind.Handler;
 
-            output = new OutputDescription(method);
+            output = new OutputDescriptor(method);
         }
 
         public void ValidateHandlerParameters()
@@ -166,7 +165,7 @@ namespace RoyalCode.PipelineFlow.Descriptors
 
             kind = ChainKind.Decorator;
 
-            output = new OutputDescription(method);
+            output = new OutputDescriptor(method);
         }
 
         public void ValidateDecoratorParameters()
@@ -267,7 +266,7 @@ namespace RoyalCode.PipelineFlow.Descriptors
 
             kind = ChainKind.Bridge;
 
-            output = new OutputDescription(method);
+            output = new OutputDescriptor(method);
         }
 
         public void ReadBridgeNextHandler()

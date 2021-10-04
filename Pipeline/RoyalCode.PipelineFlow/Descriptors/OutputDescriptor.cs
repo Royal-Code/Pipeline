@@ -3,14 +3,14 @@ using System;
 using System.Reflection;
 using System.Threading.Tasks;
 
-namespace RoyalCode.PipelineFlow.Configurations
+namespace RoyalCode.PipelineFlow.Descriptors
 {
     /// <summary>
     /// Analyze and store information about the return type of a method, which will be the output of the pipeline.
     /// </summary>
-    public class OutputDescription
+    public class OutputDescriptor
     {
-        public OutputDescription(MethodInfo method)
+        public OutputDescriptor(MethodInfo method)
         {
             var outputType = method.ReturnType;
             bool hasOutput = true;

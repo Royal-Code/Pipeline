@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RoyalCode.PipelineFlow.Resolvers;
+using System;
 
 namespace RoyalCode.PipelineFlow.Configurations
 {

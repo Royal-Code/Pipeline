@@ -1,7 +1,7 @@
 ﻿using RoyalCode.PipelineFlow.Descriptors;
 using System.Reflection;
 
-namespace RoyalCode.PipelineFlow.Configurations
+namespace RoyalCode.PipelineFlow.Resolvers
 {
     public class MethodBridgeHandlerResolver : HandlerResolverBase
     {

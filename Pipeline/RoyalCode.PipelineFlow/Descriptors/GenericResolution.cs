@@ -1,11 +1,10 @@
-﻿using RoyalCode.PipelineFlow.Extensions;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace RoyalCode.PipelineFlow.Configurations
+namespace RoyalCode.PipelineFlow.Descriptors
 {
     /// <summary>
     /// Contém a resolução dos tipos genéricos do input e output em relação ao serviço de um method handler.
@@ -44,7 +43,7 @@ namespace RoyalCode.PipelineFlow.Configurations
         ///     Caso algum tipo genérico do serviço não for mapeado para um genérico do input ou output.
         /// </para>
         /// </exception>
-        public GenericResolution(Type inputType, Type outputType, 
+        public GenericResolution(Type inputType, Type outputType,
             bool isAsync, bool hasOutput, MethodInfo handlerMethod)
         {
             if (inputType is null)
@@ -227,7 +226,8 @@ namespace RoyalCode.PipelineFlow.Configurations
                     for (int i = 0; i < serviceGenericArguments.Length; i++)
                     {
                         var argument = serviceGenericArguments[i];
-                        if (argument == ArgumentType) { 
+                        if (argument == ArgumentType)
+                        {
                             ServiceGenericParameterIndex = i;
                             break;
                         }
@@ -280,7 +280,7 @@ namespace RoyalCode.PipelineFlow.Configurations
                 }
             }
 
-            var serviceType =  genericTypes.Length > 0
+            var serviceType = genericTypes.Length > 0
                 ? handlerMethod.DeclaringType.MakeGenericType(genericTypes)
                 : handlerMethod.DeclaringType;
 
@@ -292,8 +292,8 @@ namespace RoyalCode.PipelineFlow.Configurations
                 for (int i = 1; i < parameters.Length; i++)
                 {
                     var binding = methodGenericTypeParametersBindings?.FirstOrDefault(a => a.ParameterIndex == i);
-                    parametersTypes[i] = binding is not null 
-                        ? binding.MakeParamterType(genericTypes) 
+                    parametersTypes[i] = binding is not null
+                        ? binding.MakeParamterType(genericTypes)
                         : parameters[i].ParameterType;
                 }
 
@@ -311,12 +311,12 @@ namespace RoyalCode.PipelineFlow.Configurations
                 var paramExpression = Expression.Parameter(paramType);
                 delegateParameters.Add(paramExpression);
             }
-            
+
             // make the delegate type
             Type delegateType = MakeDelegateType(
                 serviceType,
                 parametersTypes,
-                (hasOutput || isAsync) ? executableMethod.ReturnType : null);
+                hasOutput || isAsync ? executableMethod.ReturnType : null);
 
             // create the lambda for call the service method.
             var methodArgs = delegateParameters.Skip(1).ToArray();

@@ -1,4 +1,4 @@
-using RoyalCode.PipelineFlow.Configurations;
+using RoyalCode.PipelineFlow.Descriptors;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +15,7 @@ namespace RoyalCode.PipelineFlow.Tests
         {
             var method = typeof(GenericResolution_Test_01<>).GetMethod("Handler");
             Assert.NotNull(method);
-            var output = new OutputDescription(method!);
+            var output = new OutputDescriptor(method!);
 
             var resolution = new GenericResolution(
                 method!.GetParameters()[0].ParameterType,
@@ -38,7 +38,7 @@ namespace RoyalCode.PipelineFlow.Tests
         {
             var method = typeof(GenericResolution_Test_02<,>).GetMethod("Handler");
             Assert.NotNull(method);
-            var output = new OutputDescription(method!);
+            var output = new OutputDescriptor(method!);
 
             var resolution = new GenericResolution(
                 method!.GetParameters()[0].ParameterType,
@@ -61,7 +61,7 @@ namespace RoyalCode.PipelineFlow.Tests
         {
             var method = typeof(GenericResolution_Test_03).GetMethod("Handler");
             Assert.NotNull(method);
-            var output = new OutputDescription(method!);
+            var output = new OutputDescriptor(method!);
 
             var resolution = new GenericResolution(
                 method!.GetParameters()[0].ParameterType,
@@ -84,7 +84,7 @@ namespace RoyalCode.PipelineFlow.Tests
         {
             var method = typeof(GenericResolution_Test_04).GetMethod("Handler");
             Assert.NotNull(method);
-            var output = new OutputDescription(method!);
+            var output = new OutputDescriptor(method!);
 
             var resolution = new GenericResolution(
                 method!.GetParameters()[0].ParameterType,
@@ -108,7 +108,7 @@ namespace RoyalCode.PipelineFlow.Tests
         {
             var method = typeof(GenericResolution_Test_05).GetMethod("Handler");
             Assert.NotNull(method);
-            var output = new OutputDescription(method!);
+            var output = new OutputDescriptor(method!);
 
             var resolution = new GenericResolution(
                 method!.GetParameters()[0].ParameterType,
@@ -135,7 +135,7 @@ namespace RoyalCode.PipelineFlow.Tests
         {
             var method = typeof(GenericResolution_Test_06<>).GetMethod("Handler");
             Assert.NotNull(method); 
-            var output = new OutputDescription(method!);
+            var output = new OutputDescriptor(method!);
 
             var resolution = new GenericResolution(
                 method!.GetParameters()[0].ParameterType,
@@ -159,7 +159,7 @@ namespace RoyalCode.PipelineFlow.Tests
         {
             var method = typeof(GenericResolution_Test_07<>).GetMethod("Handler");
             Assert.NotNull(method);
-            var output = new OutputDescription(method!);
+            var output = new OutputDescriptor(method!);
 
             var resolution = new GenericResolution(
                 method!.GetParameters()[0].ParameterType,
@@ -186,7 +186,7 @@ namespace RoyalCode.PipelineFlow.Tests
         {
             var method = typeof(GenericResolution_Test_08<>).GetMethod("Handler");
             Assert.NotNull(method); 
-            var output = new OutputDescription(method!);
+            var output = new OutputDescriptor(method!);
 
             var resolution = new GenericResolution(
                 method!.GetParameters()[0].ParameterType,
@@ -211,7 +211,7 @@ namespace RoyalCode.PipelineFlow.Tests
         {
             var method = typeof(GenericResolution_Test_09<>).GetMethod("Handler");
             Assert.NotNull(method);
-            var output = new OutputDescription(method!);
+            var output = new OutputDescriptor(method!);
 
             var resolution = new GenericResolution(
                 method!.GetParameters()[0].ParameterType,
@@ -239,7 +239,7 @@ namespace RoyalCode.PipelineFlow.Tests
         {
             var method = typeof(GenericResolution_Test_10<>).GetMethod("Handler");
             Assert.NotNull(method); 
-            var output = new OutputDescription(method!);
+            var output = new OutputDescriptor(method!);
 
             var resolution = new GenericResolution(
                 method!.GetParameters()[0].ParameterType,
@@ -265,7 +265,7 @@ namespace RoyalCode.PipelineFlow.Tests
         {
             var method = typeof(GenericResolution_Test_11<>).GetMethod("Handler");
             Assert.NotNull(method); 
-            var output = new OutputDescription(method!);
+            var output = new OutputDescriptor(method!);
 
             var resolution = new GenericResolution(
                 method!.GetParameters()[0].ParameterType,
@@ -295,7 +295,7 @@ namespace RoyalCode.PipelineFlow.Tests
             
             var method = typeof(GenericResolution_Test_12<>).GetMethod("Handler");
             Assert.NotNull(method);
-            var output = new OutputDescription(method!);
+            var output = new OutputDescriptor(method!);
 
             var resolution = new GenericResolution(
                 method!.GetParameters()[0].ParameterType,
@@ -319,7 +319,7 @@ namespace RoyalCode.PipelineFlow.Tests
 
             var method = typeof(GenericResolution_Test_13<>).GetMethod("Handler");
             Assert.NotNull(method);
-            var output = new OutputDescription(method!);
+            var output = new OutputDescriptor(method!);
 
             var resolution = new GenericResolution(
                 method!.GetParameters()[0].ParameterType,
@@ -342,7 +342,7 @@ namespace RoyalCode.PipelineFlow.Tests
         {
             var method = typeof(GenericResolution_Test_14<,>).GetMethod("Handler");
             Assert.NotNull(method);
-            var output = new OutputDescription(method!);
+            var output = new OutputDescriptor(method!);
 
             var resolution = new GenericResolution(
                 method!.GetParameters()[0].ParameterType,
@@ -365,7 +365,7 @@ namespace RoyalCode.PipelineFlow.Tests
         {
             var method = typeof(GenericResolution_Test_15<,>).GetMethod("Handler");
             Assert.NotNull(method);
-            var output = new OutputDescription(method!);
+            var output = new OutputDescriptor(method!);
 
             var resolution = new GenericResolution(
                 method!.GetParameters()[0].ParameterType,
@@ -388,7 +388,7 @@ namespace RoyalCode.PipelineFlow.Tests
         {
             var method = typeof(GenericResolution_Test_16<,>).GetMethod("Handler");
             Assert.NotNull(method);
-            var output = new OutputDescription(method!);
+            var output = new OutputDescriptor(method!);
 
             var resolution = new GenericResolution(
                 method!.GetParameters()[0].ParameterType,
@@ -411,7 +411,7 @@ namespace RoyalCode.PipelineFlow.Tests
         {
             var method = typeof(GenericResolution_Test_17<,>).GetMethod("Handler");
             Assert.NotNull(method);
-            var output = new OutputDescription(method!);
+            var output = new OutputDescriptor(method!);
 
             var resolution = new GenericResolution(
                 method!.GetParameters()[0].ParameterType,

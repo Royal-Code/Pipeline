@@ -1,7 +1,7 @@
 ﻿using RoyalCode.PipelineFlow.Descriptors;
 using System;
 
-namespace RoyalCode.PipelineFlow.Configurations
+namespace RoyalCode.PipelineFlow.Resolvers
 {
     public abstract class DecoratorResolverBase : IDecoratorResolver
     {

@@ -1,8 +1,4 @@
-﻿using RoyalCode.PipelineFlow.Configurations;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using RoyalCode.PipelineFlow.Descriptors;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -15,7 +11,7 @@ namespace RoyalCode.PipelineFlow.Tests
         {
             var method = typeof(OutputDescriptionTests_01).GetMethod("Handler");
             Assert.NotNull(method);
-            var output = new OutputDescription(method!);
+            var output = new OutputDescriptor(method!);
 
             Assert.False(output.HasOutput);
             Assert.False(output.IsAsync);
@@ -28,7 +24,7 @@ namespace RoyalCode.PipelineFlow.Tests
         {
             var method = typeof(OutputDescriptionTests_02).GetMethod("Handler");
             Assert.NotNull(method);
-            var output = new OutputDescription(method!);
+            var output = new OutputDescriptor(method!);
 
             Assert.True(output.HasOutput);
             Assert.False(output.IsAsync);
@@ -41,7 +37,7 @@ namespace RoyalCode.PipelineFlow.Tests
         {
             var method = typeof(OutputDescriptionTests_03).GetMethod("Handler");
             Assert.NotNull(method);
-            var output = new OutputDescription(method!);
+            var output = new OutputDescriptor(method!);
 
             Assert.False(output.HasOutput);
             Assert.True(output.IsAsync);
@@ -54,7 +50,7 @@ namespace RoyalCode.PipelineFlow.Tests
         {
             var method = typeof(OutputDescriptionTests_04).GetMethod("Handler");
             Assert.NotNull(method);
-            var output = new OutputDescription(method!);
+            var output = new OutputDescriptor(method!);
 
             Assert.True(output.HasOutput);
             Assert.True(output.IsAsync);

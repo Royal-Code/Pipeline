@@ -1,4 +1,5 @@
 ﻿using RoyalCode.PipelineFlow.Configurations;
+using RoyalCode.PipelineFlow.Resolvers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace RoyalCode.PipelineFlow.Tests.Samples
 {
-    
+
     public class BuildingSample
     {
         public void Buiding(IPipelineBuilder builder)
