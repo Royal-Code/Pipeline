@@ -1,6 +1,7 @@
 ﻿using RoyalCode.PipelineFlow.Builders;
 using RoyalCode.PipelineFlow.Chains;
 using RoyalCode.PipelineFlow.Configurations;
+using System;
 using System.Collections.Generic;
 
 namespace RoyalCode.PipelineFlow
@@ -8,7 +9,7 @@ namespace RoyalCode.PipelineFlow
     public class PipelineFactoryConfiguration<TFor>
     {
         private IPipelineTypeBuilder? pipelineTypeBuilder = null;
-        private IDecoratorSorter? decoratorSorter = null;
+        private DecoratorSorter decoratorSorter = new();
         private ChainDelegateRegistry chainDelegateRegistry = new();
 
         internal PipelineFactoryConfiguration() { }
@@ -28,6 +29,16 @@ namespace RoyalCode.PipelineFlow
                 Configuration, decoratorSorter, ChainBuilders, chainDelegateRegistry);
 
             return new PipelineFactory<TFor>(chainPipelineBuilder, pipelineTypeBuilder);
+        }
+    }
+
+    internal class PipelineTypeBuilder : IPipelineTypeBuilder
+    {
+
+
+        public object Build(Type chainType)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -6,6 +6,6 @@ namespace System.Threading.Tasks
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static T GetResultSynchronously<T>(this Task<T> task)
-            => Task.Run(async () => await task.ConfigureAwait(false)).GetAwaiter().GetResult();
+            => Task.Run(async () => await task.ConfigureAwait(false)).ConfigureAwait(false).GetAwaiter().GetResult();
     }
 }
