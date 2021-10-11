@@ -8,14 +8,18 @@ namespace RoyalCode.PipelineFlow
 {
     public class PipelineFactoryConfiguration<TFor>
     {
-        private IPipelineTypeBuilder? pipelineTypeBuilder = null;
-        private DecoratorSorter decoratorSorter = new();
-        private ChainDelegateRegistry chainDelegateRegistry = new();
+        private IServiceProvider? userServiceProvider = null;
 
         internal PipelineFactoryConfiguration() { }
 
+        /// <summary>
+        /// The chains configurations.
+        /// </summary>
         public IPipelineConfiguration<TFor> Configuration { get; } = new PipelineConfiguration<TFor>();
-
+        
+        /// <summary>
+        /// The builder of the chains, with the default buiders.
+        /// </summary>
         public ICollection<IChainTypeBuilder> ChainBuilders { get; } = new List<IChainTypeBuilder>()
         {
             new HandlerChainTypeBuilder(),
@@ -23,22 +27,39 @@ namespace RoyalCode.PipelineFlow
             new DecoratorChainTypeBuilder(),
         };
 
+        /// <summary>
+        /// <para>
+        ///     Collection of factories for services.
+        /// </para>
+        /// <para>
+        ///     This collection will be ignored if the <see cref="PipelineFactoryConfiguration{TFor}.ServiceProvider"/>
+        ///     has being configured.
+        /// </para>
+        /// </summary>
+        public ServiceFactoryCollection ServiceFactoryCollection { get; } = new ServiceFactoryCollection();
+
+        /// <summary>
+        /// <para>
+        ///     The service provider for resolve the services and chains dependencies.
+        /// </para>
+        /// </summary>
+        public IServiceProvider ServiceProvider 
+        {
+            set => userServiceProvider = value;
+        }
+
+        /// <summary>
+        /// Create the pipeline factory for some kind of component.
+        /// </summary>
+        /// <returns>A new instance of <see cref="IPipelineFactory{TFor}"/>.</returns>
         public IPipelineFactory<TFor> Create()
         {
             var chainPipelineBuilder = new PipelineChainTypeBuilder<TFor>(
-                Configuration, decoratorSorter, ChainBuilders, chainDelegateRegistry);
+                Configuration, new DecoratorSorter(), ChainBuilders, new ChainDelegateRegistry());
+
+            var pipelineTypeBuilder = new PipelineTypeBuilder(userServiceProvider ?? ServiceFactoryCollection.BuildServiceProvider());
 
             return new PipelineFactory<TFor>(chainPipelineBuilder, pipelineTypeBuilder);
-        }
-    }
-
-    internal class PipelineTypeBuilder : IPipelineTypeBuilder
-    {
-
-
-        public object Build(Type chainType)
-        {
-            throw new NotImplementedException();
         }
     }
 }

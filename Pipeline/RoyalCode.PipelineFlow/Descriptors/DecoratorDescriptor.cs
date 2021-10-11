@@ -1,5 +1,4 @@
-﻿using RoyalCode.PipelineFlow.Configurations;
-using System;
+﻿using System;
 
 namespace RoyalCode.PipelineFlow.Descriptors
 {
