@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Concurrent;
+using System.Linq;
+using System.Reflection;
 using System.Text;
 
 namespace RoyalCode.PipelineFlow
@@ -80,6 +83,47 @@ namespace RoyalCode.PipelineFlow
             }
 
             return instance;
+        }
+    }
+
+    internal class ServiceActivator
+    {
+        private readonly ConcurrentDictionary<Type, Func<Type, IServiceProvider, object>> factories = new();
+
+        internal bool CanActivate(Type type, ServiceFactoryCollection serviceFactories)
+        {
+            var ctor = type.GetConstructors()
+                .Where(c => c.IsPublic)
+                .FirstOrDefault();
+
+            if (ctor is null)
+                return false;
+
+            var dependencies = ctor.GetParameters().Select(p => new Dependency(p)).ToList();
+
+            foreach (var dependency in dependencies)
+            {
+                var serviceType = dependency.ParameterInfo.ParameterType;
+                if (serviceFactories.GetFactory(serviceType) != null)
+                    continue;
+
+                if (!CanActivate(dependency.ParameterInfo.ParameterType, serviceFactories))
+                {
+
+                }
+            }
+        }
+
+        private class Dependency
+        {
+            public Dependency(ParameterInfo parameterInfo)
+            {
+                ParameterInfo = parameterInfo;
+            }
+
+            public ParameterInfo ParameterInfo { get; }
+
+            
         }
     }
 }
