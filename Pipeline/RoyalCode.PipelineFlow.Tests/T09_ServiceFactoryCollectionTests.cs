@@ -45,7 +45,25 @@ namespace RoyalCode.PipelineFlow.Tests
             Assert.NotNull(service);
         }
 
+        [Fact]
+        public void T04_ActivableService2_WithOptionalConstructor()
+        {
+            var services = new ServiceFactoryCollection();
+            var provider = services.BuildServiceProvider();
 
+            var service = provider.GetService(typeof(ActivableService2)) as ActivableService2;
+            Assert.NotNull(service);
+        }
+
+        [Fact]
+        public void T05_ActivableService2_ComplexService()
+        {
+            var services = new ServiceFactoryCollection();
+            var provider = services.BuildServiceProvider();
+
+            var service = provider.GetService(typeof(ActivableService3)) as ActivableService3;
+            Assert.NotNull(service);
+        }
     }
 
 
@@ -69,5 +87,18 @@ namespace RoyalCode.PipelineFlow.Tests
     public class ActivableService
     {
         public ActivableService() { }
+    }
+
+    public class ActivableService2
+    {
+        public ActivableService2(ISimpleService? willBeNull = null) { }
+    }
+
+    public class ActivableService3
+    {
+        public ActivableService3(
+            ActivableService service1, 
+            ActivableService2 service2,
+            ISimpleService? service3 = null) { }
     }
 }

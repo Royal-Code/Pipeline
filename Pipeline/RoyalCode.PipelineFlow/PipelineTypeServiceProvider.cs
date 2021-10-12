@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Text;
 
@@ -18,8 +20,8 @@ namespace RoyalCode.PipelineFlow
         }
 
         internal PipelineTypeServiceProvider(
-            ServiceFactoryCollection serviceFactoryCollection, 
-            PipelineTypeServiceProvider? previous, 
+            ServiceFactoryCollection serviceFactoryCollection,
+            PipelineTypeServiceProvider? previous,
             Type? requestedServiceType) : this(serviceFactoryCollection)
         {
             this.previous = previous;
@@ -61,15 +63,11 @@ namespace RoyalCode.PipelineFlow
             var factory = serviceFactoryCollection.GetFactory(serviceType);
             if (factory is null)
             {
-                try
-                {
-                    return Activator.CreateInstance(serviceType);
-                }
-                catch (Exception ex)
-                {
-                    throw new ArgumentException(
-                        $"The type '{serviceType.FullName}' is not a service and can't be created from the default construtor", nameof(serviceType), ex);
-                }
+                if (ServiceActivator.CanActivate(serviceType, serviceFactoryCollection))
+                    return GetService(serviceType);
+
+                throw new ArgumentException(
+                    $"The type '{serviceType.FullName}' is not a service and can't be created from the default construtor", nameof(serviceType));
             }
 
             var provider = new PipelineTypeServiceProvider(serviceFactoryCollection, this, serviceType);
@@ -86,11 +84,9 @@ namespace RoyalCode.PipelineFlow
         }
     }
 
-    internal class ServiceActivator
+    internal static class ServiceActivator
     {
-        private readonly ConcurrentDictionary<Type, Func<Type, IServiceProvider, object>> factories = new();
-
-        internal bool CanActivate(Type type, ServiceFactoryCollection serviceFactories)
+        internal static bool CanActivate(Type type, ServiceFactoryCollection serviceFactories)
         {
             var ctor = type.GetConstructors()
                 .Where(c => c.IsPublic)
@@ -107,11 +103,46 @@ namespace RoyalCode.PipelineFlow
                 if (serviceFactories.GetFactory(serviceType) != null)
                     continue;
 
-                if (!CanActivate(dependency.ParameterInfo.ParameterType, serviceFactories))
+                if (!CanActivate(serviceType, serviceFactories))
                 {
-
+                    if (dependency.ParameterInfo.IsOptional)
+                        dependency.UseNullValue = true;
+                    else
+                        return false;
                 }
             }
+
+            CreateFactory(type, serviceFactories, ctor, dependencies);
+
+            return true;
+        }
+
+        private static void CreateFactory(
+            Type type,
+            ServiceFactoryCollection serviceFactories,
+            ConstructorInfo ctor,
+            List<Dependency> dependencies)
+        {
+            var typeParam = Expression.Parameter(typeof(Type), "type");
+            var spParam = Expression.Parameter(typeof(IServiceProvider), "sp");
+
+            var newExpression = Expression.New(ctor, dependencies.Select(d =>
+            {
+                return (Expression)(d.UseNullValue
+                    ? Expression.Constant(null, d.ParameterInfo.ParameterType)
+                    : Expression.Convert(
+                        Expression.Call(
+                            spParam,
+                            typeof(IServiceProvider).GetMethod("GetService"),
+                            Expression.Constant(d.ParameterInfo.ParameterType)),
+                        d.ParameterInfo.ParameterType));
+            }));
+
+            var lambda = Expression.Lambda<Func<Type, IServiceProvider, object>>(newExpression, typeParam, spParam);
+
+            var factory = lambda.Compile();
+
+            serviceFactories.AddServiceFactory(type, factory);
         }
 
         private class Dependency
@@ -123,7 +154,7 @@ namespace RoyalCode.PipelineFlow
 
             public ParameterInfo ParameterInfo { get; }
 
-            
+            public bool UseNullValue { get; set; } = false;
         }
     }
 }
