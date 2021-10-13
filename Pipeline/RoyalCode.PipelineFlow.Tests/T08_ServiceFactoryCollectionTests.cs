@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace RoyalCode.PipelineFlow.Tests
 {
-    public class T09_ServiceFactoryCollectionTests
+    public class T08_ServiceFactoryCollectionTests
     {
 
         [Fact]

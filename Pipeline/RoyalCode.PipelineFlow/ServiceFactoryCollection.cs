@@ -11,6 +11,7 @@ namespace RoyalCode.PipelineFlow
     public class ServiceFactoryCollection
     {
         private readonly Dictionary<Type, Func<Type, IServiceProvider, object>> factories = new();
+        private readonly Dictionary<Type, Type> serviceMap = new();
 
         /// <summary>
         /// Add a service factory.
@@ -49,6 +50,49 @@ namespace RoyalCode.PipelineFlow
         }
 
         /// <summary>
+        /// Map a service type to a implementation type.
+        /// </summary>
+        /// <typeparam name="TService">The service type.</typeparam>
+        /// <typeparam name="TImplementation">The implementation type.</typeparam>
+        /// <returns>The same collection for chain calls.</returns>
+        public ServiceFactoryCollection MapService<TService, TImplementation>()
+            where TImplementation: TService
+        {
+            return MapService(typeof(TService), typeof(TImplementation));
+        }
+
+        /// <summary>
+        /// Map a service type to a implementation type.
+        /// </summary>
+        /// <param name="serviceType">The service type.</param>
+        /// <param name="implementationType">The implementation type.</param>
+        /// <returns>The same collection for chain calls.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <para>
+        ///     If the <paramref name="serviceType"/> are null.
+        /// </para>
+        /// <para>
+        ///     If the <paramref name="implementationType"/> are null.
+        /// </para>
+        /// </exception>
+        public ServiceFactoryCollection MapService(Type serviceType, Type implementationType)
+        {
+            if (serviceType is null)
+                throw new ArgumentNullException(nameof(serviceType));
+
+            if (implementationType is null)
+                throw new ArgumentNullException(nameof(implementationType));
+
+            if (serviceType.IsGenericTypeDefinition && )
+            if (!serviceType.IsAssignableFrom(implementationType))
+                throw new ArgumentException("The implementation type is not assignable to service type.", nameof(implementationType));
+
+            serviceMap[serviceType] = implementationType;
+
+            return this;
+        }
+
+        /// <summary>
         /// Create a <see cref="IServiceProvider"/> instance for build services using the added factories.
         /// </summary>
         /// <returns>A new instance of <see cref="IServiceProvider"/>.</returns>
@@ -61,6 +105,33 @@ namespace RoyalCode.PipelineFlow
                 : serviceType.IsGenericType && factories.ContainsKey(serviceType.GetGenericTypeDefinition())
                     ? factories[serviceType.GetGenericTypeDefinition()]
                     : null;
+        }
+
+        internal Type CheckServiceMap(Type requiredServiceType)
+        {
+            return serviceMap.ContainsKey(requiredServiceType)
+                ? serviceMap[requiredServiceType]
+                : requiredServiceType.IsGenericType && serviceMap.ContainsKey(requiredServiceType.GetGenericTypeDefinition())
+                    ? serviceMap[requiredServiceType.GetGenericTypeDefinition()].MakeGenericType(requiredServiceType.GetGenericArguments())
+                    : requiredServiceType;
+        }
+
+        public static bool IsAssignableFromGenericType(Type serviceType, Type implementationType)
+        {
+            if (implementationType.IsGenericType && implementationType.GetGenericTypeDefinition() == serviceType)
+                return true;
+
+            foreach (var it in implementationType.GetInterfaces())
+            {
+                if (it.IsGenericType && it.GetGenericTypeDefinition() == serviceType)
+                    return true;
+            }
+
+            Type baseType = implementationType.BaseType;
+            if (baseType is null || baseType == typeof(object))
+                return false;
+
+            return IsAssignableFromGenericType(serviceType, baseType);
         }
     }
 }

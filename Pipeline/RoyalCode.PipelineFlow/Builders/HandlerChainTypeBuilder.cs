@@ -85,12 +85,12 @@ namespace RoyalCode.PipelineFlow.Builders
                         if (descriptor.HasOutput)
                         {
                             return typeof(HandlerChainServiceWithoutCancellationTokenAsync<,,>)
-                                .MakeGenericType(descriptor.InputType, descriptor.OutputType);
+                                .MakeGenericType(descriptor.InputType, descriptor.OutputType, descriptor.ServiceType);
                         }
                         else
                         {
                             return typeof(HandlerChainServiceWithoutCancellationTokenAsync<,>)
-                                .MakeGenericType(descriptor.InputType);
+                                .MakeGenericType(descriptor.InputType, descriptor.ServiceType);
                         }
                     }
                 }
@@ -99,12 +99,12 @@ namespace RoyalCode.PipelineFlow.Builders
                     if (descriptor.HasOutput)
                     {
                         return typeof(HandlerChainServiceSync<,,>)
-                            .MakeGenericType(descriptor.InputType, descriptor.OutputType);
+                            .MakeGenericType(descriptor.InputType, descriptor.OutputType, descriptor.ServiceType);
                     }
                     else
                     {
                         return typeof(HandlerChainServiceSync<,>)
-                            .MakeGenericType(descriptor.InputType);
+                            .MakeGenericType(descriptor.InputType, descriptor.ServiceType);
                     }
                 }
             }

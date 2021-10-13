@@ -1,7 +1,6 @@
-﻿using RoyalCode.PipelineFlow.Builders;
-using System;
+﻿using System;
 
-namespace RoyalCode.PipelineFlow
+namespace RoyalCode.PipelineFlow.Builders
 {
     internal class PipelineTypeBuilder : IPipelineTypeBuilder
     {

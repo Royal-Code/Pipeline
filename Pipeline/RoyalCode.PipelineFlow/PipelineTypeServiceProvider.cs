@@ -53,12 +53,14 @@ namespace RoyalCode.PipelineFlow
             return sb;
         }
 
-        public object? GetService(Type serviceType)
+        public object? GetService(Type requiredServiceType)
         {
-            if (GuardLoop(serviceType))
+            if (GuardLoop(requiredServiceType))
             {
                 throw new InvalidOperationException($"A a dependency loop was found.\n{GetDependencyTree()}");
             }
+
+            var serviceType = serviceFactoryCollection.CheckServiceMap(requiredServiceType);
 
             var factory = serviceFactoryCollection.GetFactory(serviceType);
             if (factory is null)

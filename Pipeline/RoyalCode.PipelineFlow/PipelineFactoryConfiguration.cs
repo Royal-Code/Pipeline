@@ -8,9 +8,15 @@ namespace RoyalCode.PipelineFlow
 {
     public class PipelineFactoryConfiguration<TFor>
     {
+        private readonly ChainDelegateRegistry chainDelegateRegistry = new();
         private IServiceProvider? userServiceProvider = null;
 
-        internal PipelineFactoryConfiguration() { }
+        internal PipelineFactoryConfiguration() 
+        {
+            ServiceFactoryCollection
+                .AddServiceFactory<ChainDelegateRegistry>((type, sp) => chainDelegateRegistry)
+                .MapService(typeof(IChainDelegateProvider<>), typeof(ChainDelegateProvider<>));
+        }
 
         /// <summary>
         /// The chains configurations.
@@ -55,11 +61,21 @@ namespace RoyalCode.PipelineFlow
         public IPipelineFactory<TFor> Create()
         {
             var chainPipelineBuilder = new PipelineChainTypeBuilder<TFor>(
-                Configuration, new DecoratorSorter(), ChainBuilders, new ChainDelegateRegistry());
+                Configuration, new DecoratorSorter(), ChainBuilders, chainDelegateRegistry);
 
             var pipelineTypeBuilder = new PipelineTypeBuilder(userServiceProvider ?? ServiceFactoryCollection.BuildServiceProvider());
 
             return new PipelineFactory<TFor>(chainPipelineBuilder, pipelineTypeBuilder);
+        }
+
+        public PipelineFactoryConfiguration<TFor> ConfigurePipeline(Action<IPipelineBuilder> configurer)
+        {
+            if (configurer is null)
+                throw new ArgumentNullException(nameof(configurer));
+
+            configurer(new DeafultPipelineBuilder(Configuration));
+
+            return this;
         }
     }
 }

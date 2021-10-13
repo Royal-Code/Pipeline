@@ -201,6 +201,20 @@ namespace RoyalCode.PipelineFlow.Configurations
         /// <summary>
         /// Add a handler method to <paramref name="builder"/> from a service finding the method by name.
         /// </summary>
+        /// <typeparam name="TService">The service with one handler method.</typeparam>
+        /// <param name="builder">The <see cref="IPipelineBuilder"/> to configure.</param>
+        /// <param name="methodName">The name of handler method.</param>
+        /// <returns>The same instance of <paramref name="builder"/> for chain calls.</returns>
+        public static IPipelineBuilder AddHandlerMethodDefined<TService>(
+            this IPipelineBuilder builder,
+            string methodName)
+        {
+            return builder.AddHandlerMethodDefined(typeof(TService), methodName);
+        }
+
+        /// <summary>
+        /// Add a handler method to <paramref name="builder"/> from a service finding the method by name.
+        /// </summary>
         /// <param name="builder">The <see cref="IPipelineBuilder"/> to configure.</param>
         /// <param name="serviceType">The service with one handler method.</param>
         /// <param name="methodName">The name of handler method.</param>
@@ -470,6 +484,20 @@ namespace RoyalCode.PipelineFlow.Configurations
         /// <summary>
         /// Add a bridge handler method to <paramref name="builder"/> from a service finding the method by name.
         /// </summary>
+        /// <typeparam name="TService">The service with one bridge handler method.</typeparam>
+        /// <param name="builder">The <see cref="IPipelineBuilder"/> to configure.</param>
+        /// <param name="methodName">The name of bridge handler method.</param>
+        /// <returns>The same instance of <paramref name="builder"/> for chain calls.</returns>
+        public static IPipelineBuilder AddBridgeHandlerMethodDefined<TService>(
+            this IPipelineBuilder builder,
+            string methodName)
+        {
+            return builder.AddBridgeHandlerMethodDefined(typeof(TService), methodName);
+        }
+
+        /// <summary>
+        /// Add a bridge handler method to <paramref name="builder"/> from a service finding the method by name.
+        /// </summary>
         /// <param name="builder">The <see cref="IPipelineBuilder"/> to configure.</param>
         /// <param name="serviceType">The service with one bridge handler method.</param>
         /// <param name="methodName">The name of bridge handler method.</param>
@@ -698,6 +726,20 @@ namespace RoyalCode.PipelineFlow.Configurations
             where TAttribute : Attribute
         {
             return builder.AddDecoratorsMethodsDefined(typeof(TService), typeof(TAttribute));
+        }
+
+        /// <summary>
+        /// Add a decorator handler method to <paramref name="builder"/> from a service finding the method by name.
+        /// </summary>
+        /// <typeparam name="TService">The service with one decorator handler method.</typeparam>
+        /// <param name="builder">The <see cref="IPipelineBuilder"/> to configure.</param>
+        /// <param name="methodName">The name of decorator handler method.</param>
+        /// <returns>The same instance of <paramref name="builder"/> for chain calls.</returns>
+        public static IPipelineBuilder AddDecoratorMethodDefined<TService>(
+            this IPipelineBuilder builder,
+            string methodName)
+        {
+            return builder.AddDecoratorMethodDefined(typeof(TService), methodName);
         }
 
         /// <summary>

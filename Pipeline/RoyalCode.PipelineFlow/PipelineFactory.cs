@@ -1,6 +1,7 @@
 ﻿using RoyalCode.PipelineFlow.Builders;
 using System;
 using System.Collections.Concurrent;
+using System.Runtime.CompilerServices;
 
 namespace RoyalCode.PipelineFlow
 {
@@ -25,6 +26,7 @@ namespace RoyalCode.PipelineFlow
             this.pipelineTypeBuilder = pipelineTypeBuilder;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public IPipeline<TIn> Create<TIn>()
         {
             inputOnlyChainType.TryGetValue(typeof(TIn), out var chainType);
@@ -34,6 +36,7 @@ namespace RoyalCode.PipelineFlow
             return (IPipeline<TIn>)pipelineTypeBuilder.Build(chainType);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public IPipeline<TIn, TOut> Create<TIn, TOut>()
         {
             var key = new Tuple<Type, Type>(typeof(TIn), typeof(TOut));
@@ -44,6 +47,7 @@ namespace RoyalCode.PipelineFlow
             return (IPipeline<TIn, TOut>)pipelineTypeBuilder.Build(chainType);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public object Create(Type inputType)
         {
             inputOnlyChainType.TryGetValue(inputType, out var chainType);
@@ -53,6 +57,7 @@ namespace RoyalCode.PipelineFlow
             return pipelineTypeBuilder.Build(chainType);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public object Create(Type inputType, Type outputType)
         {
             var key = new Tuple<Type, Type>(inputType, outputType);
