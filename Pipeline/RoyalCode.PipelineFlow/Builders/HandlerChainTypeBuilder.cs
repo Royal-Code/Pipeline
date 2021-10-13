@@ -77,7 +77,7 @@ namespace RoyalCode.PipelineFlow.Builders
                         else
                         {
                             return typeof(HandlerChainServiceAsync<,>)
-                                .MakeGenericType(descriptor.InputType);
+                                .MakeGenericType(descriptor.InputType, descriptor.ServiceType);
                         }
                     }
                     else

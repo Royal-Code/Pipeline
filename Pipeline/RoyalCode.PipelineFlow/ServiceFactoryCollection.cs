@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RoyalCode.PipelineFlow.Extensions;
+using System;
 using System.Collections.Generic;
 
 namespace RoyalCode.PipelineFlow
@@ -83,8 +84,7 @@ namespace RoyalCode.PipelineFlow
             if (implementationType is null)
                 throw new ArgumentNullException(nameof(implementationType));
 
-            if (serviceType.IsGenericTypeDefinition && )
-            if (!serviceType.IsAssignableFrom(implementationType))
+            if (!implementationType.Implements(implementationType))
                 throw new ArgumentException("The implementation type is not assignable to service type.", nameof(implementationType));
 
             serviceMap[serviceType] = implementationType;
@@ -116,22 +116,12 @@ namespace RoyalCode.PipelineFlow
                     : requiredServiceType;
         }
 
-        public static bool IsAssignableFromGenericType(Type serviceType, Type implementationType)
+        internal bool IsRegistered(Type serviceType)
         {
-            if (implementationType.IsGenericType && implementationType.GetGenericTypeDefinition() == serviceType)
-                return true;
-
-            foreach (var it in implementationType.GetInterfaces())
-            {
-                if (it.IsGenericType && it.GetGenericTypeDefinition() == serviceType)
-                    return true;
-            }
-
-            Type baseType = implementationType.BaseType;
-            if (baseType is null || baseType == typeof(object))
-                return false;
-
-            return IsAssignableFromGenericType(serviceType, baseType);
+            return factories.ContainsKey(serviceType)
+                || (serviceType.IsGenericType && factories.ContainsKey(serviceType.GetGenericTypeDefinition()))
+                || serviceMap.ContainsKey(serviceType)
+                || (serviceType.IsGenericType && serviceMap.ContainsKey(serviceType.GetGenericTypeDefinition()));
         }
     }
 }

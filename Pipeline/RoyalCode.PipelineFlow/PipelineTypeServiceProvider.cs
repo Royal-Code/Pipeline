@@ -102,7 +102,7 @@ namespace RoyalCode.PipelineFlow
             foreach (var dependency in dependencies)
             {
                 var serviceType = dependency.ParameterInfo.ParameterType;
-                if (serviceFactories.GetFactory(serviceType) != null)
+                if (serviceFactories.IsRegistered(serviceType))
                     continue;
 
                 if (!CanActivate(serviceType, serviceFactories))

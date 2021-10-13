@@ -73,7 +73,7 @@ namespace RoyalCode.PipelineFlow
             if (configurer is null)
                 throw new ArgumentNullException(nameof(configurer));
 
-            configurer(new DeafultPipelineBuilder(Configuration));
+            configurer(new DefaultPipelineBuilder(Configuration));
 
             return this;
         }

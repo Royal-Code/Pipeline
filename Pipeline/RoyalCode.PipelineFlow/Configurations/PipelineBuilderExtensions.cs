@@ -177,7 +177,7 @@ namespace RoyalCode.PipelineFlow.Configurations
         /// <param name="attributeType">The attribute that define a method as handler.</param>
         /// <returns>The same instance of <paramref name="builder"/> for chain calls.</returns>
         public static IPipelineBuilder AddHandlersMethodsDefined<TService>(
-            this IPipelineBuilderWithService<TService> builder,
+            this IPipelineBuilder builder,
             Type attributeType)
         {
             return builder.AddHandlersMethodsDefined(typeof(TService), attributeType);
@@ -192,24 +192,10 @@ namespace RoyalCode.PipelineFlow.Configurations
         /// <param name="builder">The <see cref="IPipelineBuilder"/> to configure.</param>
         /// <returns>The same instance of <paramref name="builder"/> for chain calls.</returns>
         public static IPipelineBuilder AddHandlersMethodsDefined<TService, TAttribute>(
-            this IPipelineBuilderWithService<TService> builder)
+            this IPipelineBuilder builder)
             where TAttribute: Attribute
         {
             return builder.AddHandlersMethodsDefined(typeof(TService), typeof(TAttribute));
-        }
-
-        /// <summary>
-        /// Add a handler method to <paramref name="builder"/> from a service finding the method by name.
-        /// </summary>
-        /// <typeparam name="TService">The service with one handler method.</typeparam>
-        /// <param name="builder">The <see cref="IPipelineBuilder"/> to configure.</param>
-        /// <param name="methodName">The name of handler method.</param>
-        /// <returns>The same instance of <paramref name="builder"/> for chain calls.</returns>
-        public static IPipelineBuilder AddHandlerMethodDefined<TService>(
-            this IPipelineBuilder builder,
-            string methodName)
-        {
-            return builder.AddHandlerMethodDefined(typeof(TService), methodName);
         }
 
         /// <summary>
@@ -258,7 +244,7 @@ namespace RoyalCode.PipelineFlow.Configurations
         /// <param name="methodName">The name of handler method.</param>
         /// <returns>The same instance of <paramref name="builder"/> for chain calls.</returns>
         public static IPipelineBuilder AddHandlerMethodDefined<TService>(
-            this IPipelineBuilder<TService> builder,
+            this IPipelineBuilder builder,
             string methodName)
         {
             return builder.AddHandlerMethodDefined(typeof(TService), methodName);

@@ -60,6 +60,40 @@ namespace RoyalCode.PipelineFlow.Tests
             var service = provider.GetService(typeof(ActivableService3)) as ActivableService3;
             Assert.NotNull(service);
         }
+
+        [Fact]
+        public void T06_MappableSimpleService()
+        {
+            var services = new ServiceFactoryCollection();
+            services.MapService<IMappableSimpleService, MappableSimpleService>();
+            var provider = services.BuildServiceProvider();
+
+            var service = provider.GetService(typeof(IMappableSimpleService)) as IMappableSimpleService;
+            Assert.NotNull(service);
+        }
+
+        [Fact]
+        public void T07_MappableGenericService()
+        {
+            var services = new ServiceFactoryCollection();
+            services.MapService(typeof(IMappableGenericService<>), typeof(MappableGenericService<>));
+            var provider = services.BuildServiceProvider();
+
+            var service = provider.GetService(typeof(IMappableGenericService<int>)) as IMappableGenericService<int>;
+            Assert.NotNull(service);
+        }
+
+        [Fact]
+        public void T08_MappableComplexService()
+        {
+            var services = new ServiceFactoryCollection();
+            services.MapService(typeof(IMappableGenericService<>), typeof(MappableGenericService<>));
+            var provider = services.BuildServiceProvider();
+
+            var service = provider.GetService(typeof(MappableComplexService<int>)) as MappableComplexService<int>;
+            Assert.NotNull(service);
+            Assert.NotNull(service!.Service);
+        }
     }
 
 
@@ -96,5 +130,23 @@ namespace RoyalCode.PipelineFlow.Tests
             ActivableService service1, 
             ActivableService2 service2,
             ISimpleService? service3 = null) { }
+    }
+
+    public interface IMappableSimpleService { }
+
+    public class MappableSimpleService: IMappableSimpleService { }
+
+    public interface IMappableGenericService<T> { }
+
+    public class MappableGenericService<T> : IMappableGenericService<T> { }
+
+    public class MappableComplexService<T>
+    {
+        public MappableComplexService(IMappableGenericService<T> service)
+        {
+            Service = service;
+        }
+
+        public IMappableGenericService<T> Service { get; }
     }
 }

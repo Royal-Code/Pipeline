@@ -30,11 +30,11 @@ namespace RoyalCode.PipelineFlow.Configurations
 
     public interface IPipelineBuilderWithService<TService, TIn, TOut> : IPipelineBuilderWithService<TService> { }
 
-    public class DeafultPipelineBuilder : IPipelineBuilder
+    public class DefaultPipelineBuilder : IPipelineBuilder
     {
         private readonly IPipelineConfiguration configuration;
 
-        public DeafultPipelineBuilder(IPipelineConfiguration configuration)
+        public DefaultPipelineBuilder(IPipelineConfiguration configuration)
         {
             this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         }
