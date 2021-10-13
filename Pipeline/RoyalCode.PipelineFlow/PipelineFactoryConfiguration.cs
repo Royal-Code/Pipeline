@@ -68,7 +68,7 @@ namespace RoyalCode.PipelineFlow
             return new PipelineFactory<TFor>(chainPipelineBuilder, pipelineTypeBuilder);
         }
 
-        public PipelineFactoryConfiguration<TFor> ConfigurePipeline(Action<IPipelineBuilder> configurer)
+        public PipelineFactoryConfiguration<TFor> ConfigurePipelines(Action<IPipelineBuilder> configurer)
         {
             if (configurer is null)
                 throw new ArgumentNullException(nameof(configurer));

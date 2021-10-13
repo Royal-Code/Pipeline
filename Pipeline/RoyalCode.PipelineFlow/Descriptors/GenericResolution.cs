@@ -55,7 +55,10 @@ namespace RoyalCode.PipelineFlow.Descriptors
             this.hasOutput = hasOutput;
             this.handlerMethod = handlerMethod ?? throw new ArgumentNullException(nameof(handlerMethod));
 
-            var serviceGenerics = handlerMethod.DeclaringType.GetGenericArguments();
+            var serviceGenerics = handlerMethod.DeclaringType.GetGenericArguments()
+                .Where(arg => arg.IsGenericParameter)
+                .ToArray();
+
             bindings = new List<GenericParameterBinding>();
 
             for (int i = 0; i < serviceGenerics.Length; i++)
@@ -65,7 +68,7 @@ namespace RoyalCode.PipelineFlow.Descriptors
             }
 
             var binding = bindings.FirstOrDefault(b => b.ServiceGenericType == inputType);
-            if (binding != null)
+            if (binding is not null)
             {
                 binding.Match = BindingMatch.ToInputType;
             }
@@ -76,7 +79,7 @@ namespace RoyalCode.PipelineFlow.Descriptors
                 {
                     var inputGeneric = inputGenerics[i];
                     binding = bindings.FirstOrDefault(b => b.ServiceGenericType == inputGeneric);
-                    if (binding != null)
+                    if (binding is not null)
                     {
                         binding.Match = BindingMatch.ToInputGeneric;
                         binding.OtherIndex = i;
@@ -91,7 +94,7 @@ namespace RoyalCode.PipelineFlow.Descriptors
             if (hasOutput)
             {
                 binding = bindings.FirstOrDefault(b => b.ServiceGenericType == outputType);
-                if (binding != null)
+                if (binding is not null)
                 {
                     binding.Match = BindingMatch.ToOutputType;
                 }
@@ -102,7 +105,7 @@ namespace RoyalCode.PipelineFlow.Descriptors
                     {
                         var outputGeneric = outputGenerics[i];
                         binding = bindings.FirstOrDefault(b => b.ServiceGenericType == outputGeneric);
-                        if (binding != null)
+                        if (binding is not null)
                         {
                             binding.Match = BindingMatch.ToOutputGeneric;
                             binding.OtherIndex = i;
@@ -115,6 +118,15 @@ namespace RoyalCode.PipelineFlow.Descriptors
                 }
             }
 
+            //foreach(var b in bindings)
+            //{
+            //    var constraints = b.ServiceGenericType.GetGenericParameterConstraints();
+            //    foreach (var c in constraints)
+            //    {
+
+            //    }
+            //}
+            
             if (bindings.Any(b => b.Match == BindingMatch.None))
                 throw new InvalidOperationException("TODO create exception for case");
 

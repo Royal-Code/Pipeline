@@ -11,7 +11,7 @@ namespace RoyalCode.PipelineFlow.Tests
         public  void T01_SingleInputHandler()
         {
             var factory = PipelineFactory.Configure<ITestBus>()
-                .ConfigurePipeline(builder =>
+                .ConfigurePipelines(builder =>
                 {
                     builder.AddHandlerMethodDefined(typeof(SingleInputHandler), "Handle");
                 })
@@ -28,7 +28,7 @@ namespace RoyalCode.PipelineFlow.Tests
         public void T02_SingleInputOutputHandler()
         {
             var factory = PipelineFactory.Configure<ITestBus>()
-                .ConfigurePipeline(builder =>
+                .ConfigurePipelines(builder =>
                 {
                     builder.AddHandlerMethodDefined(typeof(SingleInputOutputHandler), "Handle");
                 })
@@ -46,7 +46,7 @@ namespace RoyalCode.PipelineFlow.Tests
         public void T03_SingleAsyncInputHandler()
         {
             var factory = PipelineFactory.Configure<ITestBus>()
-                .ConfigurePipeline(builder =>
+                .ConfigurePipelines(builder =>
                 {
                     builder.AddHandlerMethodDefined(typeof(SingleAsyncInputHandler), "Handle");
                 })
@@ -63,7 +63,7 @@ namespace RoyalCode.PipelineFlow.Tests
         public void T04_SingleAsyncInputWithoutCancellationTokenHandler()
         {
             var factory = PipelineFactory.Configure<ITestBus>()
-                .ConfigurePipeline(builder =>
+                .ConfigurePipelines(builder =>
                 {
                     builder.AddHandlerMethodDefined(typeof(SingleAsyncInputWithoutCancellationTokenHandler), "Handle");
                 })
@@ -80,7 +80,7 @@ namespace RoyalCode.PipelineFlow.Tests
         public void T05_SingleInputOutputAsyncHandler()
         {
             var factory = PipelineFactory.Configure<ITestBus>()
-                .ConfigurePipeline(builder =>
+                .ConfigurePipelines(builder =>
                 {
                     builder.AddHandlerMethodDefined(typeof(SingleInputOutputAsyncHandler), "Handle");
                 })
@@ -98,7 +98,7 @@ namespace RoyalCode.PipelineFlow.Tests
         public void T06_SingleInputOutputAsyncWithoutCancellationTokenHandler()
         {
             var factory = PipelineFactory.Configure<ITestBus>()
-                .ConfigurePipeline(builder =>
+                .ConfigurePipelines(builder =>
                 {
                     builder.AddHandlerMethodDefined(typeof(SingleInputOutputAsyncWithoutCancellationTokenHandler), "Handle");
                 })
@@ -118,7 +118,7 @@ namespace RoyalCode.PipelineFlow.Tests
             int result = 0;
 
             var factory = PipelineFactory.Configure<ITestBus>()
-                .ConfigurePipeline(builder =>
+                .ConfigurePipelines(builder =>
                 {
                     builder.Configure<SingleInput>()
                         .Handle(input => result = input.Value);
@@ -136,7 +136,7 @@ namespace RoyalCode.PipelineFlow.Tests
         public void T08_SingleInputOutputDelegateHandler()
         {
             var factory = PipelineFactory.Configure<ITestBus>()
-                .ConfigurePipeline(builder =>
+                .ConfigurePipelines(builder =>
                 {
                     builder.Configure<SingleInputOutput, int>()
                         .Handle(input => input.Value + 1);
@@ -156,7 +156,7 @@ namespace RoyalCode.PipelineFlow.Tests
             int result = 0;
 
             var factory = PipelineFactory.Configure<ITestBus>()
-                .ConfigurePipeline(builder =>
+                .ConfigurePipelines(builder =>
                 {
                     builder.Configure<SingleAsyncInput>()
                         .HandleAsync((input, token) => { result = input.Value; return Task.CompletedTask; });
@@ -176,7 +176,7 @@ namespace RoyalCode.PipelineFlow.Tests
             int result = 0;
 
             var factory = PipelineFactory.Configure<ITestBus>()
-                .ConfigurePipeline(builder =>
+                .ConfigurePipelines(builder =>
                 {
                     builder.Configure<SingleAsyncInput>()
                         .HandleAsync(input => { result = input.Value; return Task.CompletedTask; });
@@ -194,7 +194,7 @@ namespace RoyalCode.PipelineFlow.Tests
         public void T11_SingleInputOutputAsyncDelegateHandler()
         {
             var factory = PipelineFactory.Configure<ITestBus>()
-                .ConfigurePipeline(builder =>
+                .ConfigurePipelines(builder =>
                 {
                     builder.Configure<SingleInputOutputAsync, int>()
                         .HandleAsync((input, token) => Task.FromResult(input.Value));
@@ -212,7 +212,7 @@ namespace RoyalCode.PipelineFlow.Tests
         public void T12_SingleInputOutputAsyncWithoutCancellationTokenDelegateHandler()
         {
             var factory = PipelineFactory.Configure<ITestBus>()
-                .ConfigurePipeline(builder =>
+                .ConfigurePipelines(builder =>
                 {
                     builder.Configure<SingleInputOutputAsync, int>()
                         .HandleAsync(input => Task.FromResult(input.Value));
