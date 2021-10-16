@@ -2,6 +2,7 @@
 using System;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -26,6 +27,234 @@ namespace RoyalCode.PipelineFlow.Tests
             pipeline.Send(new IntInput(1));
             Assert.Equal(4, ValueableHandler<IntInput, int>.Value);
         }
+
+        [Fact]
+        public void T02_DecoratorsHandlerAsync_In()
+        {
+            var factory = PipelineFactory.Configure<ITestBus>()
+                .ConfigurePipelines(builder =>
+                {
+                    builder.AddHandlersMethods(MethodsGetter<ValueableHandler<IntInput, int>>.GetAsyncMethods());
+                    builder.AddDecoratorsMethods(MethodsGetter<DecoratorHandlerAsync_In>.GetAsyncMethods());
+                })
+                .Create();
+
+            var pipeline = factory.Create<IntInput>();
+            Assert.NotNull(pipeline);
+
+            pipeline.SendAsync(new IntInput(1)).GetAwaiter().GetResult();
+            Assert.Equal(4, ValueableHandler<IntInput, int>.Value);
+        }
+
+        [Fact]
+        public void T03_DecoratorsHandlerAsyncWithoutCancellationToken_In()
+        {
+            var factory = PipelineFactory.Configure<ITestBus>()
+                .ConfigurePipelines(builder =>
+                {
+                    builder.AddHandlersMethods(MethodsGetter<ValueableHandler<IntInput, int>>.GetAsyncMethods());
+                    builder.AddDecoratorsMethods(MethodsGetter<DecoratorHandlerAsyncWithoutCancellationToken_In>.GetAsyncMethods());
+                })
+                .Create();
+
+            var pipeline = factory.Create<IntInput>();
+            Assert.NotNull(pipeline);
+
+            pipeline.SendAsync(new IntInput(1)).GetAwaiter().GetResult();
+            Assert.Equal(4, ValueableHandler<IntInput, int>.Value);
+        }
+
+        [Fact]
+        public void T04_DecoratorsHandler_InOut()
+        {
+            var factory = PipelineFactory.Configure<ITestBus>()
+                .ConfigurePipelines(builder =>
+                {
+                    builder.AddHandlersMethods(MethodsGetter<ResultableHandler<IntInput, int>>.GetSyncMethods());
+                    builder.AddDecoratorsMethods(MethodsGetter<DecoratorHandler_InOut>.GetSyncMethods());
+                })
+                .Create();
+
+            var pipeline = factory.Create<IntInput, string>();
+            Assert.NotNull(pipeline);
+
+            var result = pipeline.Send(new IntInput(1));
+            Assert.Equal(4, ResultableHandler<IntInput, int>.Value);
+            Assert.Equal("456", result);
+        }
+
+        [Fact]
+        public void T05_DecoratorsHandlerAsync_InOut()
+        {
+            var factory = PipelineFactory.Configure<ITestBus>()
+                .ConfigurePipelines(builder =>
+                {
+                    builder.AddHandlersMethods(MethodsGetter<ResultableHandler<IntInput, int>>.GetAsyncMethods());
+                    builder.AddDecoratorsMethods(MethodsGetter<DecoratorHandlerAsync_InOut>.GetAsyncMethods());
+                })
+                .Create();
+
+            var pipeline = factory.Create<IntInput, string>();
+            Assert.NotNull(pipeline);
+
+            var result = pipeline.SendAsync(new IntInput(1)).GetAwaiter().GetResult();
+            Assert.Equal(4, ResultableHandler<IntInput, int>.Value);
+            Assert.Equal("456", result);
+        }
+
+        [Fact]
+        public void T06_DecoratorsHandlerAsyncWithoutCancellationToken_InOut()
+        {
+            var factory = PipelineFactory.Configure<ITestBus>()
+                .ConfigurePipelines(builder =>
+                {
+                    builder.AddHandlersMethods(MethodsGetter<ResultableHandler<IntInput, int>>.GetAsyncMethods());
+                    builder.AddDecoratorsMethods(MethodsGetter<DecoratorHandlerAsyncWithoutCancellationToken_InOut>.GetAsyncMethods());
+                })
+                .Create();
+
+            var pipeline = factory.Create<IntInput, string>();
+            Assert.NotNull(pipeline);
+
+            var result = pipeline.SendAsync(new IntInput(1)).GetAwaiter().GetResult();
+            Assert.Equal(4, ResultableHandler<IntInput, int>.Value);
+            Assert.Equal("456", result);
+        }
+
+        [Fact]
+        public void T07_DecoratorsDelegateHandler_In()
+        {
+            int value = 0;
+
+            var factory = PipelineFactory.Configure<ITestBus>()
+                .ConfigurePipelines(builder =>
+                {
+                    builder.Configure<IntInput>()
+                        .Handle(i => { i.Increment(); value = i.Value; })
+                        .Decorate((i, n) => { i.Increment(); n(); })
+                        .Decorate((i, n) => { i.Increment(); n(); });
+                })
+                .Create();
+
+            var pipeline = factory.Create<IntInput>();
+            Assert.NotNull(pipeline);
+
+            pipeline.Send(new IntInput(1));
+            Assert.Equal(4, value);
+        }
+
+        [Fact]
+        public void T08_DecoratorsDelegateHandlerAsync_In()
+        {
+            int value = 0;
+
+            var factory = PipelineFactory.Configure<ITestBus>()
+                .ConfigurePipelines(builder =>
+                {
+                    builder.Configure<IntInput>()
+                        .HandleAsync((i, t) => { i.Increment(); value = i.Value; return Task.CompletedTask; })
+                        .DecorateAsync((i, n, t) => { i.Increment(); return n(); })
+                        .DecorateAsync((i, n, t) => { i.Increment(); return n(); });
+                })
+                .Create();
+
+            var pipeline = factory.Create<IntInput>();
+            Assert.NotNull(pipeline);
+
+            pipeline.SendAsync(new IntInput(1)).GetAwaiter().GetResult();
+            Assert.Equal(4, value);
+        }
+
+        [Fact]
+        public void T09_DecoratorsDelegateHandlerAsyncWithoutCancellationToken_In()
+        {
+            int value = 0;
+
+            var factory = PipelineFactory.Configure<ITestBus>()
+                .ConfigurePipelines(builder =>
+                {
+                    builder.Configure<IntInput>()
+                        .HandleAsync((i) => { i.Increment(); value = i.Value; return Task.CompletedTask; })
+                        .DecorateAsync((i, n) => { i.Increment(); return n(); })
+                        .DecorateAsync((i, n) => { i.Increment(); return n(); });
+                })
+                .Create();
+
+            var pipeline = factory.Create<IntInput>();
+            Assert.NotNull(pipeline);
+
+            pipeline.SendAsync(new IntInput(1)).GetAwaiter().GetResult();
+            Assert.Equal(4, value);
+        }
+
+        [Fact]
+        public void T10_DecoratorsDelegateHandler_InOut()
+        {
+            int value = 0;
+
+            var factory = PipelineFactory.Configure<ITestBus>()
+                .ConfigurePipelines(builder =>
+                {
+                    builder.Configure<IntInput, string>()
+                        .Handle(i => { i.Increment(); value = i.Value; return i.ToString(); })
+                        .Decorate((i, n) => { i.Increment(); var r = n(); i.Increment(); return r + i.ToString(); })
+                        .Decorate((i, n) => { i.Increment(); var r = n(); i.Increment(); return r + i.ToString(); });
+                })
+                .Create();
+
+            var pipeline = factory.Create<IntInput, string>();
+            Assert.NotNull(pipeline);
+
+            var result = pipeline.Send(new IntInput(1));
+            Assert.Equal(4, value);
+            Assert.Equal("456", result);
+        }
+
+        [Fact]
+        public void T11_DecoratorsDelegateHandlerAsync_InOut()
+        {
+            int value = 0;
+
+            var factory = PipelineFactory.Configure<ITestBus>()
+                .ConfigurePipelines(builder =>
+                {
+                    builder.Configure<IntInput, string>()
+                        .HandleAsync((i, t) => { i.Increment(); value = i.Value; return Task.FromResult(i.ToString()); })
+                        .DecorateAsync((i, n, t) => { i.Increment(); var r = n().Result; i.Increment(); return Task.FromResult(r + i.ToString()); })
+                        .DecorateAsync((i, n, t) => { i.Increment(); var r = n().Result; i.Increment(); return Task.FromResult(r + i.ToString()); });
+                })
+                .Create();
+
+            var pipeline = factory.Create<IntInput, string>();
+            Assert.NotNull(pipeline);
+
+            var result = pipeline.SendAsync(new IntInput(1)).Result;
+            Assert.Equal(4, value);
+            Assert.Equal("456", result);
+        }
+
+        [Fact]
+        public void T12_DecoratorsDelegateHandlerAsyncWithoutCancellationToken_InOut()
+        {
+            int value = 0;
+
+            var factory = PipelineFactory.Configure<ITestBus>()
+                .ConfigurePipelines(builder =>
+                {
+                    builder.Configure<IntInput, string>()
+                        .HandleAsync((i) => { i.Increment(); value = i.Value; return Task.FromResult(i.ToString()); })
+                        .DecorateAsync((i, n) => { i.Increment(); var r = n().Result; i.Increment(); return Task.FromResult(r + i.ToString()); })
+                        .DecorateAsync((i, n) => { i.Increment(); var r = n().Result; i.Increment(); return Task.FromResult(r + i.ToString()); });
+                })
+                .Create();
+
+            var pipeline = factory.Create<IntInput, string>();
+            Assert.NotNull(pipeline);
+
+            var result = pipeline.SendAsync(new IntInput(1)).Result;
+            Assert.Equal(4, value);
+            Assert.Equal("456", result);
+        }
     }
 
     #region Input & Handlers
@@ -49,6 +278,11 @@ namespace RoyalCode.PipelineFlow.Tests
         {
             Value++;
         }
+
+        public override string ToString()
+        {
+            return Value.ToString();
+        }
     }
 
     public class ValueableHandler<TValueable, TValue>
@@ -70,6 +304,26 @@ namespace RoyalCode.PipelineFlow.Tests
         }
     }
 
+    public class ResultableHandler<TValueable, TValue>
+        where TValueable : IValueable<TValue>
+    {
+        public static TValue? Value;
+
+        public string Handle(TValueable input)
+        {
+            input.Increment();
+            Value = input.Value;
+            return input.ToString()!;
+        }
+
+        public Task<string> HandleAsync(TValueable input)
+        {
+            input.Increment();
+            Value = input.Value;
+            return Task.FromResult(input.ToString()!);
+        }
+    }
+
     public class MethodsGetter<T>
     {
         public static MethodInfo[] GetSyncMethods() => typeof(T)
@@ -87,7 +341,7 @@ namespace RoyalCode.PipelineFlow.Tests
 
     #endregion
 
-    #region T01
+    #region T01 & T02 & T03
 
     public class DecoratorHandler_In
     {
@@ -101,6 +355,97 @@ namespace RoyalCode.PipelineFlow.Tests
         {
             input.Increment();
             next();
+        }
+    }
+
+    public class DecoratorHandlerAsync_In
+    {
+        public Task HandleAsync1(IntInput input, Func<Task> next, CancellationToken token)
+        {
+            input.Increment();
+            return next();
+        }
+
+        public Task HandleAsync2(IntInput input, Func<Task> next, CancellationToken token)
+        {
+            input.Increment();
+            return next();
+        }
+    }
+
+    public class DecoratorHandlerAsyncWithoutCancellationToken_In
+    {
+        public Task HandleAsync1(IntInput input, Func<Task> next)
+        {
+            input.Increment();
+            return next();
+        }
+
+        public Task HandleAsync2(IntInput input, Func<Task> next)
+        {
+            input.Increment();
+            return next();
+        }
+    }
+
+    #endregion
+
+    #region T04 & T05 & T06
+
+    public class DecoratorHandler_InOut
+    {
+        public string Handle1(IntInput input, Func<string> next)
+        {
+            input.Increment();
+            var result = next();
+            input.Increment();
+            return result + input.ToString();
+        }
+
+        public string Handle2(IntInput input, Func<string> next)
+        {
+            input.Increment();
+            var result = next();
+            input.Increment();
+            return result + input.ToString();
+        }
+    }
+
+    public class DecoratorHandlerAsync_InOut
+    {
+        public Task<string> HandleAsync1(IntInput input, Func<Task<string>> next, CancellationToken token)
+        {
+            input.Increment();
+            var result = next().GetAwaiter().GetResult();
+            input.Increment();
+            return Task.FromResult(result + input.ToString());
+        }
+
+        public Task<string> HandleAsync2(IntInput input, Func<Task<string>> next, CancellationToken token)
+        {
+            input.Increment();
+            var result = next().GetAwaiter().GetResult();
+            input.Increment();
+            return Task.FromResult(result + input.ToString());
+        }
+    }
+
+    public class DecoratorHandlerAsyncWithoutCancellationToken_InOut
+    {
+        public Task<string> HandleAsync1(IntInput input, Func<Task<string>> next)
+        {
+            input.Increment();
+            var result = next().GetAwaiter().GetResult();
+            input.Increment();
+            return Task.FromResult(result + input.ToString());
+        }
+
+        public Task<string> HandleAsync2(IntInput input, Func<Task<string>> next)
+        {
+            input.Increment();
+            var result = next().GetAwaiter().GetResult();
+            input.Increment();
+            return Task.FromResult(result + input.ToString());
         }
     }
 
