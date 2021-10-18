@@ -5,8 +5,19 @@
     /// </summary>
     public enum ChainKind
     {
+        /// <summary>
+        /// A Processing handler.
+        /// </summary>
         Handler,
+
+        /// <summary>
+        /// A bridge handler.
+        /// </summary>
         Bridge,
+
+        /// <summary>
+        /// A decorator handler.
+        /// </summary>
         Decorator
     }
 }

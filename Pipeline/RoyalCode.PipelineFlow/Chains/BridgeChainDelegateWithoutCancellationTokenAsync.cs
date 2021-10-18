@@ -1,5 +1,4 @@
-﻿using RoyalCode.PipelineFlow.Configurations;
-using System;
+﻿using System;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -20,10 +19,12 @@ namespace RoyalCode.PipelineFlow.Chains
             this.next = next ?? throw new ArgumentNullException(nameof(next));
         }
 
+        /// <inheritdoc/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override void Send(TIn input) 
             => function(input, nextInput => { next.Send(nextInput); return Task.CompletedTask; });
 
+        /// <inheritdoc/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override Task SendAsync(TIn input, CancellationToken token)
             => function(input, nextInput => next.SendAsync(nextInput, token));
@@ -43,10 +44,12 @@ namespace RoyalCode.PipelineFlow.Chains
             this.next = next ?? throw new ArgumentNullException(nameof(next));
         }
 
+        /// <inheritdoc/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override TOut Send(TIn input)
             => function(input, nextInput => Task.FromResult(next.Send(nextInput))).GetResultSynchronously();
 
+        /// <inheritdoc/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override Task<TOut> SendAsync(TIn input, CancellationToken token)
             => function(input, nextInput => next.SendAsync(nextInput, token));
@@ -67,10 +70,12 @@ namespace RoyalCode.PipelineFlow.Chains
             this.next = next ?? throw new ArgumentNullException(nameof(next));
         }
 
+        /// <inheritdoc/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override TOut Send(TIn input)
             => function(input, nextInput => Task.FromResult(next.Send(nextInput))).GetResultSynchronously();
 
+        /// <inheritdoc/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override Task<TOut> SendAsync(TIn input, CancellationToken token)
             => function(input, nextInput => next.SendAsync(nextInput, token));

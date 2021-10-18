@@ -1,4 +1,5 @@
 ﻿using RoyalCode.PipelineFlow.Descriptors;
+using RoyalCode.PipelineFlow.Exceptions;
 using RoyalCode.PipelineFlow.Resolvers;
 using System;
 using System.Collections.Generic;
@@ -30,6 +31,16 @@ namespace RoyalCode.PipelineFlow.Configurations
             resolvers.Add(handlerResolver);
         }
 
+        /// <summary>
+        ///     Gets the descriptor for a given input type.
+        /// </summary>
+        /// <param name="inputType">The input type.</param>
+        /// <returns>
+        ///     The handler descriptor for a given input type, or null if none was found.
+        /// </returns>
+        /// <exception cref="MultipleHandlersForTheSameRequestException">
+        ///     When there are multiple handlers for one request type (input/output).
+        /// </exception>
         public HandlerDescriptor? GetDescription(Type inputType)
         {
             LinkedList<IHandlerResolver>? fallbackResolvers = null;
@@ -47,10 +58,10 @@ namespace RoyalCode.PipelineFlow.Configurations
                 if (resolvedDescription is not null)
                 {
                     if (description is not null)
-                        throw new InvalidOperationException("Não pode haver mais de um handler. TODO: Criar exeption deste erro.");
+                        throw new MultipleHandlersForTheSameRequestException(inputType);
                     description = resolvedDescription;
                 }
-            }
+            } 
 
             if (description is null && fallbackResolvers is not null)
             {
@@ -65,7 +76,18 @@ namespace RoyalCode.PipelineFlow.Configurations
             return description;
         }
 
-        public HandlerDescriptor? GetDescription(Type inputType, Type output)
+        /// <summary>
+        ///     Gets the descriptor for a given input and output types.
+        /// </summary>
+        /// <param name="inputType">The input type.</param>
+        /// <param name="outputType">The output type.</param>
+        /// <returns>
+        ///     The handler descriptor for a given input and output types, or null if none was found.
+        /// </returns>
+        /// <exception cref="MultipleHandlersForTheSameRequestException">
+        ///     When there are multiple handlers for one request type (input/output).
+        /// </exception>
+        public HandlerDescriptor? GetDescription(Type inputType, Type outputType)
         {
             LinkedList<IHandlerResolver>? fallbackResolvers = null;
             HandlerDescriptor? description = null;
@@ -78,11 +100,11 @@ namespace RoyalCode.PipelineFlow.Configurations
                     fallbackResolvers.AddLast(resolver);
                 }
 
-                var resolvedDescription = resolver.TryResolve(inputType, output);
+                var resolvedDescription = resolver.TryResolve(inputType, outputType);
                 if (resolvedDescription is not null)
                 {
                     if (description is not null)
-                        throw new InvalidOperationException("Não pode haver mais de um handler. TODO: Criar exeption deste erro.");
+                        throw new MultipleHandlersForTheSameRequestException(inputType, outputType);
                     description = resolvedDescription;
                 }
             }
@@ -91,7 +113,7 @@ namespace RoyalCode.PipelineFlow.Configurations
             {
                 foreach (var resolver in fallbackResolvers)
                 {
-                    description = resolver.TryResolve(inputType, output);
+                    description = resolver.TryResolve(inputType, outputType);
                     if (description is not null)
                         break;
                 }

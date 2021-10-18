@@ -5,13 +5,20 @@ using System.Linq;
 namespace RoyalCode.PipelineFlow.Builders
 {
     /// <summary>
-    /// Contém a sequencia dos tipos de input para validação de loop quando utilizado brigde handlers.
+    /// Contains the sequence of input types for loop validation when using brigde handlers.
     /// </summary>
     public class BridgeChainTypes
     {
         private readonly Queue<Type> inputOnlyTypes = new();
         private readonly Queue<Tuple<Type, Type>> inputOutputTypes = new();
 
+        /// <summary>
+        /// Creates a new instance with the first input type of the pipeline.
+        /// </summary>
+        /// <param name="inputType">The first input type of the pipeline.</param>
+        /// <exception cref="ArgumentNullException">
+        ///     Case <paramref name="inputType"/> is null.
+        /// </exception>
         public BridgeChainTypes(Type inputType)
         {
             if (inputType is null)
@@ -20,6 +27,15 @@ namespace RoyalCode.PipelineFlow.Builders
             inputOnlyTypes.Enqueue(inputType);
         }
 
+        /// <summary>
+        /// Creates a new instance with the first input and output types of the pipeline.
+        /// </summary>
+        /// <param name="inputType">The first input type of the pipeline.</param>
+        /// <param name="outputType">The first output type of the pipeline.</param>
+        /// <exception cref="ArgumentNullException">
+        ///     Case <paramref name="inputType"/> is null,
+        ///     or case <paramref name="outputType"/> is null.
+        /// </exception>
         public BridgeChainTypes(Type inputType, Type outputType)
         {
             if (inputType is null)
@@ -30,6 +46,16 @@ namespace RoyalCode.PipelineFlow.Builders
             inputOutputTypes.Enqueue(new Tuple<Type, Type>(inputType, outputType));
         }
 
+        /// <summary>
+        /// Enqueue the next input type of the pipeline.
+        /// </summary>
+        /// <param name="nextInputType">The next input type of the pipeline.</param>
+        /// <exception cref="ArgumentNullException">
+        ///     Case <paramref name="inputType"/> is null.
+        /// </exception>
+        /// <exception cref="InvalidOperationException">
+        ///     If a dependency loop occurs, where the input type has already been added before.
+        /// </exception>
         public void Enqueue(Type nextInputType)
         {
             if (nextInputType is null)
@@ -44,6 +70,18 @@ namespace RoyalCode.PipelineFlow.Builders
             inputOnlyTypes.Enqueue(nextInputType);
         }
 
+        /// <summary>
+        /// Enqueue the next input and output types of the pipeline.
+        /// </summary>
+        /// <param name="nextInputType">The next input type of the pipeline.</param>
+        /// <param name="outputType">The next output type of the pipeline.</param>
+        /// <exception cref="ArgumentNullException">
+        ///     Case <paramref name="inputType"/> is null,
+        ///     or case <paramref name="outputType"/> is null.
+        /// </exception>
+        /// <exception cref="InvalidOperationException">
+        ///     If a dependency loop occurs, where the input and output types has already been added before.
+        /// </exception>
         public void Enqueue(Type nextInputType, Type outputType)
         {
             if (nextInputType is null)

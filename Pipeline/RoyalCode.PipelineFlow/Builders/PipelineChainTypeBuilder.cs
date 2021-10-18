@@ -6,8 +6,19 @@ using System.Linq;
 
 namespace RoyalCode.PipelineFlow.Builders
 {
+    /// <summary>
+    /// This is an internal component used to define the type of the chain class 
+    /// from the type of the input and/or output class.
+    /// </summary>
     internal class PipelineChainTypeBuilder<TFor> : PipelineChainTypeBuilder
     {
+        /// <summary>
+        /// Creates a new instance with the dependencies.
+        /// </summary>
+        /// <param name="configuration"></param>
+        /// <param name="decoratorSorter"></param>
+        /// <param name="chainBuilders"></param>
+        /// <param name="chainDelegateRegistry"></param>
         public PipelineChainTypeBuilder(
             IPipelineConfiguration<TFor> configuration, 
             IDecoratorSorter decoratorSorter, 
@@ -17,6 +28,10 @@ namespace RoyalCode.PipelineFlow.Builders
         { }
     }
 
+    /// <summary>
+    /// This is an internal component used to define the type of the chain class 
+    /// from the type of the input and/or output class.
+    /// </summary>
     internal class PipelineChainTypeBuilder
     {
         private readonly IEnumerable<IChainTypeBuilder> chainBuilders;
@@ -25,6 +40,14 @@ namespace RoyalCode.PipelineFlow.Builders
         private readonly DecoratorRegistry decoratorsRegistry;
         private readonly IDecoratorSorter decoratorSorter;
 
+        /// <summary>
+        /// Creates a new instance with the dependencies.
+        /// </summary>
+        /// <param name="configuration"></param>
+        /// <param name="decoratorSorter"></param>
+        /// <param name="chainBuilders"></param>
+        /// <param name="chainDelegateRegistry"></param>
+        /// <exception cref="ArgumentNullException"></exception>
         public PipelineChainTypeBuilder(
             IPipelineConfiguration configuration,
             IDecoratorSorter decoratorSorter,
@@ -41,6 +64,15 @@ namespace RoyalCode.PipelineFlow.Builders
             this.chainDelegateRegistry = chainDelegateRegistry ?? throw new ArgumentNullException(nameof(chainDelegateRegistry));
         }
 
+        /// <summary>
+        /// Finds out what type of chain class should be used for a pipeline input type.
+        /// </summary>
+        /// <param name="inputType">The type of the input.</param>
+        /// <param name="bridgeChainTypes">Utility for avoiding loops in bridge handlers.</param>
+        /// <returns>The type of chain class.</returns>
+        /// <exception cref="InvalidOperationException">
+        ///     Case it is not possible to create a type because no handler was found or a bridge loop occurred.
+        /// </exception>
         public Type Build(Type inputType, BridgeChainTypes? bridgeChainTypes = null)
         {
             var handlerDescription = handlersRegistry.GetDescription(inputType);
@@ -96,6 +128,16 @@ namespace RoyalCode.PipelineFlow.Builders
             return chainType;
         }
 
+        /// <summary>
+        /// Finds out what type of chain class should be used for a pipeline input and output types.
+        /// </summary>
+        /// <param name="inputType">The type of input class.</param>
+        /// <param name="outputType">The type of output class.</param>
+        /// <param name="bridgeChainTypes">Utility for avoiding loops in bridge handlers.</param>
+        /// <returns>The type of chain class.</returns>
+        /// <exception cref="InvalidOperationException">
+        ///     Case it is not possible to create a type because no handler was found or a bridge loop occurred.
+        /// </exception>
         public Type Build(Type inputType, Type outputType, BridgeChainTypes? bridgeChainTypes = null)
         {
             var handlerDescription = handlersRegistry.GetDescription(inputType, outputType);

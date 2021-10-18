@@ -4,10 +4,17 @@ using System;
 
 namespace RoyalCode.PipelineFlow.Builders
 {
+    /// <summary>
+    /// <para>
+    ///     This implementation of <see cref="IChainTypeBuilder"/> handles the creation of chain types for handler descriptors.
+    /// </para>
+    /// </summary>
     internal class HandlerChainTypeBuilder : IChainTypeBuilder
     {
+        /// <inheritdoc/>
         public ChainKind Kind => ChainKind.Handler;
 
+        /// <inheritdoc/>
         public Type Build(IHandlerDescriptor descriptor, Type? previousChainType)
         {
             if (descriptor is null)

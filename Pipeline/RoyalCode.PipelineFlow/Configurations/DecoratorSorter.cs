@@ -5,8 +5,10 @@ using System.Linq;
 
 namespace RoyalCode.PipelineFlow.Configurations
 {
+    /// <inheritdoc/>
     internal class DecoratorSorter : IDecoratorSorter
     {
+        /// <inheritdoc/>
         public IEnumerable<DecoratorDescriptor> Sort(IEnumerable<DecoratorDescriptor> descriptions)
         {
             var groups = descriptions.GroupBy(d => d.SortDescriptor.Priority)

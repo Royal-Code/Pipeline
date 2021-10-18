@@ -1,5 +1,4 @@
-﻿using RoyalCode.PipelineFlow.Configurations;
-using System;
+﻿using System;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,9 +14,11 @@ namespace RoyalCode.PipelineFlow.Chains
             function = functionProvider?.Delegate ?? throw new ArgumentNullException(nameof(functionProvider));
         }
 
+        /// <inheritdoc/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override void Send(TIn input) => function(input);
 
+        /// <inheritdoc/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override Task SendAsync(TIn input, CancellationToken token)
         {
@@ -35,9 +36,11 @@ namespace RoyalCode.PipelineFlow.Chains
             function = functionProvider?.Delegate ?? throw new ArgumentNullException(nameof(functionProvider));
         }
 
+        /// <inheritdoc/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override TOut Send(TIn input) => function(input);
 
+        /// <inheritdoc/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override Task<TOut> SendAsync(TIn input, CancellationToken token)
         {

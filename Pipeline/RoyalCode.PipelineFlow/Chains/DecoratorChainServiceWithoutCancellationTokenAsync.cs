@@ -1,5 +1,4 @@
-﻿using RoyalCode.PipelineFlow.Configurations;
-using System;
+﻿using System;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -23,10 +22,12 @@ namespace RoyalCode.PipelineFlow.Chains
             this.next = next ?? throw new ArgumentNullException(nameof(next));
         }
 
+        /// <inheritdoc/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override void Send(TIn input)
             => function(service, input, () => { next.Send(input); return Task.CompletedTask; });
 
+        /// <inheritdoc/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public override Task SendAsync(TIn input, CancellationToken token)
             => function(service, input, () => next.SendAsync(input, token));
