@@ -9,6 +9,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoyalCode.CommandAndQuery",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoyalCode.PipelineFlow.Tests", "RoyalCode.PipelineFlow.Tests\RoyalCode.PipelineFlow.Tests.csproj", "{1A7C52C2-D67A-4F84-B02C-ED3903BE6C13}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".Items", ".Items", "{85EDB87A-2482-487D-943F-3F169B070039}"
+	ProjectSection(SolutionItems) = preProject
+		base.targets = base.targets
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
