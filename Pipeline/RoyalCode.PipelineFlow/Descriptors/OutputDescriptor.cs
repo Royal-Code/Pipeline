@@ -10,6 +10,10 @@ namespace RoyalCode.PipelineFlow.Descriptors
     /// </summary>
     public class OutputDescriptor
     {
+        /// <summary>
+        /// Create a new instance of the descriptor for the handler method.
+        /// </summary>
+        /// <param name="method">The handler method.</param>
         public OutputDescriptor(MethodInfo method)
         {
             var outputType = method.ReturnType;
@@ -45,12 +49,34 @@ namespace RoyalCode.PipelineFlow.Descriptors
             IsVoid = isVoid;
         }
 
+        /// <summary>
+        /// <para>
+        ///     The output type of handler, the pipeline result.
+        /// </para>
+        /// <para>
+        ///     The output type may be a generic type.
+        /// </para>
+        /// </summary>
         public Type OutputType { get; }
 
+        /// <summary>
+        /// <para>
+        ///     If the handler of the request (input type) will produce a result.
+        /// </para>
+        /// <para>
+        ///     If return type of the method are 'void' or 'Task' the value will be false, otherwise true.
+        /// </para>
+        /// </summary>
         public bool HasOutput { get; }
 
+        /// <summary>
+        /// If the handler is async.
+        /// </summary>
         public bool IsAsync { get; }
 
+        /// <summary>
+        /// If the output type is void.
+        /// </summary>
         public bool IsVoid { get; }
     }
 }

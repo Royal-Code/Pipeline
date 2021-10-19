@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RoyalCode.PipelineFlow.Exceptions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -7,17 +8,23 @@ using System.Reflection;
 namespace RoyalCode.PipelineFlow.Descriptors
 {
     /// <summary>
-    /// Contém a resolução dos tipos genéricos do input e output em relação ao serviço de um method handler.
+    /// It contains the resolution of the generic input and output types in relation to the service of a method handler.
     /// </summary>
     public class GenericResolution
     {
         // deve conter uma relação/mapeamento dos parametros genéricos do serviço em relação
         // aos parâmetros genéricos do input e em relação ao output ou parâmetros genéricos do output.
+        //
+        // must contain a relationship/mapping of the generic service parameters
+        // to the generic input parameters and to the output or generic output parameters.
         private readonly List<GenericParameterBinding> bindings;
 
         // se o método conter mais de um parâmetro, e algum destes outros parâmetros forem genéricos,
         // deverá ser criado uma resolução para os tipos genéricos deles
         // esta lista conterá a resolução.
+        //
+        // if the method contains more than one parameter, and some of these other parameters are generic,
+        // a resolution must be created for their generic types this list will contain the resolution.
         private readonly List<GenericTypeArgumentsBinding>? methodGenericTypeParametersBindings;
 
         private readonly bool isAsync;
@@ -25,22 +32,22 @@ namespace RoyalCode.PipelineFlow.Descriptors
         private readonly MethodInfo handlerMethod;
 
         /// <summary>
-        /// Cria uma resolução de um serviço genérico a partir dos input e output que podem ser genéricos.
+        /// Creates a resolution of a generic service from the input and output that can be generic.
         /// </summary>
-        /// <param name="inputType">O tipo de entrada, o prmeiro parâmetro do método.</param>
-        /// <param name="outputType">O tipo de retorno do método.</param>
-        /// <param name="isAsync">Se é assíncrono.</param>
-        /// <param name="hasOutput">Se produz um resultado.</param>
-        /// <param name="handlerMethod">Info do método.</param>
+        /// <param name="inputType">The input type, the first parameter of the method.</param>
+        /// <param name="outputType">The return type of the method.</param>
+        /// <param name="isAsync">If it is asynchronous.</param>
+        /// <param name="hasOutput">If it produces a result.</param>
+        /// <param name="handlerMethod">Method Info.</param>
         /// <exception cref="InvalidOperationException">
         /// <para>
-        ///     Caso haja genéricos no input e não for possível mapear com algum genérico do serviço.
+        ///     If there are generics in the input and it is not possible to map with any service generics.
         /// </para>
         /// <para>
-        ///     Caso haja genéricos no output e não for possível mapear com algum genérico do serviço.
+        ///     If there are generics in the output and it is not possible to map with any service generics.
         /// </para>
         /// <para>
-        ///     Caso algum tipo genérico do serviço não for mapeado para um genérico do input ou output.
+        ///     If any generic type of the service is not mapped to a generic of the input or output.
         /// </para>
         /// </exception>
         public GenericResolution(Type inputType, Type outputType,
@@ -86,7 +93,7 @@ namespace RoyalCode.PipelineFlow.Descriptors
                     }
                     else
                     {
-                        throw new InvalidOperationException("TODO create exception for case");
+                        throw new NonResolvableInputTypeException(handlerMethod, inputType);
                     }
                 }
             }
@@ -112,23 +119,14 @@ namespace RoyalCode.PipelineFlow.Descriptors
                         }
                         else if (outputGeneric.IsGenericParameter)
                         {
-                            throw new InvalidOperationException("TODO create exception for case");
+                            throw new NonResolvableOutputTypeException(handlerMethod, outputType);
                         }
                     }
                 }
             }
-
-            //foreach(var b in bindings)
-            //{
-            //    var constraints = b.ServiceGenericType.GetGenericParameterConstraints();
-            //    foreach (var c in constraints)
-            //    {
-
-            //    }
-            //}
             
             if (bindings.Any(b => b.Match == BindingMatch.None))
-                throw new InvalidOperationException("TODO create exception for case");
+                throw new NonResolvableGenericParametersException(handlerMethod, inputType, outputType);
 
             var parameters = handlerMethod.GetParameters();
             for (int i = 1; i < parameters.Length; i++)

@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace RoyalCode.PipelineFlow.Descriptors
 {
+    /// <summary>
+    /// Internal component to help create handler descriptors.
+    /// </summary>
     internal class DescriptorBuilder
     {
         private ChainKind kind;
