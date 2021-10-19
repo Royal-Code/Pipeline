@@ -18,16 +18,13 @@ jobs:
       - uses: actions/checkout@v2
       
       - name: Setup .NET
-        uses: actions/setup-dotnet@v1
+      - uses: actions/setup-dotnet@v1
         with:
           dotnet-version: '6.0.x'
           include-prerelease: true
-      
-      - name: Restore dependencies
-        run: sudo dotnet restore ./Pipeline/RoyalCode.PipelineFlow/RoyalCode.PipelineFlow.csproj
-      
+
       - name: Build and pack
-        run: sudo dotnet build ./Pipeline/RoyalCode.PipelineFlow/RoyalCode.PipelineFlow.csproj --no-restore -c Release
-      
+        run: sudo dotnet build ./Pipeline/RoyalCode.PipelineFlow/RoyalCode.PipelineFlow.csproj -c Release
+
       - name: Publish
         run: sudo dotnet nuget push ./Pipeline/RoyalCode.PipelineFlow/**/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
