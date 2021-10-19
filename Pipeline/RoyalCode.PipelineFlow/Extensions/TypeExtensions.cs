@@ -2,9 +2,24 @@
 
 namespace RoyalCode.PipelineFlow.Extensions
 {
+    /// <summary>
+    /// Extension methods for <see cref="Type"/>.
+    /// </summary>
     public static class TypeExtensions
     {
-
+        /// <summary>
+        /// Checks that one type implements another, working for generic types.
+        /// </summary>
+        /// <param name="type">The type to check.</param>
+        /// <param name="other">The required implementation type.</param>
+        /// <returns>
+        /// <para>
+        ///     True if <paramref name="type"/> implements <paramref name="other"/>, false otherwise.
+        /// </para>
+        /// <para>
+        ///     This means that a variable of type '<paramref name="other"/>' can receive objects of type '<paramref name="type"/>'.
+        /// </para>
+        /// </returns>
         public static bool Implements(this Type type, Type other)
         {
             if (type == other)
@@ -28,17 +43,19 @@ namespace RoyalCode.PipelineFlow.Extensions
         }
 
         /// <summary>
-        /// TODO: docs em ingles.
-        /// 
-        /// Verifica se um tipo de dado é um determinado tipo genérico e retorna o tipo genérico concreto.
-        /// Copiado do Stackoverflow.
+        /// <para>
+        ///     Checks if a data type is a certain generic type and returns the concrete generic type.
+        /// </para>
+        /// <para>
+        ///     Adapted from Stackoverflow.
+        /// </para>
         /// </summary>
-        /// <param name="generic">Tipo genérico.</param>
-        /// <param name="toCheck">Tipo a ser verificado.</param>
-        /// <returns>O tipo genérico concreto, ou nulo caso não é um subtipo gerérico.</returns>
+        /// <param name="generic">The generic type.</param>
+        /// <param name="toCheck">The to be checked.</param>
+        /// <returns>The concrete generic type, or null case is not a generic subtype.</returns>
         public static Type? GetSubclassOfRawGeneric(this Type generic, Type toCheck)
         {
-            // adicionado, se for uma interface, busca pelas interfaces do tipo.
+            // added, if it is an interface, it searches for interfaces of the type.
             if (generic.IsInterface)
             {
                 foreach (var interfaceToCheck in toCheck.GetInterfaces())

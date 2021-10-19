@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -8,6 +7,10 @@ using System.Text;
 
 namespace RoyalCode.PipelineFlow
 {
+    /// <summary>
+    /// When not using the AspNetCore Dependency Injection, or other Container implementation,
+    /// this component supply the needs for create instances of pipelines, chains and services.
+    /// </summary>
     internal class PipelineTypeServiceProvider : IServiceProvider
     {
         private readonly ServiceFactoryCollection serviceFactoryCollection;
@@ -86,6 +89,10 @@ namespace RoyalCode.PipelineFlow
         }
     }
 
+    /// <summary>
+    /// The activator search for the type dependencies and create a lambda expression to create new instances for some
+    /// type.
+    /// </summary>
     internal static class ServiceActivator
     {
         internal static bool CanActivate(Type type, ServiceFactoryCollection serviceFactories)

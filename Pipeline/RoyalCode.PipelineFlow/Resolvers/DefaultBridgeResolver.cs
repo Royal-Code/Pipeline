@@ -4,6 +4,9 @@ using System.Threading.Tasks;
 
 namespace RoyalCode.PipelineFlow.Resolvers
 {
+    /// <summary>
+    /// Contains method factories for create all kinds of <see cref="IHandlerResolver"/> for bridge handlers.
+    /// </summary>
     public static class DefaultBridgeResolver
     {
         public static IHandlerResolver BridgeHandler<TInput, TNextInput>(Action<TInput, Action<TNextInput>> handler)

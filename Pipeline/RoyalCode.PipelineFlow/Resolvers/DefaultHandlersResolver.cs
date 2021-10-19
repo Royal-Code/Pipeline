@@ -1,12 +1,11 @@
-﻿using RoyalCode.PipelineFlow.Configurations;
-using System;
+﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace RoyalCode.PipelineFlow.Resolvers
 {
     /// <summary>
-    /// Contains method factories for create all kinds of <see cref="IHandlerResolver"/>.
+    /// Contains method factories for create all kinds of <see cref="IHandlerResolver"/> for processing handlers.
     /// </summary>
     public static class DefaultHandlersResolver
     {

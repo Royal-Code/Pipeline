@@ -4,6 +4,9 @@ using System.Threading.Tasks;
 
 namespace RoyalCode.PipelineFlow.Resolvers
 {
+    /// <summary>
+    /// Contains method factories for create all kinds of <see cref="IDecoratorResolver"/> for decorators handlers.
+    /// </summary>
     public static class DefaultDecoratorsResolver
     {
         public static IDecoratorResolver Decorate<TInput>(Action<TInput, Action> handler)

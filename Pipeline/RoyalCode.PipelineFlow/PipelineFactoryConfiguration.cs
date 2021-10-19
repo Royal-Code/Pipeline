@@ -6,6 +6,10 @@ using System.Collections.Generic;
 
 namespace RoyalCode.PipelineFlow
 {
+    /// <summary>
+    /// The configuration for build a <see cref="IPipelineFactory{TFor}"/>.
+    /// </summary>
+    /// <typeparam name="TFor">The specific type of the pipeline.</typeparam>
     public class PipelineFactoryConfiguration<TFor>
     {
         private readonly ChainDelegateRegistry chainDelegateRegistry = new();
@@ -68,6 +72,14 @@ namespace RoyalCode.PipelineFlow
             return new PipelineFactory<TFor>(chainPipelineBuilder, pipelineTypeBuilder);
         }
 
+        /// <summary>
+        /// Configure handlers for the pipeline.
+        /// </summary>
+        /// <param name="configurer">An action to configure the handlers for the pipeline.</param>
+        /// <returns>The same instance for chain calls.</returns>
+        /// <exception cref="ArgumentNullException">
+        ///     If <paramref name="configurer"/> is null.
+        /// </exception>
         public PipelineFactoryConfiguration<TFor> ConfigurePipelines(Action<IPipelineBuilder> configurer)
         {
             if (configurer is null)
