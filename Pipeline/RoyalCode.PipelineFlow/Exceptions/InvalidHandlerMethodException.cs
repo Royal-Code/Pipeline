@@ -2,6 +2,9 @@
 
 namespace RoyalCode.PipelineFlow.Exceptions
 {
+    /// <summary>
+    /// Exception for invalid handler method.
+    /// </summary>
     public class InvalidHandlerMethodException : InvalidOperationException
     {
         public static string DefaultMessage =
@@ -9,6 +12,9 @@ namespace RoyalCode.PipelineFlow.Exceptions
             "the first will be the input type, and if the method is asynchronous, " +
             "there can be a second parameter, which must be of type CancellationToken.";
 
+        /// <summary>
+        /// Create a new exception.
+        /// </summary>
         public InvalidHandlerMethodException()
             : base(DefaultMessage)
         { }
