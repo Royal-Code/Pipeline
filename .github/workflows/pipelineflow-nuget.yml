@@ -1,0 +1,29 @@
+name: pipelineflow-nuget
+
+on:
+  push:
+    branches: [ release-pipelineflow ]
+  pull_request:
+    branches: [ release-pipelineflow ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      - uses: actions/checkout@v2
+      # Runs a single command using the runners shell
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 6.x
+      - name: Restore dependencies
+        run: sudo dotnet restore ./Pipeline/RoyalCode.PipelineFlow/RoyalCode.PipelineFlow.csproj
+      - name: Build and pack
+        run: sudo dotnet build ./Pipeline/RoyalCode.PipelineFlow/RoyalCode.PipelineFlow.csproj --no-restore -c Release
+      - name: Publish
+        run: sudo dotnet nuget push ./Pipeline/RoyalCode.PipelineFlow/**/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
