@@ -6,7 +6,7 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>Royal Code</Authors>
     <Copyright>Royal Code Copyright ©  2021</Copyright>
-    <RepositoryUrl>https://github.com/Royal-Code/Utils</RepositoryUrl>
+    <RepositoryUrl>https://github.com/Royal-Code/Pipeline</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
     <Configurations>Debug;Release</Configurations>
     <PackageIcon>icon.png</PackageIcon>
