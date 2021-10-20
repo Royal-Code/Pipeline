@@ -4,60 +4,63 @@ namespace RoyalCode.CommandAndQuery
 {
     /// <summary>
     /// <para>
-    ///     Decoradores para requisições do pipeline.
-    ///     Estes objetos são executados pelo <see cref="ICommandQueryBus"/>.
+    ///     Decorators for pipeline requests.
+    ///     These objects are executed by the <see cref="ICommandQueryBus"/>.
     /// </para>
     /// <para>
-    ///     O decorador adiciona um comportamento às requisições do pipeline, podendo modificar o valor de entrada 
-    ///     ou executar alguma operação.
+    ///     The decorator adds a behavior to the pipeline requests,
+    ///     it may modify the input value, perform some operation, 
+    ///     stop or break the pipeline execution, or return a result value for request.
     /// </para>
     /// <para>
-    ///     Após realizado o comportamento do decorador, deve ser chamado o próximo handler, caso contrário a 
-    ///     execução será interrompida.
+    ///     After the decorator behavior has been performed, the next handler should be called, 
+    ///     otherwise execution will be interrupted.
     /// </para>
     /// </summary>
-    /// <typeparam name="TRequest">Tipo de dado da requisição.</typeparam>
+    /// <typeparam name="TRequest">Data type of the request.</typeparam>
     public interface IDecorator<in TRequest>
     {
         /// <summary>
-        /// Pipeline decorator.
+        /// Pipeline decorator handler.
         /// Perform any additional behavior and call <paramref name="next"/> delegate as necessary.
         /// </summary>
-        /// <param name="request">Incoming request</param>
+        /// <param name="request">Incoming request.</param>
         /// <param name="next">
-        /// Delegate for the next action in the pipeline.
+        ///     Delegate for the next action in the pipeline.
         /// </param>
-        /// <returns>The <typeparamref name="TRequest"/>.</returns>
         void Handle(TRequest request, Action next);
     }
 
     /// <summary>
     /// <para>
-    ///     Decoradores para requisições do pipeline.
-    ///     Estes objetos são executados pelo <see cref="ICommandQueryBus"/>.
+    ///     Decorators for pipeline requests.
+    ///     These objects are executed by the <see cref="ICommandQueryBus"/>.
     /// </para>
     /// <para>
-    ///     O decorador adiciona um comportamento às requisições do pipeline, podendo modificar o valor de entrada 
-    ///     ou executar alguma operação.
+    ///     The decorator adds a behavior to the pipeline requests,
+    ///     it may modify the input value, perform some operation, 
+    ///     stop or break the pipeline execution, or return a result value for request.
     /// </para>
     /// <para>
-    ///     Após realizado o comportamento do decorador, deve ser chamado o próximo handler ou retornar um valor,
-    ///     interrompendo a execução do pipeline.
+    ///     After the decorator behavior has been performed, the next handler should be called, 
+    ///     otherwise execution will be interrupted.
     /// </para>
     /// </summary>
-    /// <typeparam name="TRequest">Tipo de dado da requisição</typeparam>
-    /// <typeparam name="TResult">Tipo do resultado.</typeparam>
+    /// <typeparam name="TRequest">Data type of the request.</typeparam>
+    /// <typeparam name="TResult">Result date type.</typeparam>
     public interface IDecorator<in TRequest, TResult>
     {
         /// <summary>
-        /// Pipeline decorator.
+        /// Pipeline decorator handler.
         /// Perform any additional behavior and call <paramref name="next"/> delegate as necessary.
         /// </summary>
-        /// <param name="request">Incoming request</param>
+        /// <param name="request">Incoming request.</param>
         /// <param name="next">
-        /// Delegate for the next action in the pipeline.
+        ///     Delegate for the next action in the pipeline.
         /// </param>
-        /// <returns>The <typeparamref name="TResult"/>.</returns>
+        /// <returns>
+        ///     The result of the request execution.
+        /// </returns>
         TResult Handle(TRequest request, Func<TResult> next);
     }
 }

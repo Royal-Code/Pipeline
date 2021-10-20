@@ -6,62 +6,68 @@ namespace RoyalCode.CommandAndQuery
 {
     /// <summary>
     /// <para>
-    ///     Decoradores para requisições do pipeline.
-    ///     Estes objetos são executados pelo <see cref="ICommandQueryBus"/>.
+    ///     Decorators for pipeline requests.
+    ///     These objects are executed by the <see cref="ICommandQueryBus"/>.
     /// </para>
     /// <para>
-    ///     O decorador adiciona um comportamento às requisições do pipeline, podendo modificar o valor de entrada 
-    ///     ou executar alguma operação.
+    ///     The decorator adds a behavior to the pipeline requests,
+    ///     it may modify the input value, perform some operation, 
+    ///     stop or break the pipeline execution, or return a result value for request.
     /// </para>
     /// <para>
-    ///     Após realizado o comportamento do decorador, deve ser chamado o próximo handler, caso contrário a 
-    ///     execução será interrompida.
+    ///     After the decorator behavior has been performed, the next handler should be called, 
+    ///     otherwise execution will be interrupted.
     /// </para>
     /// </summary>
-    /// <typeparam name="TRequest">Tipo de dado da requisição.</typeparam>
+    /// <typeparam name="TRequest">Data type of the request.</typeparam>
     public interface IAsyncDecorator<in TRequest>
     {
         /// <summary>
-        /// Pipeline decorator.
+        /// Pipeline decorator handler.
         /// Perform any additional behavior and await the <paramref name="next"/> delegate as necessary.
         /// </summary>
-        /// <param name="request">Incoming request</param>
-        /// <param name="cancellationToken">Cancellation token</param>
+        /// <param name="request">Incoming request.</param>
+        /// <param name="cancellationToken">Cancellation token.</param>
         /// <param name="next">
-        /// Awaitable delegate for the next action in the pipeline.
+        ///     Awaitable delegate for the next action in the pipeline.
         /// </param>
-        /// <returns>Awaitable task.</returns>
+        /// <returns>
+        ///     Task for asynchronous processing.
+        /// </returns>
         Task HandleAsync(TRequest request, Func<Task> next, CancellationToken cancellationToken = default);
     }
 
     /// <summary>
     /// <para>
-    ///     Decoradores para requisições do pipeline.
-    ///     Estes objetos são executados pelo <see cref="ICommandQueryBus"/>.
+    ///     Decorators for pipeline requests.
+    ///     These objects are executed by the <see cref="ICommandQueryBus"/>.
     /// </para>
     /// <para>
-    ///     O decorador adiciona um comportamento às requisições do pipeline, podendo modificar o valor de entrada 
-    ///     ou executar alguma operação.
+    ///     The decorator adds a behavior to the pipeline requests,
+    ///     it may modify the input value, perform some operation, 
+    ///     stop or break the pipeline execution, or return a result value for request.
     /// </para>
     /// <para>
-    ///     Após realizado o comportamento do decorador, deve ser chamado o próximo handler ou retornar um valor,
-    ///     interrompendo a execução do pipeline.
+    ///     After the decorator behavior has been performed, the next handler should be called, 
+    ///     otherwise execution will be interrupted.
     /// </para>
     /// </summary>
-    /// <typeparam name="TRequest">Tipo de dado da requisição</typeparam>
-    /// <typeparam name="TResult">Tipo do resultado.</typeparam>
+    /// <typeparam name="TRequest">Data type of the request.</typeparam>
+    /// <typeparam name="TResult">Result date type.</typeparam>
     public interface IAsyncDecorator<in TRequest, TResult>
     {
         /// <summary>
-        /// Pipeline decorator.
+        /// Pipeline decorator handler.
         /// Perform any additional behavior and await the <paramref name="next"/> delegate as necessary.
         /// </summary>
-        /// <param name="request">Incoming request</param>
-        /// <param name="cancellationToken">Cancellation token</param>
+        /// <param name="request">Incoming request.</param>
+        /// <param name="cancellationToken">Cancellation token.</param>
         /// <param name="next">
-        /// Awaitable delegate for the next action in the pipeline.
+        ///     Awaitable delegate for the next action in the pipeline.
         /// </param>
-        /// <returns>Awaitable task returning the <typeparamref name="TResult"/>.</returns>
+        /// <returns>
+        ///     ask for asynchronous processing with the result of the request execution.
+        /// </returns>
         Task<TResult> HandleAsync(TRequest request, Func<Task<TResult>> next, CancellationToken cancellationToken = default);
     }
 }
