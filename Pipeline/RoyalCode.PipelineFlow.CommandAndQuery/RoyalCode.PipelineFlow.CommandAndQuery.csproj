@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="..\base.targets" />
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;net5</TargetFrameworks>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Version>1.0.0-rc1</Version>
+    <AssemblyVersion>1.0.0</AssemblyVersion>
+    <FileVersion>1.0.0</FileVersion>
+    <Description>
+      The command query bus is a command-handler-pattern solution that brings with it the implementation
+      of various design patterns, such as Mediator, Chain of Responsibility, Bridge, Decorators and Command.
+    </Description>
+    <PackageTags>RoyalCode Command Command-Pattern Command-Handler-Pattern CQS CQRS Pipeline Flow</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net5' " >
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' " >
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\RoyalCode.Core.Cqs\RoyalCode.CommandAndQuery.csproj" />
+    <ProjectReference Include="..\RoyalCode.PipelineFlow\RoyalCode.PipelineFlow.csproj" />
+  </ItemGroup>
+
+</Project>

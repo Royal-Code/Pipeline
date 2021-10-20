@@ -14,6 +14,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".Items", ".Items", "{85EDB8
 		base.targets = base.targets
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoyalCode.PipelineFlow.CommandAndQuery", "RoyalCode.PipelineFlow.CommandAndQuery\RoyalCode.PipelineFlow.CommandAndQuery.csproj", "{653E350F-B204-4A3F-820F-2BE40E5ED7F9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,6 +34,10 @@ Global
 		{1A7C52C2-D67A-4F84-B02C-ED3903BE6C13}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1A7C52C2-D67A-4F84-B02C-ED3903BE6C13}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1A7C52C2-D67A-4F84-B02C-ED3903BE6C13}.Release|Any CPU.Build.0 = Release|Any CPU
+		{653E350F-B204-4A3F-820F-2BE40E5ED7F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{653E350F-B204-4A3F-820F-2BE40E5ED7F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{653E350F-B204-4A3F-820F-2BE40E5ED7F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{653E350F-B204-4A3F-820F-2BE40E5ED7F9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
