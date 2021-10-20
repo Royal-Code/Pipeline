@@ -25,6 +25,7 @@ namespace RoyalCode.PipelineFlow.Builders
         }
 
         /// <inheritdoc/>
-        public object Build(Type chainType) => provider.GetService(chainType);
+        public object Build(Type chainType) => provider.GetService(chainType)
+            ?? throw new ArgumentException($"Invalid chain type. The type {chainType.FullName} is not a service and can't be builded.");
     }
 }

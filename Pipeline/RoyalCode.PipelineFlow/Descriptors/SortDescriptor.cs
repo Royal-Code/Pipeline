@@ -1,4 +1,6 @@
-﻿namespace RoyalCode.PipelineFlow.Descriptors
+﻿using RoyalCode.PipelineFlow.Configurations;
+
+namespace RoyalCode.PipelineFlow.Descriptors
 {
     /// <summary>
     /// <para>

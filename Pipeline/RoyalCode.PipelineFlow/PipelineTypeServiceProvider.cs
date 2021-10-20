@@ -142,7 +142,7 @@ namespace RoyalCode.PipelineFlow
                     : Expression.Convert(
                         Expression.Call(
                             spParam,
-                            typeof(IServiceProvider).GetMethod("GetService"),
+                            typeof(IServiceProvider).GetMethod("GetService")!,
                             Expression.Constant(d.ParameterInfo.ParameterType)),
                         d.ParameterInfo.ParameterType));
             }));

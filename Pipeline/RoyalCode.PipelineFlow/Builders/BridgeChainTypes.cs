@@ -51,7 +51,7 @@ namespace RoyalCode.PipelineFlow.Builders
         /// </summary>
         /// <param name="nextInputType">The next input type of the pipeline.</param>
         /// <exception cref="ArgumentNullException">
-        ///     Case <paramref name="inputType"/> is null.
+        ///     Case <paramref name="nextInputType"/> is null.
         /// </exception>
         /// <exception cref="InvalidOperationException">
         ///     If a dependency loop occurs, where the input type has already been added before.
@@ -76,7 +76,7 @@ namespace RoyalCode.PipelineFlow.Builders
         /// <param name="nextInputType">The next input type of the pipeline.</param>
         /// <param name="outputType">The next output type of the pipeline.</param>
         /// <exception cref="ArgumentNullException">
-        ///     Case <paramref name="inputType"/> is null,
+        ///     Case <paramref name="nextInputType"/> is null,
         ///     or case <paramref name="outputType"/> is null.
         /// </exception>
         /// <exception cref="InvalidOperationException">

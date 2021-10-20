@@ -8,6 +8,9 @@ namespace RoyalCode.PipelineFlow.Configurations
     /// </summary>
     public abstract class PipelineBuilderBase : IPipelineBuilder
     {
+        /// <summary>
+        /// The previous pipeline builder, used for add the handlers.
+        /// </summary>
         protected readonly IPipelineBuilder pipelineBuilder;
 
         /// <summary>

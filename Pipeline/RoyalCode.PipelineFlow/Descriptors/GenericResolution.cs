@@ -265,6 +265,12 @@ namespace RoyalCode.PipelineFlow.Descriptors
             ToOutputGeneric,
         }
 
+        /// <summary>
+        /// Create the handler delegate, resolving the generic types from the atual input and output type.
+        /// </summary>
+        /// <param name="inputType">The atual input type.</param>
+        /// <param name="outputType">The atual output type.</param>
+        /// <returns></returns>
         public Delegate CreateDelegate(Type inputType, Type outputType)
         {
             var genericTypes = new Type[bindings.Count];
@@ -308,7 +314,7 @@ namespace RoyalCode.PipelineFlow.Descriptors
                 }
 
             // resolve the real method.
-            var executableMethod = serviceType.GetRuntimeMethod(handlerMethod.Name, parametersTypes);
+            var executableMethod = serviceType.GetRuntimeMethod(handlerMethod.Name, parametersTypes)!;
 
             // starting delegate creation
             List<ParameterExpression> delegateParameters = new();

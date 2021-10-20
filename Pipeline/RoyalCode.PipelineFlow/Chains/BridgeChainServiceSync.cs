@@ -5,6 +5,13 @@ using System.Threading.Tasks;
 
 namespace RoyalCode.PipelineFlow.Chains
 {
+    /// <summary>
+    /// Bridge chain.
+    /// </summary>
+    /// <typeparam name="TIn">The input type.</typeparam>
+    /// <typeparam name="TNextIn">The next input type.</typeparam>
+    /// <typeparam name="TNextChain">The next chain type.</typeparam>
+    /// <typeparam name="TService">The service type.</typeparam>
     public class BridgeChainServiceSync<TIn, TNextIn, TNextChain, TService> : BridgeChain<TIn, TNextIn, TNextChain>
         where TNextChain : Chain<TNextIn>
     {
@@ -12,6 +19,15 @@ namespace RoyalCode.PipelineFlow.Chains
         private readonly Action<TService, TIn, Action<TNextIn>> action;
         private readonly TNextChain next;
 
+        /// <summary>
+        /// Create the chain with the dependencies.
+        /// </summary>
+        /// <param name="service">The service.</param>
+        /// <param name="functionProvider">Provides the delegate handler.</param>
+        /// <param name="next">The next chain.</param>
+        /// <exception cref="ArgumentNullException">
+        ///     If any parameter is null.
+        /// </exception>
         public BridgeChainServiceSync(
             TService service,
             IChainDelegateProvider<Action<TService, TIn, Action<TNextIn>>> functionProvider,
@@ -35,6 +51,14 @@ namespace RoyalCode.PipelineFlow.Chains
         }
     }
 
+    /// <summary>
+    /// Bridge chain.
+    /// </summary>
+    /// <typeparam name="TIn">The input type.</typeparam>
+    /// <typeparam name="TOut">The output type.</typeparam>
+    /// <typeparam name="TNextIn">The next input type.</typeparam>
+    /// <typeparam name="TNextChain">The next chain type.</typeparam>
+    /// <typeparam name="TService">The service type.</typeparam>
     public class BridgeChainServiceSync<TIn, TOut, TNextIn, TNextChain, TService>
         : BridgeChain<TIn, TOut, TNextIn, TNextChain>
         where TNextChain : Chain<TNextIn, TOut>
@@ -43,6 +67,15 @@ namespace RoyalCode.PipelineFlow.Chains
         private readonly Func<TService, TIn, Func<TNextIn, TOut>, TOut> function;
         private readonly TNextChain next;
 
+        /// <summary>
+        /// Create the chain with the dependencies.
+        /// </summary>
+        /// <param name="service">The service.</param>
+        /// <param name="functionProvider">Provides the delegate handler.</param>
+        /// <param name="next">The next chain.</param>
+        /// <exception cref="ArgumentNullException">
+        ///     If any parameter is null.
+        /// </exception>
         public BridgeChainServiceSync(
             TService service,
             IChainDelegateProvider<Func<TService, TIn, Func<TNextIn, TOut>, TOut>> functionProvider,
@@ -63,6 +96,15 @@ namespace RoyalCode.PipelineFlow.Chains
             => Task.FromResult(function(service, input, nextInput => next.Send(nextInput)));
     }
 
+    /// <summary>
+    /// Bridge chain.
+    /// </summary>
+    /// <typeparam name="TIn">The input type.</typeparam>
+    /// <typeparam name="TOut">The output type.</typeparam>
+    /// <typeparam name="TNextIn">The next input type.</typeparam>
+    /// <typeparam name="TNextOut">The output input type.</typeparam>
+    /// <typeparam name="TNextChain">The next chain type.</typeparam>
+    /// <typeparam name="TService">The service type.</typeparam>
     public class BridgeChainServiceSync<TIn, TOut, TNextIn, TNextOut, TNextChain, TService>
         : BridgeChain<TIn, TOut, TNextIn, TNextOut, TNextChain>
         where TNextChain : Chain<TNextIn, TNextOut>
@@ -71,6 +113,15 @@ namespace RoyalCode.PipelineFlow.Chains
         private readonly Func<TService, TIn, Func<TNextIn, TNextOut>, TOut> function;
         private readonly TNextChain next;
 
+        /// <summary>
+        /// Create the chain with the dependencies.
+        /// </summary>
+        /// <param name="service">The service.</param>
+        /// <param name="functionProvider">Provides the delegate handler.</param>
+        /// <param name="next">The next chain.</param>
+        /// <exception cref="ArgumentNullException">
+        ///     If any parameter is null.
+        /// </exception>
         public BridgeChainServiceSync(
             TService service,
             IChainDelegateProvider<Func<TService, TIn, Func<TNextIn, TNextOut>, TOut>> functionProvider,

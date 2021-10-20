@@ -30,6 +30,6 @@ namespace RoyalCode.PipelineFlow.Resolvers
         /// <returns>
         ///     A decorator handler description, or null if can't be applied.
         /// </returns>
-        DecoratorDescriptor? TryResolve(Type inputType, Type output);
+        DecoratorDescriptor? TryResolve(Type inputType, Type outputType);
     }
 }
