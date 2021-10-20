@@ -11,6 +11,6 @@
     /// or <see cref="IBridge{TRequest, TResult, TNextRequest, TNextResult}"/>.
     /// </summary>
     /// <typeparam name="TRequest">Data type of the origin request.</typeparam>
-    /// <typeparam name="TNextRequest">Data type of the new (next) request.</typeparam>
+    /// <typeparam name="TResult">Data type of the new (next) request.</typeparam>
     public interface IBridgeBase<in TRequest, TResult> where TRequest : IRequest<TResult> { }
 }
