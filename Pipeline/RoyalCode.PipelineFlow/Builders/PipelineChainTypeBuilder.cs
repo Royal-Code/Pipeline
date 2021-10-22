@@ -10,7 +10,7 @@ namespace RoyalCode.PipelineFlow.Builders
     /// This is an internal component used to define the type of the chain class 
     /// from the type of the input and/or output class.
     /// </summary>
-    internal class PipelineChainTypeBuilder<TFor> : PipelineChainTypeBuilder
+    internal class PipelineChainTypeBuilder<TFor> : PipelineChainTypeBuilder, IPipelineChainTypeBuilder<TFor>
     {
         /// <summary>
         /// Creates a new instance with the dependencies.
@@ -32,7 +32,7 @@ namespace RoyalCode.PipelineFlow.Builders
     /// This is an internal component used to define the type of the chain class 
     /// from the type of the input and/or output class.
     /// </summary>
-    internal class PipelineChainTypeBuilder
+    internal class PipelineChainTypeBuilder : IPipelineChainTypeBuilder
     {
         private readonly IEnumerable<IChainTypeBuilder> chainBuilders;
         private readonly ChainDelegateRegistry chainDelegateRegistry;

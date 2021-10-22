@@ -9,7 +9,7 @@ namespace RoyalCode.PipelineFlow.Chains
     /// These delegates are created from descriptors and then must be stored/registered here 
     /// to be used by the chain components.
     /// </summary>
-    internal class ChainDelegateRegistry
+    public class ChainDelegateRegistry
     {
         private readonly ICollection<Delegate> delegates = new LinkedList<Delegate>();
 

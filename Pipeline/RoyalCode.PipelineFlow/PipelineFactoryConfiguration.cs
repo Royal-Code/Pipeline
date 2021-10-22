@@ -59,6 +59,19 @@ namespace RoyalCode.PipelineFlow
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public IPipelineChainTypeBuilder<TFor> CreatePipelineChainTypeBuilder()
+        {
+            return new PipelineChainTypeBuilder<TFor>(
+                Configuration, 
+                new DecoratorSorter(), 
+                ChainBuilders, 
+                chainDelegateRegistry);
+        }
+
+        /// <summary>
         /// Create the pipeline factory for some kind of component.
         /// </summary>
         /// <returns>A new instance of <see cref="IPipelineFactory{TFor}"/>.</returns>
@@ -69,7 +82,7 @@ namespace RoyalCode.PipelineFlow
 
             var pipelineTypeBuilder = new PipelineTypeBuilder(userServiceProvider ?? ServiceFactoryCollection.BuildServiceProvider());
 
-            return new PipelineFactory<TFor>(chainPipelineBuilder, pipelineTypeBuilder);
+            return new PipelineFactory<TFor>(CreatePipelineChainTypeBuilder(), pipelineTypeBuilder);
         }
 
         /// <summary>

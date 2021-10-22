@@ -14,7 +14,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".Items", ".Items", "{85EDB8
 		base.targets = base.targets
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoyalCode.PipelineFlow.CommandAndQuery", "RoyalCode.PipelineFlow.CommandAndQuery\RoyalCode.PipelineFlow.CommandAndQuery.csproj", "{653E350F-B204-4A3F-820F-2BE40E5ED7F9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoyalCode.PipelineFlow.CommandAndQuery", "RoyalCode.PipelineFlow.CommandAndQuery\RoyalCode.PipelineFlow.CommandAndQuery.csproj", "{653E350F-B204-4A3F-820F-2BE40E5ED7F9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libs", "Libs", "{F5DD2E92-9192-4869-AA1E-94A2F6E0FA9F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{48F480F4-D227-4EA8-B670-9EB8CC38F5BD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Benchmarks", "Benchmarks", "{C95FD26D-D086-4396-91EF-BD76850D7B3F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoyalCode.CommandAndQuery.Tests", "RoyalCode.CommandAndQuery.Tests\RoyalCode.CommandAndQuery.Tests.csproj", "{5AB071B6-6147-4B0E-B68B-69168503C20F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -38,9 +46,20 @@ Global
 		{653E350F-B204-4A3F-820F-2BE40E5ED7F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{653E350F-B204-4A3F-820F-2BE40E5ED7F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{653E350F-B204-4A3F-820F-2BE40E5ED7F9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5AB071B6-6147-4B0E-B68B-69168503C20F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5AB071B6-6147-4B0E-B68B-69168503C20F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5AB071B6-6147-4B0E-B68B-69168503C20F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5AB071B6-6147-4B0E-B68B-69168503C20F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{57A5D837-2896-40D0-9B36-1A417B1E04E3} = {F5DD2E92-9192-4869-AA1E-94A2F6E0FA9F}
+		{3041096A-38C0-4206-9718-2262C859BB7D} = {F5DD2E92-9192-4869-AA1E-94A2F6E0FA9F}
+		{1A7C52C2-D67A-4F84-B02C-ED3903BE6C13} = {48F480F4-D227-4EA8-B670-9EB8CC38F5BD}
+		{653E350F-B204-4A3F-820F-2BE40E5ED7F9} = {F5DD2E92-9192-4869-AA1E-94A2F6E0FA9F}
+		{5AB071B6-6147-4B0E-B68B-69168503C20F} = {48F480F4-D227-4EA8-B670-9EB8CC38F5BD}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {AB2570C9-31BE-4028-8797-6520A1E4945F}

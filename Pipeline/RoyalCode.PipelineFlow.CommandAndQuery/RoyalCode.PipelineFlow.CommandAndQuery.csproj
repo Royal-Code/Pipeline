@@ -17,11 +17,11 @@
     <PackageTags>RoyalCode Command Command-Pattern Command-Handler-Pattern CQS CQRS Pipeline Flow</PackageTags>
   </PropertyGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net5' " >
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net5' ">
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="5.0.0" />
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' " >
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.1.0" />
   </ItemGroup>
 

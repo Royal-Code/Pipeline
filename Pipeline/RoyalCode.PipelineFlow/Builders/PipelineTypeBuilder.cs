@@ -11,7 +11,7 @@ namespace RoyalCode.PipelineFlow.Builders
     ///     are created as a service.
     /// </para>
     /// </summary>
-    internal class PipelineTypeBuilder : IPipelineTypeBuilder
+    public class PipelineTypeBuilder : IPipelineTypeBuilder
     {
         private readonly IServiceProvider provider;
 

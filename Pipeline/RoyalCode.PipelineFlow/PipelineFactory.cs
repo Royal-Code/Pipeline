@@ -22,16 +22,21 @@ namespace RoyalCode.PipelineFlow
     /// Internal and default implementation of <see cref="IPipelineFactory{TFor}"/>.
     /// </summary>
     /// <typeparam name="TFor">The specific type of the pipeline.</typeparam>
-    internal class PipelineFactory<TFor> : IPipelineFactory<TFor>
+    public class PipelineFactory<TFor> : IPipelineFactory<TFor>
     {
         private readonly ConcurrentDictionary<Type, Type> inputOnlyChainType = new();
         private readonly ConcurrentDictionary<Tuple<Type, Type>, Type> inputOutputChainType = new();
 
-        private readonly PipelineChainTypeBuilder pipelineChainBuilder;
+        private readonly IPipelineChainTypeBuilder pipelineChainBuilder;
         private readonly IPipelineTypeBuilder pipelineTypeBuilder;
 
+        /// <summary>
+        /// Create a new pipeline factory for one specific type of the pipeline.
+        /// </summary>
+        /// <param name="pipelineChainBuilder"></param>
+        /// <param name="pipelineTypeBuilder"></param>
         public PipelineFactory(
-            PipelineChainTypeBuilder<TFor> pipelineChainBuilder,
+            IPipelineChainTypeBuilder<TFor> pipelineChainBuilder,
             IPipelineTypeBuilder pipelineTypeBuilder)
         {
             this.pipelineChainBuilder = pipelineChainBuilder;
