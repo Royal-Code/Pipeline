@@ -3,6 +3,7 @@ using RoyalCode.PipelineFlow;
 using RoyalCode.PipelineFlow.Builders;
 using RoyalCode.PipelineFlow.CommandAndQuery.Internal;
 using RoyalCode.PipelineFlow.Configurations;
+using RoyalCode.PipelineFlow.Extensions;
 using RoyalCode.PipelineFlow.Resolvers;
 using System;
 using System.Linq;
@@ -38,7 +39,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// Add the command and query handlers as a service. 
         /// This addition will make fallback handlers for any command or query that will use handler services.
         /// </summary>
-        /// <param name="services">IServiceCollection.</param>
+        /// <param name="services"><see cref="IServiceCollection"/>.</param>
         /// <returns>The same instance of <paramref name="services"/> to chain calls.</returns>
         public static IServiceCollection AddCommandAndQueryHandlersAsAService(this IServiceCollection services)
         {
@@ -52,9 +53,68 @@ namespace Microsoft.Extensions.DependencyInjection
             return services;
         }
 
-        public static IServiceCollection AddCommandsAndQueriesFromAssembly(Assembly assembly)
-        {
+        /// <summary>
+        /// <para>
+        ///     From the classes in an assembly of the type <typeparamref name="T"/>, 
+        ///     check which classes implement some handler, decorator or bridge 
+        ///     and register them as command and query handlers.
+        /// </para>
+        /// </summary>
+        /// <typeparam name="T">The type for get the assembly.</typeparam>
+        /// <param name="services"><see cref="IServiceCollection"/>.</param>
+        /// <returns>The same instance of <paramref name="services"/> to chain calls.</returns>
+        public static IServiceCollection AddCommandsAndQueriesFromAssemblyOfType<T>(this IServiceCollection services)
+            => services.AddCommandsAndQueriesFromAssembly(typeof(T).Assembly);
 
+        /// <summary>
+        /// <para>
+        ///     From the classes in an assembly, check which classes implement some handler, decorator or bridge 
+        ///     and register them as command and query handlers.
+        /// </para>
+        /// </summary>
+        /// <param name="services"><see cref="IServiceCollection"/>.</param>
+        /// <param name="assembly">An Assembly with the types to be registered.</param>
+        /// <returns>The same instance of <paramref name="services"/> to chain calls.</returns>
+        public static IServiceCollection AddCommandsAndQueriesFromAssembly(
+            this IServiceCollection services,
+            Assembly assembly)
+        {
+            var configuration = services.GetPipelineFactoryConfiguration();
+
+            configuration.ConfigurePipelines(builder =>
+            {
+                foreach (var type in assembly.GetTypes())
+                {
+                    if (type.Implements(typeof(IHandler<>)) || type.Implements(typeof(IHandler<,>)))
+                    {
+                        builder.AddHandlerMethodDefined(type, nameof(IHandler<IRequest>.Handle));
+                    }
+                    else if (type.Implements(typeof(IDecorator<>)) || type.Implements(typeof(IDecorator<,>)))
+                    {
+                        builder.AddDecoratorMethodDefined(type, nameof(IDecorator<IRequest>.Handle));
+                    }
+                    else if (type.Implements(typeof(IBridge<,>))
+                        || type.Implements(typeof(IBridge<,,>)) || type.Implements(typeof(IBridge<,,,>)))
+                    {
+                        builder.AddBridgeHandlerMethodDefined(type, nameof(IBridge<IRequest, IRequest>.Next));
+                    }
+                    else if (type.Implements(typeof(IAsyncHandler<>)) || type.Implements(typeof(IAsyncHandler<,>)))
+                    {
+                        builder.AddHandlerMethodDefined(type, nameof(IAsyncHandler<IRequest>.HandleAsync));
+                    }
+                    else if (type.Implements(typeof(IAsyncDecorator<>)) || type.Implements(typeof(IAsyncDecorator<,>)))
+                    {
+                        builder.AddDecoratorMethodDefined(type, nameof(IAsyncDecorator<IRequest>.HandleAsync));
+                    }
+                    else if (type.Implements(typeof(IAsyncBridge<,>))
+                        || type.Implements(typeof(IAsyncBridge<,,>)) || type.Implements(typeof(IAsyncBridge<,,,>)))
+                    {
+                        builder.AddBridgeHandlerMethodDefined(type, nameof(IAsyncBridge<IRequest, IRequest>.NextAsync));
+                    }
+                }
+            });
+
+            return services;
         }
 
         private static PipelineFactoryConfiguration<ICommandQueryBus> GetPipelineFactoryConfiguration(
