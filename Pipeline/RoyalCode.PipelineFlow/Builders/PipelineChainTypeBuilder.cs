@@ -80,8 +80,8 @@ namespace RoyalCode.PipelineFlow.Builders
             if (handlerDescription is null)
                 throw new InvalidOperationException($"None handler registrated for type '{inputType.FullName}'.");
 
-            var handlerDelegate = handlerDescription.HandlerDelegateProvider(inputType, typeof(void));
-            chainDelegateRegistry.AddDelegate(handlerDelegate);
+            var handlerDescribed = handlerDescription.Describe(inputType, typeof(void));
+            chainDelegateRegistry.AddDelegate(handlerDescribed.Delegate);
 
             Type chainType;
 
@@ -100,12 +100,12 @@ namespace RoyalCode.PipelineFlow.Builders
 
                 // adiciona um chain handler para o bridge.
                 var chainBuilder = chainBuilders.FirstOrDefault(c => c.Kind == ChainKind.Bridge);
-                chainType = chainBuilder.Build(handlerDescription, chainType);
+                chainType = chainBuilder.Build(handlerDescribed, chainType);
             }
             else
             {
                 var chainBuilder = chainBuilders.FirstOrDefault(c => c.Kind == ChainKind.Handler);
-                chainType = chainBuilder.Build(handlerDescription);
+                chainType = chainBuilder.Build(handlerDescribed);
             }
 
             var decoratorDescriptions = decoratorsRegistry.GetDescriptions(inputType);
@@ -118,10 +118,10 @@ namespace RoyalCode.PipelineFlow.Builders
                     .ToList()
                     .ForEach(decoratorDescription =>
                     {
-                        var decoratorDelegate = decoratorDescription.HandlerDelegateProvider(inputType, typeof(void));
-                        chainDelegateRegistry.AddDelegate(decoratorDelegate);
+                        var decoratorDescribed = decoratorDescription.Describe(inputType, typeof(void));
+                        chainDelegateRegistry.AddDelegate(decoratorDescribed.Delegate);
 
-                        chainType = chainBuilder.Build(decoratorDescription, chainType);
+                        chainType = chainBuilder.Build(decoratorDescribed, chainType);
                     });
             }
 
@@ -145,8 +145,8 @@ namespace RoyalCode.PipelineFlow.Builders
             if (handlerDescription is null)
                 throw new InvalidOperationException($"None handler registrated for types '{inputType.FullName}' and {outputType.FullName}.");
 
-            var handlerDelegate = handlerDescription.HandlerDelegateProvider(inputType, outputType);
-            chainDelegateRegistry.AddDelegate(handlerDelegate);
+            var handlerDescribed = handlerDescription.Describe(inputType, outputType);
+            chainDelegateRegistry.AddDelegate(handlerDescribed.Delegate);
 
             Type chainType;
 
@@ -167,12 +167,12 @@ namespace RoyalCode.PipelineFlow.Builders
 
                 // adiciona um chain handler para o bridge.
                 var chainBuilder = chainBuilders.FirstOrDefault(c => c.Kind == ChainKind.Bridge);
-                chainType = chainBuilder.Build(handlerDescription, chainType);
+                chainType = chainBuilder.Build(handlerDescribed, chainType);
             }
             else
             {
                 var chainBuilder = chainBuilders.FirstOrDefault(c => c.Kind == ChainKind.Handler);
-                chainType = chainBuilder.Build(handlerDescription);
+                chainType = chainBuilder.Build(handlerDescribed);
             }
 
             var decoratorDescriptions = decoratorsRegistry.GetDescriptions(inputType, outputType);
@@ -185,10 +185,10 @@ namespace RoyalCode.PipelineFlow.Builders
                     .ToList()
                     .ForEach(decoratorDescription =>
                     {
-                        var decoratorDelegate = decoratorDescription.HandlerDelegateProvider(inputType, outputType);
-                        chainDelegateRegistry.AddDelegate(decoratorDelegate);
+                        var decoratorDescribed = decoratorDescription.Describe(inputType, outputType);
+                        chainDelegateRegistry.AddDelegate(decoratorDescribed.Delegate);
 
-                        chainType = chainBuilder.Build(decoratorDescription, chainType);
+                        chainType = chainBuilder.Build(decoratorDescribed, chainType);
                     });
             }
 

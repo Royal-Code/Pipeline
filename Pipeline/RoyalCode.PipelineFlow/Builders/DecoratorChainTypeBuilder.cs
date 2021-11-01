@@ -15,18 +15,20 @@ namespace RoyalCode.PipelineFlow.Builders
         public ChainKind Kind => ChainKind.Decorator;
 
         /// <inheritdoc/>
-        public Type Build(IHandlerDescriptor descriptor, Type? previousChainType)
+        public Type Build(HandlerDescribed handlerDescribed, Type? previousChainType)
         {
-            if (descriptor is null)
-                throw new ArgumentNullException(nameof(descriptor));
+            if (handlerDescribed is null)
+                throw new ArgumentNullException(nameof(handlerDescribed));
 
             if (previousChainType is null)
                 throw new ArgumentNullException(nameof(previousChainType));
 
-            if (descriptor is not DecoratorDescriptor description)
+            if (handlerDescribed.HandlerKind is not ChainKind.Decorator)
                 throw new InvalidOperationException(
                     $"{nameof(DecoratorChainTypeBuilder)} only accepts {nameof(DecoratorDescriptor)}" +
-                    $" and the current instance is type of {descriptor.GetType().Name}");
+                    $" and the current handler kind is {handlerDescribed.HandlerKind}");
+
+            var description = handlerDescribed;
 
             if (description.ServiceType is null)
             {

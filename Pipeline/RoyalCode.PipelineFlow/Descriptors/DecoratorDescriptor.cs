@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RoyalCode.PipelineFlow.Chains;
+using System;
 
 namespace RoyalCode.PipelineFlow.Descriptors
 {
@@ -22,6 +23,12 @@ namespace RoyalCode.PipelineFlow.Descriptors
         /// Describes how this decorator handler will be ordered among all decorators in the pipeline.
         /// </summary>
         public SortDescriptor SortDescriptor { get; set; } = SortDescriptor.Default;
+
+        /// <inheritdoc/>
+        protected override ChainKind HandlerKind => ChainKind.Decorator;
+
+        /// <inheritdoc/>
+        protected override INextHandlerDescriptor? NextHandlerDescriptor => null;
 
         /// <summary>
         /// Checks if the handler of this descriptor can handle the input type request.

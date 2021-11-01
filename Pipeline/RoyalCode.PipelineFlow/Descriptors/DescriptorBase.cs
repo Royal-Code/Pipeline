@@ -5,7 +5,7 @@ namespace RoyalCode.PipelineFlow.Descriptors
     /// <summary>
     /// A base implementation of <see cref="IHandlerDescriptor"/>.
     /// </summary>
-    public class DescriptorBase : IHandlerDescriptor
+    public abstract class DescriptorBase : IHandlerDescriptor
     {
         /// <inheritdoc/>
         public Type InputType { get; }
@@ -26,10 +26,17 @@ namespace RoyalCode.PipelineFlow.Descriptors
         public Type? ServiceType { get; internal set; }
 
         /// <inheritdoc/>
-        public bool HasGenericService { get; internal set; }
-
-        /// <inheritdoc/>
         public Func<Type, Type, Delegate> HandlerDelegateProvider { get; }
+
+        /// <summary>
+        /// Define the handler type.
+        /// </summary>
+        protected abstract Chains.ChainKind HandlerKind { get; }
+
+        /// <summary>
+        /// Returns a next handler descriptor, if applicable.
+        /// </summary>
+        protected abstract INextHandlerDescriptor? NextHandlerDescriptor { get; }
 
         /// <summary>
         /// Create a new instance with most base information.
@@ -52,8 +59,22 @@ namespace RoyalCode.PipelineFlow.Descriptors
         {
             var @delegate = HandlerDelegateProvider(inputType, outputType);
 
+            var serviceType = ServiceType is null
+                ? null
+                : ServiceType.ContainsGenericParameters
+                    ? @delegate.GetType().GetGenericArguments()[0]
+                    : ServiceType;
 
-            return new HandlerDescribed(inputType, outputType, HasOutput, IsAsync, HasToken, null, @delegate);
+            return new HandlerDescribed(
+                inputType,
+                outputType,
+                HasOutput,
+                IsAsync,
+                HasToken,
+                serviceType,
+                @delegate,
+                HandlerKind,
+                NextHandlerDescriptor);
         }
     }
 }

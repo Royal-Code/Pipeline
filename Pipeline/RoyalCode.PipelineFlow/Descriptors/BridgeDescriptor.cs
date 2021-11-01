@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RoyalCode.PipelineFlow.Chains;
+using System;
 
 namespace RoyalCode.PipelineFlow.Descriptors
 {
@@ -38,6 +39,12 @@ namespace RoyalCode.PipelineFlow.Descriptors
 
         /// <inheritdoc/>
         public override bool IsBridge => true;
+
+        /// <inheritdoc/>
+        protected override ChainKind HandlerKind => ChainKind.Bridge;
+
+        /// <inheritdoc/>
+        protected override INextHandlerDescriptor? NextHandlerDescriptor => nextHandlerDescription;
 
         /// <inheritdoc/>
         public override BridgeNextHandlerDescriptor GetBridgeNextHandlerDescription() => nextHandlerDescription;

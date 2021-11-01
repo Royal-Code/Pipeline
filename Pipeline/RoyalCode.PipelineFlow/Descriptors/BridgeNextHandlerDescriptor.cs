@@ -5,7 +5,7 @@ namespace RoyalCode.PipelineFlow.Descriptors
     /// <summary>
     /// A descriptor of a next handler, used by bridge handlers
     /// </summary>
-    public class BridgeNextHandlerDescriptor
+    public class BridgeNextHandlerDescriptor : INextHandlerDescriptor
     {
         /// <summary>
         /// Create a new instance with the required information.

@@ -1,7 +1,12 @@
 ﻿namespace RoyalCode.PipelineFlow.Chains
 {
     /// <summary>
-    /// Kinds of chains, correspond to the handlers types.
+    /// <para>
+    ///     Kinds of chains, correspond to the handlers types.
+    /// </para>
+    /// <para>
+    ///     It may be removed in future versions.
+    /// </para>
     /// </summary>
     public enum ChainKind
     {

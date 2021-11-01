@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RoyalCode.PipelineFlow.Chains;
+using System;
 
 namespace RoyalCode.PipelineFlow.Descriptors
 {
@@ -53,16 +54,31 @@ namespace RoyalCode.PipelineFlow.Descriptors
         public Delegate Delegate { get; }
 
         /// <summary>
+        /// The next handler, if applicable.
+        /// </summary>
+        public INextHandlerDescriptor? NextHandler { get; }
+
+        /// <summary>
+        /// The tipe of the Handler.
+        /// </summary>
+        public ChainKind HandlerKind { get; }
+
+        /// <summary>
         /// Creates a new instance.
         /// </summary>
-        /// <param name="inputType"></param>
-        /// <param name="outputType"></param>
-        /// <param name="hasOutput"></param>
-        /// <param name="isAsync"></param>
-        /// <param name="hasToken"></param>
-        /// <param name="serviceType"></param>
-        /// <param name="delegate"></param>
-        /// <exception cref="ArgumentNullException"></exception>
+        /// <param name="inputType">Initial property value.</param>
+        /// <param name="outputType">Initial property value.</param>
+        /// <param name="hasOutput">Initial property value.</param>
+        /// <param name="isAsync">Initial property value.</param>
+        /// <param name="hasToken">Initial property value.</param>
+        /// <param name="serviceType">Initial property value.</param>
+        /// <param name="delegate">Initial property value.</param>
+        /// <param name="handlerKind">Initial property value.</param>
+        /// <param name="nextHandler">Initial property value.</param>
+        /// <exception cref="ArgumentNullException">
+        ///     If <paramref name="inputType"/> or <paramref name="outputType"/> or <paramref name="delegate"/> 
+        ///     is null.
+        /// </exception>
         public HandlerDescribed(
             Type inputType,
             Type outputType,
@@ -70,7 +86,9 @@ namespace RoyalCode.PipelineFlow.Descriptors
             bool isAsync,
             bool hasToken,
             Type? serviceType,
-            Delegate @delegate)
+            Delegate @delegate,
+            ChainKind handlerKind,
+            INextHandlerDescriptor? nextHandler)
         {
             InputType = inputType ?? throw new ArgumentNullException(nameof(inputType));
             OutputType = outputType ?? throw new ArgumentNullException(nameof(outputType));
@@ -79,6 +97,8 @@ namespace RoyalCode.PipelineFlow.Descriptors
             HasToken = hasToken;
             ServiceType = serviceType;
             Delegate = @delegate ?? throw new ArgumentNullException(nameof(@delegate));
+            HandlerKind = handlerKind;
+            NextHandler = nextHandler;
         }
     }
 }

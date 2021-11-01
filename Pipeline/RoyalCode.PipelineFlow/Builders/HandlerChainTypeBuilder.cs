@@ -15,7 +15,7 @@ namespace RoyalCode.PipelineFlow.Builders
         public ChainKind Kind => ChainKind.Handler;
 
         /// <inheritdoc/>
-        public Type Build(IHandlerDescriptor descriptor, Type? previousChainType)
+        public Type Build(HandlerDescribed descriptor, Type? previousChainType)
         {
             if (descriptor is null)
                 throw new ArgumentNullException(nameof(descriptor));
