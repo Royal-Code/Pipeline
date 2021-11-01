@@ -48,7 +48,12 @@ namespace RoyalCode.PipelineFlow.Descriptors
         }
 
         /// <inheritdoc/>
-        public Delegate CreateDelegate(Type inputType, Type outputType)
-            => HandlerDelegateProvider(inputType, outputType);
+        public HandlerDescribed Describe(Type inputType, Type outputType)
+        {
+            var @delegate = HandlerDelegateProvider(inputType, outputType);
+
+
+            return new HandlerDescribed(inputType, outputType, HasOutput, IsAsync, HasToken, null, @delegate);
+        }
     }
 }

@@ -23,26 +23,30 @@ namespace RoyalCode.PipelineFlow
         private readonly Dictionary<Type, object> asyncDispatchers = new();
 
         internal static readonly MethodInfo requestDispatcherMethod = typeof(PipelineDispatchers<TFor>)
-            .GetMethods()
-            .Where(m => m.Name == nameof(PipelineDispatchers<TFor>.GetDispatcher))
+            .GetTypeInfo()
+            .GetMethods(BindingFlags.Static | BindingFlags.NonPublic)
+            .Where(m => m.Name == nameof(PipelineDispatchers<object>.GetDispatcher))
             .Where(m => m.GetGenericArguments().Length == 1)
             .First();
 
         internal static readonly MethodInfo requestResultDispatcherMethod = typeof(PipelineDispatchers<TFor>)
-            .GetMethods()
-            .Where(m => m.Name == nameof(PipelineDispatchers<TFor>.GetDispatcher))
+            .GetTypeInfo()
+            .GetMethods(BindingFlags.Static | BindingFlags.NonPublic)
+            .Where(m => m.Name == nameof(PipelineDispatchers<object>.GetDispatcher))
             .Where(m => m.GetGenericArguments().Length == 2)
             .First();
 
         internal static readonly MethodInfo requestAsyncDispatcherMethod = typeof(PipelineDispatchers<TFor>)
-            .GetMethods()
-            .Where(m => m.Name == nameof(PipelineDispatchers<TFor>.GetAsyncDispatcher))
+            .GetTypeInfo()
+            .GetMethods(BindingFlags.Static | BindingFlags.NonPublic)
+            .Where(m => m.Name == nameof(PipelineDispatchers<object>.GetAsyncDispatcher))
             .Where(m => m.GetGenericArguments().Length == 1)
             .First();
 
         internal static readonly MethodInfo requestResultAsyncDispatcherMethod = typeof(PipelineDispatchers<TFor>)
-            .GetMethods()
-            .Where(m => m.Name == nameof(PipelineDispatchers<TFor>.GetAsyncDispatcher))
+            .GetTypeInfo()
+            .GetMethods(BindingFlags.Static | BindingFlags.NonPublic)
+            .Where(m => m.Name == nameof(PipelineDispatchers<object>.GetAsyncDispatcher))
             .Where(m => m.GetGenericArguments().Length == 2)
             .First();
 

@@ -1,6 +1,8 @@
-﻿using RoyalCode.CommandAndQuery;
+﻿using Microsoft.Extensions.DependencyInjection.Extensions;
+using RoyalCode.CommandAndQuery;
 using RoyalCode.PipelineFlow;
 using RoyalCode.PipelineFlow.Builders;
+using RoyalCode.PipelineFlow.Chains;
 using RoyalCode.PipelineFlow.CommandAndQuery.Internal;
 using RoyalCode.PipelineFlow.Configurations;
 using RoyalCode.PipelineFlow.Extensions;
@@ -85,32 +87,41 @@ namespace Microsoft.Extensions.DependencyInjection
             {
                 foreach (var type in assembly.GetTypes())
                 {
+                    bool addTypeAsService = false;
                     if (type.Implements(typeof(IHandler<>)) || type.Implements(typeof(IHandler<,>)))
                     {
                         builder.AddHandlerMethodDefined(type, nameof(IHandler<IRequest>.Handle));
+                        addTypeAsService = true;
                     }
                     else if (type.Implements(typeof(IDecorator<>)) || type.Implements(typeof(IDecorator<,>)))
                     {
                         builder.AddDecoratorMethodDefined(type, nameof(IDecorator<IRequest>.Handle));
+                        addTypeAsService = true;
                     }
                     else if (type.Implements(typeof(IBridge<,>))
                         || type.Implements(typeof(IBridge<,,>)) || type.Implements(typeof(IBridge<,,,>)))
                     {
                         builder.AddBridgeHandlerMethodDefined(type, nameof(IBridge<IRequest, IRequest>.Next));
+                        addTypeAsService = true;
                     }
                     else if (type.Implements(typeof(IAsyncHandler<>)) || type.Implements(typeof(IAsyncHandler<,>)))
                     {
                         builder.AddHandlerMethodDefined(type, nameof(IAsyncHandler<IRequest>.HandleAsync));
+                        addTypeAsService = true;
                     }
                     else if (type.Implements(typeof(IAsyncDecorator<>)) || type.Implements(typeof(IAsyncDecorator<,>)))
                     {
                         builder.AddDecoratorMethodDefined(type, nameof(IAsyncDecorator<IRequest>.HandleAsync));
+                        addTypeAsService = true;
                     }
                     else if (type.Implements(typeof(IAsyncBridge<,>))
                         || type.Implements(typeof(IAsyncBridge<,,>)) || type.Implements(typeof(IAsyncBridge<,,,>)))
                     {
                         builder.AddBridgeHandlerMethodDefined(type, nameof(IAsyncBridge<IRequest, IRequest>.NextAsync));
+                        addTypeAsService = true;
                     }
+                    if (addTypeAsService)
+                        services.TryAddTransient(type);
                 }
             });
 
@@ -140,15 +151,74 @@ namespace Microsoft.Extensions.DependencyInjection
                 services.AddTransient<IPipelineTypeBuilder, PipelineTypeBuilder>();
                 services.AddTransient<IPipelineFactory<ICommandQueryBus>, PipelineFactory<ICommandQueryBus>>();
 
-                services.AddPipelineCore();
+                services.AddPipelineChains();
             }
 
             return configuration;
         }
 
-        private static void AddPipelineCore(this IServiceCollection services)
+        /// <summary>
+        /// Adds the Chains used by the Pipeline as services.
+        /// </summary>
+        /// <param name="services"><see cref="IServiceCollection"/>.</param>
+        /// <returns>The same instance of <paramref name="services"/> to chain calls.</returns>
+        public static IServiceCollection AddPipelineChains(this IServiceCollection services)
         {
-            // requer todos chains, e outras classes se necessário.
+            if (services.Any(d => d.ImplementationInstance is ChainDelegateRegistry))
+                return services;
+
+            services.AddSingleton(PipelineFactory.ChainDelegateRegistry);
+            services.AddTransient(typeof(IChainDelegateProvider<>), typeof(ChainDelegateProvider<>));
+
+            services.AddTransient(typeof(HandlerChainDelegateAsync<>));
+            services.AddTransient(typeof(HandlerChainDelegateAsync<,>));
+            services.AddTransient(typeof(HandlerChainDelegateSync<>));
+            services.AddTransient(typeof(HandlerChainDelegateSync<,>));
+            services.AddTransient(typeof(HandlerChainDelegateWithoutCancellationTokenAsync<>));
+            services.AddTransient(typeof(HandlerChainDelegateWithoutCancellationTokenAsync<,>));
+
+            services.AddTransient(typeof(HandlerChainServiceAsync<,>));
+            services.AddTransient(typeof(HandlerChainServiceAsync<,,>));
+            services.AddTransient(typeof(HandlerChainServiceSync<,>));
+            services.AddTransient(typeof(HandlerChainServiceSync<,,>));
+            services.AddTransient(typeof(HandlerChainServiceWithoutCancellationTokenAsync<,>));
+            services.AddTransient(typeof(HandlerChainServiceWithoutCancellationTokenAsync<,,>));
+
+            services.AddTransient(typeof(DecoratorChainDelegateAsync<,>));
+            services.AddTransient(typeof(DecoratorChainDelegateAsync<,,>));
+            services.AddTransient(typeof(DecoratorChainDelegateSync<,>));
+            services.AddTransient(typeof(DecoratorChainDelegateSync<,,>));
+            services.AddTransient(typeof(DecoratorChainDelegateWithoutCancellationTokenAsync<,>));
+            services.AddTransient(typeof(DecoratorChainDelegateWithoutCancellationTokenAsync<,,>));
+
+            services.AddTransient(typeof(DecoratorChainServiceAsync<,,>));
+            services.AddTransient(typeof(DecoratorChainServiceAsync<,,,>));
+            services.AddTransient(typeof(DecoratorChainServiceSync<,,>));
+            services.AddTransient(typeof(DecoratorChainServiceSync<,,,>));
+            services.AddTransient(typeof(DecoratorChainServiceWithoutCancellationTokenAsync<,,>));
+            services.AddTransient(typeof(DecoratorChainServiceWithoutCancellationTokenAsync<,,,>));
+
+            services.AddTransient(typeof(BridgeChainDelegateAsync<,,>));
+            services.AddTransient(typeof(BridgeChainDelegateAsync<,,,>));
+            services.AddTransient(typeof(BridgeChainDelegateAsync<,,,,>));
+            services.AddTransient(typeof(BridgeChainDelegateSync<,,>));
+            services.AddTransient(typeof(BridgeChainDelegateSync<,,,>));
+            services.AddTransient(typeof(BridgeChainDelegateSync<,,,,>));
+            services.AddTransient(typeof(BridgeChainDelegateWithoutCancellationTokenAsync<,,>));
+            services.AddTransient(typeof(BridgeChainDelegateWithoutCancellationTokenAsync<,,,>));
+            services.AddTransient(typeof(BridgeChainDelegateWithoutCancellationTokenAsync<,,,,>));
+
+            services.AddTransient(typeof(BridgeChainServiceAsync<,,,>));
+            services.AddTransient(typeof(BridgeChainServiceAsync<,,,,>));
+            services.AddTransient(typeof(BridgeChainServiceAsync<,,,,,>));
+            services.AddTransient(typeof(BridgeChainServiceSync<,,,>));
+            services.AddTransient(typeof(BridgeChainServiceSync<,,,,>));
+            services.AddTransient(typeof(BridgeChainServiceSync<,,,,,>));
+            services.AddTransient(typeof(BridgeChainServiceWithoutCancellationTokenAsync<,,,>));
+            services.AddTransient(typeof(BridgeChainServiceWithoutCancellationTokenAsync<,,,,>));
+            services.AddTransient(typeof(BridgeChainServiceWithoutCancellationTokenAsync<,,,,,>));
+
+            return services;
         }
 
         private class CommandQueryHandlerResolver : MethodHandlerResolver

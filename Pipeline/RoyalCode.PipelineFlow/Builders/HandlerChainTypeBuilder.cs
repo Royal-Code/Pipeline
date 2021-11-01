@@ -46,7 +46,7 @@ namespace RoyalCode.PipelineFlow.Builders
                     {
                         if (descriptor.HasOutput)
                         {
-                            return typeof(HandlerChainDelegteWithoutCancellationTokenAsync<,>)
+                            return typeof(HandlerChainDelegateWithoutCancellationTokenAsync<,>)
                                 .MakeGenericType(descriptor.InputType, descriptor.OutputType);
                         }
                         else

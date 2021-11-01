@@ -52,6 +52,7 @@ namespace RoyalCode.PipelineFlow.Configurations
                 {
                     fallbackResolvers ??= new();
                     fallbackResolvers.AddLast(resolver);
+                    continue;
                 }
 
                 var resolvedDescription = resolver.TryResolve(inputType);

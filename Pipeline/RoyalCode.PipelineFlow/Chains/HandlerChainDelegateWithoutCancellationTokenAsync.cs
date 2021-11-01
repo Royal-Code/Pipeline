@@ -24,11 +24,11 @@ namespace RoyalCode.PipelineFlow.Chains
         public override Task SendAsync(TIn input, CancellationToken token) => function(input);
     }
 
-    public class HandlerChainDelegteWithoutCancellationTokenAsync<TIn, TOut> : Chain<TIn, TOut>
+    public class HandlerChainDelegateWithoutCancellationTokenAsync<TIn, TOut> : Chain<TIn, TOut>
     {
         private readonly Func<TIn, Task<TOut>> function;
 
-        public HandlerChainDelegteWithoutCancellationTokenAsync(
+        public HandlerChainDelegateWithoutCancellationTokenAsync(
             IChainDelegateProvider<Func<TIn, Task<TOut>>> functionProvider)
         {
             function = functionProvider?.Delegate ?? throw new ArgumentNullException(nameof(functionProvider));

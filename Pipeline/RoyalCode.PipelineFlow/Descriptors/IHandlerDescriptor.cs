@@ -49,13 +49,16 @@ namespace RoyalCode.PipelineFlow.Descriptors
         Type? ServiceType { get; }
 
         /// <summary>
-        /// Create the delegate handler.
+        /// <para>
+        ///     Create the delegate handler, resolve de service type (ir required) and returns a new
+        ///     <see cref="HandlerDescribed"/>.
+        /// </para>
         /// </summary>
         /// <param name="inputType">The actual input type, not generic type.</param>
         /// <param name="outputType">The actual output type, not generic type.</param>
         /// <returns>
         ///     The delegate to handle the pipeline request.
         /// </returns>
-        Delegate CreateDelegate(Type inputType, Type outputType);
+        HandlerDescribed Describe(Type inputType, Type outputType);
     }
 }

@@ -11,7 +11,7 @@ namespace RoyalCode.PipelineFlow.Chains
     /// <typeparam name="TDelegate">
     ///     The type of the delegate, required for the chain component.
     /// </typeparam>
-    internal class ChainDelegateProvider<TDelegate> : IChainDelegateProvider<TDelegate>
+    public class ChainDelegateProvider<TDelegate> : IChainDelegateProvider<TDelegate>
         where TDelegate : Delegate
     {
         /// <summary>

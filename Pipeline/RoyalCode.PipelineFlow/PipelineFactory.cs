@@ -1,4 +1,5 @@
 ﻿using RoyalCode.PipelineFlow.Builders;
+using RoyalCode.PipelineFlow.Chains;
 using System;
 using System.Collections.Concurrent;
 using System.Runtime.CompilerServices;
@@ -11,11 +12,16 @@ namespace RoyalCode.PipelineFlow
     public class PipelineFactory
     {
         /// <summary>
+        /// The <see cref="ChainDelegateRegistry"/> used to configure pipelines.
+        /// </summary>
+        public static ChainDelegateRegistry ChainDelegateRegistry { get; } = new();
+
+        /// <summary>
         /// The configuration for build a <see cref="IPipelineFactory{TFor}"/>.
         /// </summary>
         /// <typeparam name="TFor">The specific type of the pipeline.</typeparam>
         /// <returns>a new instance of <see cref="PipelineFactoryConfiguration{TFor}"/>.</returns>
-        public static PipelineFactoryConfiguration<TFor> Configure<TFor>() => new();
+        public static PipelineFactoryConfiguration<TFor> Configure<TFor>() => new(ChainDelegateRegistry);
     }
 
     /// <summary>

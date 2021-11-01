@@ -12,11 +12,13 @@ namespace RoyalCode.PipelineFlow
     /// <typeparam name="TFor">The specific type of the pipeline.</typeparam>
     public class PipelineFactoryConfiguration<TFor>
     {
-        private readonly ChainDelegateRegistry chainDelegateRegistry = new();
+        private readonly ChainDelegateRegistry chainDelegateRegistry;
         private IServiceProvider? userServiceProvider = null;
 
-        internal PipelineFactoryConfiguration() 
+        internal PipelineFactoryConfiguration(ChainDelegateRegistry chainDelegateRegistry) 
         {
+            this.chainDelegateRegistry = chainDelegateRegistry;
+
             ServiceFactoryCollection
                 .AddServiceFactory<ChainDelegateRegistry>((type, sp) => chainDelegateRegistry)
                 .MapService(typeof(IChainDelegateProvider<>), typeof(ChainDelegateProvider<>));
