@@ -30,8 +30,10 @@ namespace RoyalCode.PipelineFlow
     /// <typeparam name="TFor">The specific type of the pipeline.</typeparam>
     public class PipelineFactory<TFor> : IPipelineFactory<TFor>
     {
-        private readonly ConcurrentDictionary<Type, Type> inputOnlyChainType = new();
-        private readonly ConcurrentDictionary<Tuple<Type, Type>, Type> inputOutputChainType = new();
+        private static readonly ConcurrentDictionary<Type, Type> inputOnlyChainType = new();
+        private static readonly ConcurrentDictionary<Type, Type> callerInputOnlyChainType = new();
+        private static readonly ConcurrentDictionary<Tuple<Type, Type>, Type> inputOutputChainType = new();
+        private static readonly ConcurrentDictionary<Tuple<Type, Type>, Type> callerInputOutputChainType = new();
 
         private readonly IPipelineChainTypeBuilder pipelineChainBuilder;
         private readonly IPipelineTypeBuilder pipelineTypeBuilder;
@@ -49,6 +51,7 @@ namespace RoyalCode.PipelineFlow
             this.pipelineTypeBuilder = pipelineTypeBuilder;
         }
 
+        /// <inheritdoc/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public IPipeline<TIn> Create<TIn>()
         {
@@ -59,6 +62,7 @@ namespace RoyalCode.PipelineFlow
             return (IPipeline<TIn>)pipelineTypeBuilder.Build(chainType);
         }
 
+        /// <inheritdoc/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public IPipeline<TIn, TOut> Create<TIn, TOut>()
         {
@@ -70,25 +74,35 @@ namespace RoyalCode.PipelineFlow
             return (IPipeline<TIn, TOut>)pipelineTypeBuilder.Build(chainType);
         }
 
+        /// <inheritdoc/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public object Create(Type inputType)
+        public IPipelineCaller Create(Type inputType)
         {
-            inputOnlyChainType.TryGetValue(inputType, out var chainType);
-            if (chainType is null)
-                chainType = inputOnlyChainType.GetOrAdd(inputType, t => pipelineChainBuilder.Build(t, null));
+            callerInputOnlyChainType.TryGetValue(inputType, out var callerType);
+            if (callerType is null)
+                callerType = callerInputOnlyChainType.GetOrAdd(inputType, t =>
+                {
+                    var chainType = pipelineChainBuilder.Build(t, null);
+                    return typeof(PipelineCaller<,>).MakeGenericType(chainType, inputType);
+                });
 
-            return pipelineTypeBuilder.Build(chainType);
+            return (IPipelineCaller)pipelineTypeBuilder.Build(callerType);
         }
 
+        /// <inheritdoc/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public object Create(Type inputType, Type outputType)
+        public IPipelineCaller<TOut> Create<TOut>(Type inputType)
         {
-            var key = new Tuple<Type, Type>(inputType, outputType);
-            inputOutputChainType.TryGetValue(key, out var chainType);
-            if (chainType is null)
-                chainType = inputOutputChainType.GetOrAdd(key, k => pipelineChainBuilder.Build(k.Item1, k.Item2, null));
+            var key = new Tuple<Type, Type>(inputType, typeof(TOut));
+            callerInputOutputChainType.TryGetValue(key, out var callerType);
+            if (callerType is null)
+                callerType = callerInputOutputChainType.GetOrAdd(key, k =>
+                {
+                    var chainType = pipelineChainBuilder.Build(k.Item1, k.Item2, null);
+                    return typeof(PipelineCaller<,,>).MakeGenericType(chainType, inputType, typeof(TOut));
+                });
 
-            return pipelineTypeBuilder.Build(chainType);
+            return (IPipelineCaller<TOut>)pipelineTypeBuilder.Build(callerType);
         }
     }
 }

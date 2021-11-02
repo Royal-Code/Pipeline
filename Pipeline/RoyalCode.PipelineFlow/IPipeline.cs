@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 
 namespace RoyalCode.PipelineFlow
 {
+
     /// <summary>
     /// <para>
     ///     A pipeline for sending requests of type <typeparamref name="TIn"/> without producing a result.

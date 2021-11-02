@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 
 namespace RoyalCode.PipelineFlow.Builders
 {
@@ -25,6 +26,7 @@ namespace RoyalCode.PipelineFlow.Builders
         }
 
         /// <inheritdoc/>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public object Build(Type chainType) => provider.GetService(chainType)
             ?? throw new ArgumentException($"Invalid chain type. The type {chainType.FullName} is not a service and can't be builded.");
     }

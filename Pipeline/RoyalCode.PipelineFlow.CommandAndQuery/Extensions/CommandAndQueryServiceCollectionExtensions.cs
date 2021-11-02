@@ -168,7 +168,9 @@ namespace Microsoft.Extensions.DependencyInjection
                 return services;
 
             services.AddSingleton(PipelineFactory.ChainDelegateRegistry);
-            services.AddTransient(typeof(IChainDelegateProvider<>), typeof(ChainDelegateProvider<>));
+            services.AddSingleton(typeof(IChainDelegateProvider<>), typeof(ChainDelegateProvider<>));
+            services.AddTransient(typeof(PipelineCaller<,>));
+            services.AddTransient(typeof(PipelineCaller<,,>));
 
             services.AddTransient(typeof(HandlerChainDelegateAsync<>));
             services.AddTransient(typeof(HandlerChainDelegateAsync<,>));

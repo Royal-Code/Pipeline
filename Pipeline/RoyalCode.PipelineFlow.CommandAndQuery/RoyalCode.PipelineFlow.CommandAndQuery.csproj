@@ -3,7 +3,7 @@
   <Import Project="..\base.targets" />
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net5</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net5;net6</TargetFrameworks>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -17,6 +17,10 @@
     <PackageTags>RoyalCode Command Command-Pattern Command-Handler-Pattern CQS CQRS Pipeline Flow</PackageTags>
   </PropertyGroup>
 
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net6' ">
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0-rc.2.21480.5" />
+  </ItemGroup>
+  
   <ItemGroup Condition=" '$(TargetFramework)' == 'net5' ">
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="5.0.0" />
   </ItemGroup>

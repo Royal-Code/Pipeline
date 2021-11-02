@@ -33,14 +33,14 @@ namespace RoyalCode.PipelineFlow
         /// </summary>
         /// <param name="inputType">The input type.</param>
         /// <returns>A new instance of pipeline.</returns>
-        object Create(Type inputType);
+        IPipelineCaller Create(Type inputType);
 
         /// <summary>
         /// Create a pipeline for the input type with result of output type.
         /// </summary>
         /// <param name="inputType">The input type.</param>
-        /// <param name="outputType">The output type.</param>
+        /// <typeparam name="TOut">The output type.</typeparam>
         /// <returns>A new instance of pipeline.</returns>
-        object Create(Type inputType, Type outputType);
+        IPipelineCaller<TOut> Create<TOut>(Type inputType);
     }
 }
