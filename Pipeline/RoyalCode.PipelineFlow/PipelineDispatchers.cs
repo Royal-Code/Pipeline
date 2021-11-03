@@ -19,8 +19,8 @@ namespace RoyalCode.PipelineFlow
     /// <typeparam name="TFor">The pipeline type.</typeparam>
     public class PipelineDispatchers<TFor>
     {
-        private readonly Dictionary<Type, object> dispatchers = new();
-        private readonly Dictionary<Type, object> asyncDispatchers = new();
+        private static readonly Dictionary<Type, object> dispatchers = new();
+        private static readonly Dictionary<Type, object> asyncDispatchers = new();
 
         internal static readonly MethodInfo requestDispatcherMethod = typeof(PipelineDispatchers<TFor>)
             .GetTypeInfo()

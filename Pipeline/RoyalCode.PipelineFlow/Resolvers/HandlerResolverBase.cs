@@ -31,7 +31,7 @@ namespace RoyalCode.PipelineFlow.Resolvers
         public bool IsFallback { get; protected set; }
 
         /// <inheritdoc/>
-        public HandlerDescriptor? TryResolve(Type inputType)
+        public virtual HandlerDescriptor? TryResolve(Type inputType)
         {
             return handlerDescription.Match(inputType)
                 ? handlerDescription
@@ -39,7 +39,7 @@ namespace RoyalCode.PipelineFlow.Resolvers
         }
 
         /// <inheritdoc/>
-        public HandlerDescriptor? TryResolve(Type inputType, Type output)
+        public virtual HandlerDescriptor? TryResolve(Type inputType, Type output)
         {
             return handlerDescription.Match(inputType, output)
                 ? handlerDescription

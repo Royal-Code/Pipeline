@@ -5,9 +5,11 @@ using RoyalCode.PipelineFlow.Builders;
 using RoyalCode.PipelineFlow.Chains;
 using RoyalCode.PipelineFlow.CommandAndQuery.Internal;
 using RoyalCode.PipelineFlow.Configurations;
+using RoyalCode.PipelineFlow.Descriptors;
 using RoyalCode.PipelineFlow.Extensions;
 using RoyalCode.PipelineFlow.Resolvers;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
@@ -47,10 +49,12 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             var configuration = services.GetPipelineFactoryConfiguration();
 
-            configuration.Configuration.Handlers.Add(CommandQueryHandlerResolver.ForHandlerRequest());
-            configuration.Configuration.Handlers.Add(CommandQueryHandlerResolver.ForHandlerRequestResult());
-            configuration.Configuration.Handlers.Add(CommandQueryHandlerResolver.ForAsyncHandlerRequest());
-            configuration.Configuration.Handlers.Add(CommandQueryHandlerResolver.ForAsyncHandlerRequestResult());
+            var shr = ServiceHandlersRegistry.GetOrCreate(services);
+
+            configuration.Configuration.Handlers.Add(CommandQueryHandlerResolver.ForHandlerRequest(shr));
+            configuration.Configuration.Handlers.Add(CommandQueryHandlerResolver.ForHandlerRequestResult(shr));
+            configuration.Configuration.Handlers.Add(CommandQueryHandlerResolver.ForAsyncHandlerRequest(shr));
+            configuration.Configuration.Handlers.Add(CommandQueryHandlerResolver.ForAsyncHandlerRequestResult(shr));
 
             return services;
         }
@@ -142,7 +146,6 @@ namespace Microsoft.Extensions.DependencyInjection
                 services.AddSingleton(configuration);
 
                 services.AddTransient<ICommandQueryBus, CommandQueryBus>();
-                services.AddSingleton<RequestDispatchers>();
                 services.AddSingleton(sp =>
                 {
                     var configuration = sp.GetRequiredService<PipelineFactoryConfiguration<ICommandQueryBus>>();
@@ -225,35 +228,135 @@ namespace Microsoft.Extensions.DependencyInjection
 
         private class CommandQueryHandlerResolver : MethodHandlerResolver
         {
-            private CommandQueryHandlerResolver(MethodInfo method) 
-                : base(method)
+            private readonly ServiceHandlersRegistry serviceHandlersRegistry;
+            private readonly bool isAsync;
+            private CommandQueryHandlerResolver(
+                MethodInfo method,
+                ServiceHandlersRegistry serviceHandlersRegistry, 
+                bool isAsync) : base(method)
             {
                 IsFallback = true;
+                this.serviceHandlersRegistry = serviceHandlersRegistry;
+                this.isAsync = isAsync;
             }
 
-            public static CommandQueryHandlerResolver ForHandlerRequest()
+            public override HandlerDescriptor? TryResolve(Type inputType)
+            {
+                if (isAsync)
+                {
+                    if (!serviceHandlersRegistry.HasAsyncHandlerServiceFor(inputType))
+                        return null;
+                }
+                else
+                {
+                    if (!serviceHandlersRegistry.HasHandlerServiceFor(inputType))
+                        return null;
+                }
+
+                return base.TryResolve(inputType);
+            }
+
+            public override HandlerDescriptor? TryResolve(Type inputType, Type output)
+            {
+                if (isAsync)
+                {
+                    if (!serviceHandlersRegistry.HasAsyncHandlerServiceFor(inputType, output))
+                        return null;
+                }
+                else
+                {
+                    if (!serviceHandlersRegistry.HasHandlerServiceFor(inputType, output))
+                        return null;
+                }
+
+                return base.TryResolve(inputType, output);
+            }
+
+            public static CommandQueryHandlerResolver ForHandlerRequest(ServiceHandlersRegistry serviceHandlersRegistry)
             {
                 var method = typeof(IHandler<>).GetMethod(nameof(IHandler<IRequest>.Handle));
-                return new CommandQueryHandlerResolver(method);
+                return new CommandQueryHandlerResolver(method, serviceHandlersRegistry, false);
             }
 
-            public static CommandQueryHandlerResolver ForHandlerRequestResult()
+            public static CommandQueryHandlerResolver ForHandlerRequestResult(ServiceHandlersRegistry serviceHandlersRegistry)
             {
                 var method = typeof(IHandler<,>).GetMethod(nameof(IHandler<IRequest>.Handle));
-                return new CommandQueryHandlerResolver(method);
+                return new CommandQueryHandlerResolver(method, serviceHandlersRegistry, false);
             }
 
-            public static CommandQueryHandlerResolver ForAsyncHandlerRequest()
+            public static CommandQueryHandlerResolver ForAsyncHandlerRequest(ServiceHandlersRegistry serviceHandlersRegistry)
             {
                 var method = typeof(IAsyncHandler<>).GetMethod(nameof(IAsyncHandler<IRequest>.HandleAsync));
-                return new CommandQueryHandlerResolver(method);
+                return new CommandQueryHandlerResolver(method, serviceHandlersRegistry, true);
             }
 
-            public static CommandQueryHandlerResolver ForAsyncHandlerRequestResult()
+            public static CommandQueryHandlerResolver ForAsyncHandlerRequestResult(ServiceHandlersRegistry serviceHandlersRegistry)
             {
                 var method = typeof(IAsyncHandler<,>).GetMethod(nameof(IAsyncHandler<IRequest>.HandleAsync));
-                return new CommandQueryHandlerResolver(method);
+                return new CommandQueryHandlerResolver(method, serviceHandlersRegistry, true);
             }
+        }
+
+        private class ServiceHandlersRegistry
+        {
+            private static ServiceHandlersRegistry? instance;
+            private IServiceCollection? services;
+            private IEnumerable<Type>? handlersServicesTypes;
+
+            private ServiceHandlersRegistry(IServiceCollection services)
+            {
+                this.services = services;
+            }
+
+            public static ServiceHandlersRegistry GetOrCreate(IServiceCollection services)
+                => instance ??= new ServiceHandlersRegistry(services);
+
+            private void Initialize()
+            {
+                if (services == null)
+                    return;
+
+                handlersServicesTypes = services.Where(d => 
+                        d.ServiceType.Implements(typeof(IHandler<>))
+                        || d.ServiceType.Implements(typeof(IAsyncHandler<>))
+                        || d.ServiceType.Implements(typeof(IHandler<,>))
+                        || d.ServiceType.Implements(typeof(IAsyncHandler<,>)))
+                    .Select(d => d.ServiceType)
+                    .ToList();
+
+                services = null;
+            }
+
+            public bool HasHandlerServiceFor(Type inputType)
+            {
+                Initialize();
+                var handlerType = typeof(IHandler<>).MakeGenericType(inputType);
+                return handlersServicesTypes.Any(Match(handlerType));
+            }
+
+            public bool HasAsyncHandlerServiceFor(Type inputType)
+            {
+                Initialize();
+                var handlerType = typeof(IAsyncHandler<>).MakeGenericType(inputType);
+                return handlersServicesTypes.Any(Match(handlerType));
+            }
+
+            public bool HasHandlerServiceFor(Type inputType, Type outputType)
+            {
+                Initialize();
+                var handlerType = typeof(IHandler<,>).MakeGenericType(inputType, outputType);
+                return handlersServicesTypes.Any(Match(handlerType));
+            }
+
+            public bool HasAsyncHandlerServiceFor(Type inputType, Type outputType)
+            {
+                Initialize();
+                var handlerType = typeof(IAsyncHandler<,>).MakeGenericType(inputType, outputType);
+                return handlersServicesTypes.Any(Match(handlerType));
+            }
+
+            private Func<Type, bool> Match(Type handlerType)
+                => t => t == handlerType || (t.IsGenericTypeDefinition && t == handlerType.GetGenericTypeDefinition());
         }
     }
 }
