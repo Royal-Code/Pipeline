@@ -1,4 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
+using RoyalCode.PipelineFlow.Exceptions;
 using System;
 using Xunit;
 
@@ -33,7 +34,7 @@ namespace RoyalCode.CommandAndQuery.Tests
 
             var request = new AddServicesTestRequest();
 
-            bus.Send(request);
+            Assert.Throws<MultipleHandlersForTheSameRequestException>(() => bus.Send(request));
         }
 
         [Fact]
