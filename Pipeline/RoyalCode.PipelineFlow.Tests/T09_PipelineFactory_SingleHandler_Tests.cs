@@ -109,7 +109,7 @@ namespace RoyalCode.PipelineFlow.Tests
 
             var output = pipeline.SendAsync(new SingleInputOutputAsync(1)).GetAwaiter().GetResult();
             Assert.Equal(1, output);
-            Assert.Equal(1, SingleInputOutputAsyncHandler.Value);
+            Assert.Equal(1, SingleInputOutputAsyncWithoutCancellationTokenHandler.Value);
         }
 
         [Fact]

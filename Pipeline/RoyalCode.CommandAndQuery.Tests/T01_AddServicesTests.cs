@@ -3,8 +3,11 @@ using RoyalCode.PipelineFlow.Exceptions;
 using System;
 using Xunit;
 
+[assembly: CollectionBehavior(DisableTestParallelization = true)]
+
 namespace RoyalCode.CommandAndQuery.Tests
 {
+    [Collection("Sequential")]
     public class T01_AddServicesTests
     {
         [Fact]
@@ -34,7 +37,7 @@ namespace RoyalCode.CommandAndQuery.Tests
 
             var request = new AddServicesTestRequest();
 
-            Assert.Throws<MultipleHandlersForTheSameRequestException>(() => bus.Send(request));
+            bus.Send(request);
         }
 
         [Fact]

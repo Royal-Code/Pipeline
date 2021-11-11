@@ -1,15 +1,12 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using RoyalCode.CommandAndQuery.Tests.GenericsHandlers;
 using RoyalCode.PipelineFlow.Configurations;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace RoyalCode.CommandAndQuery.Tests
 {
+    [Collection("Sequential")]
     public class T02_HandlersTests
     {
         [Fact]
@@ -132,115 +129,6 @@ namespace RoyalCode.CommandAndQuery.Tests
             Assert.Equal(nameof(GenericHandlerInOutRequestOne), service.TypesHandled[0]);
             Assert.Equal(nameof(GenericHandlerInOutRequestTwo), service.TypesHandled[1]);
         }
-    }
-
-    public class GenericHandlerInRequestOne : IRequest { }
-
-    public class GenericHandlerInRequestTwo : IRequest { }
-
-    public class GenericHandlerInOutRequestOne : IRequest<string> { }
-
-    public class GenericHandlerInOutRequestTwo : IRequest<GenericHandlerInOutRequestTwo> { }
-
-
-    internal class GenericHandler<TIn> : IHandler<TIn>
-        where TIn : class, IRequest
-    {
-        private readonly GenericHandlerService service;
-
-        public GenericHandler(GenericHandlerService service)
-        {
-            this.service = service;
-        }
-
-        public void Handle(TIn request)
-        {
-            service.TypesHandled.Add(typeof(TIn).Name);
-        }
-    }
-
-    internal class GenericHandler<TIn, TOut> : IHandler<TIn, TOut>
-        where TIn : class, IRequest<TOut>
-    {
-        private readonly GenericHandlerService service;
-
-        public GenericHandler(GenericHandlerService service)
-        {
-            this.service = service;
-        }
-
-        public TOut Handle(TIn request)
-        {
-            service.TypesHandled.Add(typeof(TIn).Name);
-
-            return request is TOut @out ? @out : default;
-        }
-    }
-
-    internal class GenericHandlerWithDefinedResult<TIn> : IHandler<TIn, string>
-        where TIn : class, IRequest<string>
-    {
-        private readonly GenericHandlerService service;
-
-        public GenericHandlerWithDefinedResult(GenericHandlerService service)
-        {
-            this.service = service;
-        }
-
-        public string Handle(TIn request)
-        {
-            service.TypesHandled.Add(typeof(TIn).Name);
-
-            return typeof(TIn).Name;
-        }
-    }
-
-    internal class GenericAsyncHandler<TIn> : IAsyncHandler<TIn>
-        where TIn : class, IRequest
-    {
-        private readonly GenericHandlerService service;
-
-        public GenericAsyncHandler(GenericHandlerService service)
-        {
-            this.service = service;
-        }
-
-        public Task HandleAsync(TIn request, CancellationToken token = default)
-        {
-            service.TypesHandled.Add(typeof(TIn).Name);
-            return Task.CompletedTask;
-        }
-    }
-
-    internal class GenericAsyncHandler<TIn, TOut> : IAsyncHandler<TIn, TOut>
-        where TIn : class, IRequest<TOut>
-    {
-        private readonly GenericHandlerService service;
-
-        public GenericAsyncHandler(GenericHandlerService service)
-        {
-            this.service = service;
-        }
-
-        public TOut Handle(TIn request)
-        {
-            service.TypesHandled.Add(typeof(TIn).Name);
-
-            return request is TOut @out ? @out : default;
-        }
-
-        public Task<TOut> HandleAsync(TIn request, CancellationToken token = default)
-        {
-            service.TypesHandled.Add(typeof(TIn).Name);
-
-            return Task.FromResult(request is TOut @out ? @out : default);
-        }
-    }
-
-    internal class GenericHandlerService
-    {
-
-        public List<string> TypesHandled { get; set; } = new();
     }
 }
 
