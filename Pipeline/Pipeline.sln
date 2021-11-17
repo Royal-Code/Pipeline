@@ -30,6 +30,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoyalCode.CommandAndQuery.T
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoyalCode.CommandAndQuery.Tests.GenericsDecorators", "RoyalCode.CommandAndQuery.Tests.GenericsDecorators\RoyalCode.CommandAndQuery.Tests.GenericsDecorators.csproj", "{43AE710B-218C-410D-8DEC-570E7A746981}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoyalCode.CommandAndQuery.OperationsCommands", "RoyalCode.CommandAndQuery.OperationsCommands\RoyalCode.CommandAndQuery.OperationsCommands.csproj", "{5BDB3CAD-5F40-4CD3-859F-3B4FF0E346C4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -68,6 +70,10 @@ Global
 		{43AE710B-218C-410D-8DEC-570E7A746981}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{43AE710B-218C-410D-8DEC-570E7A746981}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{43AE710B-218C-410D-8DEC-570E7A746981}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5BDB3CAD-5F40-4CD3-859F-3B4FF0E346C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5BDB3CAD-5F40-4CD3-859F-3B4FF0E346C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5BDB3CAD-5F40-4CD3-859F-3B4FF0E346C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5BDB3CAD-5F40-4CD3-859F-3B4FF0E346C4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -81,6 +87,7 @@ Global
 		{591073BD-90BC-4495-ABC8-D5F24B41E963} = {C95FD26D-D086-4396-91EF-BD76850D7B3F}
 		{E13D2D4F-381E-4B29-BD8E-66CF13ED42ED} = {48F480F4-D227-4EA8-B670-9EB8CC38F5BD}
 		{43AE710B-218C-410D-8DEC-570E7A746981} = {48F480F4-D227-4EA8-B670-9EB8CC38F5BD}
+		{5BDB3CAD-5F40-4CD3-859F-3B4FF0E346C4} = {F5DD2E92-9192-4869-AA1E-94A2F6E0FA9F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {AB2570C9-31BE-4028-8797-6520A1E4945F}
