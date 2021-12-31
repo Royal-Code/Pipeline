@@ -25,4 +25,10 @@
     <ProjectReference Include="..\RoyalCode.PipelineFlow.CommandAndQuery\RoyalCode.PipelineFlow.CommandAndQuery.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="xunit.runner.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

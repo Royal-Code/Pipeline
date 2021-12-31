@@ -3,6 +3,7 @@ using RoyalCode.CommandAndQuery.Tests.GenericsHandlers;
 using RoyalCode.PipelineFlow;
 using RoyalCode.PipelineFlow.Configurations;
 using System;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace RoyalCode.CommandAndQuery.Tests
@@ -11,7 +12,7 @@ namespace RoyalCode.CommandAndQuery.Tests
     public class T02_HandlersTests
     {
         [Fact]
-        public void T01_GenericHandler_In()
+        public async Task T01_GenericHandler_In()
         {
             PipelineFactory.ResetChainTypes<ICommandQueryBus>();
             var sp = new ServiceCollection()
@@ -22,8 +23,8 @@ namespace RoyalCode.CommandAndQuery.Tests
                     
             var bus = sp.GetRequiredService<ICommandQueryBus>();
 
-            bus.Send(new GenericHandlerInRequestOne());
-            bus.Send(new GenericHandlerInRequestTwo());
+            await bus.SendAsync(new GenericHandlerInRequestOne());
+            await bus.SendAsync(new GenericHandlerInRequestTwo());
 
             var service = sp.GetRequiredService<GenericHandlerService>();
 
@@ -33,7 +34,7 @@ namespace RoyalCode.CommandAndQuery.Tests
         }
 
         [Fact]
-        public void T02_GenericHandler_InOut()
+        public async Task T02_GenericHandler_InOut()
         {
             PipelineFactory.ResetChainTypes<ICommandQueryBus>();
             var sp = new ServiceCollection()
@@ -44,11 +45,11 @@ namespace RoyalCode.CommandAndQuery.Tests
 
             var bus = sp.GetRequiredService<ICommandQueryBus>();
 
-            var oneResult = bus.Send(new GenericHandlerInOutRequestOne());
+            var oneResult = await bus.SendAsync(new GenericHandlerInOutRequestOne());
             Assert.Null(oneResult);
 
             var twoRequest = new GenericHandlerInOutRequestTwo();
-            var twoResult = bus.Send(twoRequest);
+            var twoResult = await bus.SendAsync(twoRequest);
             Assert.NotNull(twoResult);
             Assert.Same(twoRequest, twoResult);
 
@@ -60,7 +61,7 @@ namespace RoyalCode.CommandAndQuery.Tests
         }
 
         [Fact]
-        public void T03_GenericHandlerWithDefinedResult_InOut()
+        public async Task T03_GenericHandlerWithDefinedResult_InOut()
         {
             PipelineFactory.ResetChainTypes<ICommandQueryBus>();
             var sp = new ServiceCollection()
@@ -71,7 +72,7 @@ namespace RoyalCode.CommandAndQuery.Tests
 
             var bus = sp.GetRequiredService<ICommandQueryBus>();
 
-            var oneResult = bus.Send(new GenericHandlerInOutRequestOne());
+            var oneResult = await bus.SendAsync(new GenericHandlerInOutRequestOne());
             Assert.NotNull(oneResult);
             Assert.Equal(nameof(GenericHandlerInOutRequestOne), oneResult);
 
@@ -88,7 +89,7 @@ namespace RoyalCode.CommandAndQuery.Tests
         }
 
         [Fact]
-        public void T04_GenericAsyncHandler_In()
+        public async Task T04_GenericAsyncHandler_In()
         {
             PipelineFactory.ResetChainTypes<ICommandQueryBus>();
             var sp = new ServiceCollection()
@@ -99,8 +100,8 @@ namespace RoyalCode.CommandAndQuery.Tests
 
             var bus = sp.GetRequiredService<ICommandQueryBus>();
 
-            bus.Send(new GenericHandlerInRequestOne());
-            bus.Send(new GenericHandlerInRequestTwo());
+            await bus.SendAsync(new GenericHandlerInRequestOne());
+            await bus.SendAsync(new GenericHandlerInRequestTwo());
 
             var service = sp.GetRequiredService<GenericHandlerService>();
 
@@ -110,7 +111,7 @@ namespace RoyalCode.CommandAndQuery.Tests
         }
 
         [Fact]
-        public void T05_GenericAsyncHandler_InOut()
+        public async Task T05_GenericAsyncHandler_InOut()
         {
             PipelineFactory.ResetChainTypes<ICommandQueryBus>();
             var sp = new ServiceCollection()
@@ -121,11 +122,11 @@ namespace RoyalCode.CommandAndQuery.Tests
 
             var bus = sp.GetRequiredService<ICommandQueryBus>();
 
-            var oneResult = bus.Send(new GenericHandlerInOutRequestOne());
+            var oneResult = await bus.SendAsync(new GenericHandlerInOutRequestOne());
             Assert.Null(oneResult);
 
             var twoRequest = new GenericHandlerInOutRequestTwo();
-            var twoResult = bus.Send(twoRequest);
+            var twoResult = await bus.SendAsync(twoRequest);
             Assert.NotNull(twoResult);
             Assert.Same(twoRequest, twoResult);
 

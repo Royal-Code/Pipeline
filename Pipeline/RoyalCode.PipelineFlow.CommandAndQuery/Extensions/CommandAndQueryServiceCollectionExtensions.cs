@@ -299,7 +299,6 @@ namespace Microsoft.Extensions.DependencyInjection
 
         private class ServiceHandlersRegistry
         {
-            private static ServiceHandlersRegistry? instance;
             private IServiceCollection? services;
             private IEnumerable<Type>? handlersServicesTypes;
 
@@ -309,7 +308,16 @@ namespace Microsoft.Extensions.DependencyInjection
             }
 
             public static ServiceHandlersRegistry GetOrCreate(IServiceCollection services)
-                => instance ??= new ServiceHandlersRegistry(services);
+            {
+                var service = services.FirstOrDefault(d => d.ServiceType == typeof(ServiceHandlersRegistry))?.ImplementationInstance;
+
+                if(service is not null)
+                    return (ServiceHandlersRegistry)service!;
+
+                var instance = new ServiceHandlersRegistry(services);
+                services.AddSingleton(instance);
+                return instance;
+            }
 
             private void Initialize()
             {
