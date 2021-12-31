@@ -50,6 +50,12 @@ namespace RoyalCode.PipelineFlow
             .Where(m => m.GetGenericArguments().Length == 2)
             .First();
 
+        protected static void ResetDispatchers()
+        {
+            dispatchers.Clear();
+            asyncDispatchers.Clear();
+        }
+
         /// <summary>
         /// It gets a synchronous dispatch delegate without producing a result.
         /// </summary>

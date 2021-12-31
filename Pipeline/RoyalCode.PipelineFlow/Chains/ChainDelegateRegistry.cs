@@ -28,5 +28,10 @@ namespace RoyalCode.PipelineFlow.Chains
         {
             return delegates.OfType<TDelegate>().FirstOrDefault();
         }
+
+        internal void Reset()
+        {
+            delegates.Clear();
+        }
     }
 }

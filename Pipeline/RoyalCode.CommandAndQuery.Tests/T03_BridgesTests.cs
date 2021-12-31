@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using RoyalCode.PipelineFlow;
 using System;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace RoyalCode.CommandAndQuery.Tests
@@ -8,8 +10,9 @@ namespace RoyalCode.CommandAndQuery.Tests
     public class T03_BridgesTests
     {
         [Fact]
-        public void T01_OneBridgeHandler_In()
+        public async Task T01_OneBridgeHandler_In()
         {
+            PipelineFactory.ResetChainTypes<ICommandQueryBus>();
             var services = new ServiceCollection();
 
             services.AddCommandsAndQueriesFromAssemblyOfType<OneBridgeInFirstRequest>();
@@ -24,13 +27,14 @@ namespace RoyalCode.CommandAndQuery.Tests
             Assert.Equal(2, OneBridgeInSecondHandler.Value);
 
             OneBridgeInSecondHandler.Value = 0;
-            bus.SendAsync(request).GetAwaiter().GetResult();
+            await bus.SendAsync(request);
             Assert.Equal(2, OneBridgeInSecondHandler.Value);
         }
 
         [Fact]
-        public void T02_OneBridgeHandler_InOut()
+        public async Task T02_OneBridgeHandler_InOut()
         {
+            PipelineFactory.ResetChainTypes<ICommandQueryBus>();
             var services = new ServiceCollection();
 
             services.AddCommandsAndQueriesFromAssemblyOfType<OneBridgeInOutFirstRequest>();
@@ -46,14 +50,15 @@ namespace RoyalCode.CommandAndQuery.Tests
             Assert.Equal("2", result);
 
             OneBridgeInOutSecondHandler.Value = 0;
-            result = bus.SendAsync(request).GetAwaiter().GetResult();
+            result = await bus.SendAsync(request);
             Assert.Equal(2, OneBridgeInOutSecondHandler.Value);
             Assert.Equal("2", result);
         }
 
         [Fact]
-        public void T03_OneBridgeHandler_InOutNext()
+        public async Task T03_OneBridgeHandler_InOutNext()
         {
+            PipelineFactory.ResetChainTypes<ICommandQueryBus>();
             var services = new ServiceCollection();
 
             services.AddCommandsAndQueriesFromAssemblyOfType<OneBridgeInOutNextFirstRequest>();
@@ -69,14 +74,15 @@ namespace RoyalCode.CommandAndQuery.Tests
             Assert.Equal("3", result);
 
             OneBridgeInOutNextSecondHandler.Value = 0;
-            result = bus.SendAsync(request).GetAwaiter().GetResult();
+            result = await bus.SendAsync(request);
             Assert.Equal(3, OneBridgeInOutNextSecondHandler.Value);
             Assert.Equal("3", result);
         }
 
         [Fact]
-        public void T04_TwoBridgeHandler_InOutNext()
+        public async Task T04_TwoBridgeHandler_InOutNext()
         {
+            PipelineFactory.ResetChainTypes<ICommandQueryBus>();
             var services = new ServiceCollection();
 
             services.AddCommandsAndQueriesFromAssemblyOfType<TwoBridgeInOutNextFirstRequest>();
@@ -92,7 +98,7 @@ namespace RoyalCode.CommandAndQuery.Tests
             Assert.Equal("4", result);
 
             TwoBridgeInOutNextSecondHandler.Value = 0;
-            result = bus.SendAsync(request).GetAwaiter().GetResult();
+            result = await bus.SendAsync(request);
             Assert.Equal(4, TwoBridgeInOutNextSecondHandler.Value);
             Assert.Equal("4", result);
         }

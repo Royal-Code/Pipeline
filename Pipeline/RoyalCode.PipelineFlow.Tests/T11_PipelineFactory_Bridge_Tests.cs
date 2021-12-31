@@ -1,24 +1,23 @@
 ﻿using RoyalCode.PipelineFlow.Configurations;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
 
 namespace RoyalCode.PipelineFlow.Tests
 {
+    [Collection("Pipeline tests")]
     public class T11_PipelineFactory_Bridge_Tests
     {
-
         [Fact]
         public void T01_BridgeDelegateHandler_In()
         {
             int intValue = 0;
             string stringValue = string.Empty;
 
+            PipelineFactory.ResetChainTypes<ITestBus>();
             var factory = PipelineFactory.Configure<ITestBus>()
                 .ConfigurePipelines(builder =>
                 {
@@ -41,11 +40,12 @@ namespace RoyalCode.PipelineFlow.Tests
         }
 
         [Fact]
-        public void T02_BridgeDelegateHandlerAsync_In()
+        public async Task T02_BridgeDelegateHandlerAsync_In()
         {
             int intValue = 0;
             string stringValue = string.Empty;
 
+            PipelineFactory.ResetChainTypes<ITestBus>();
             var factory = PipelineFactory.Configure<ITestBus>()
                 .ConfigurePipelines(builder =>
                 {
@@ -62,17 +62,18 @@ namespace RoyalCode.PipelineFlow.Tests
             var pipeline = factory.Create<IntInput>();
             Assert.NotNull(pipeline);
 
-            pipeline.SendAsync(new IntInput(1)).GetAwaiter().GetResult();
+            await pipeline.SendAsync(new IntInput(1));
             Assert.Equal(3, intValue);
             Assert.Equal("3333", stringValue);
         }
 
         [Fact]
-        public void T03_BridgeDelegateHandlerAsyncWithoutCancellationToken_In()
+        public async Task T03_BridgeDelegateHandlerAsyncWithoutCancellationToken_In()
         {
             int intValue = 0;
             string stringValue = string.Empty;
 
+            PipelineFactory.ResetChainTypes<ITestBus>();
             var factory = PipelineFactory.Configure<ITestBus>()
                 .ConfigurePipelines(builder =>
                 {
@@ -89,7 +90,7 @@ namespace RoyalCode.PipelineFlow.Tests
             var pipeline = factory.Create<IntInput>();
             Assert.NotNull(pipeline);
 
-            pipeline.SendAsync(new IntInput(1)).GetAwaiter().GetResult();
+            await pipeline.SendAsync(new IntInput(1));
             Assert.Equal(3, intValue);
             Assert.Equal("3333", stringValue);
         }
@@ -100,6 +101,7 @@ namespace RoyalCode.PipelineFlow.Tests
             int intValue = 0;
             string stringValue = string.Empty;
 
+            PipelineFactory.ResetChainTypes<ITestBus>();
             var factory = PipelineFactory.Configure<ITestBus>()
                 .ConfigurePipelines(builder =>
                 {
@@ -123,11 +125,12 @@ namespace RoyalCode.PipelineFlow.Tests
         }
 
         [Fact]
-        public void T05_BridgeDelegateHandlerAsync_InOut()
+        public async Task T05_BridgeDelegateHandlerAsync_InOut()
         {
             int intValue = 0;
             string stringValue = string.Empty;
 
+            PipelineFactory.ResetChainTypes<ITestBus>();
             var factory = PipelineFactory.Configure<ITestBus>()
                 .ConfigurePipelines(builder =>
                 {
@@ -144,18 +147,19 @@ namespace RoyalCode.PipelineFlow.Tests
             var pipeline = factory.Create<IntInput, string>();
             Assert.NotNull(pipeline);
 
-            var result = pipeline.SendAsync(new IntInput(1)).GetAwaiter().GetResult();
+            var result = await pipeline.SendAsync(new IntInput(1));
             Assert.Equal(3, intValue);
             Assert.Equal("3333", stringValue);
             Assert.Equal("3333", result);
         }
 
         [Fact]
-        public void T06_BridgeDelegateHandlerAsyncWithoutCancellationToken_InOut()
+        public async void T06_BridgeDelegateHandlerAsyncWithoutCancellationToken_InOut()
         {
             int intValue = 0;
             string stringValue = string.Empty;
 
+            PipelineFactory.ResetChainTypes<ITestBus>();
             var factory = PipelineFactory.Configure<ITestBus>()
                 .ConfigurePipelines(builder =>
                 {
@@ -172,7 +176,7 @@ namespace RoyalCode.PipelineFlow.Tests
             var pipeline = factory.Create<IntInput, string>();
             Assert.NotNull(pipeline);
 
-            var result = pipeline.SendAsync(new IntInput(1)).GetAwaiter().GetResult();
+            var result = await pipeline.SendAsync(new IntInput(1));
             Assert.Equal(3, intValue);
             Assert.Equal("3333", stringValue);
             Assert.Equal("3333", result);
@@ -184,6 +188,7 @@ namespace RoyalCode.PipelineFlow.Tests
             int intValue = 0;
             string stringValue = string.Empty;
 
+            PipelineFactory.ResetChainTypes<ITestBus>();
             var factory = PipelineFactory.Configure<ITestBus>()
                 .ConfigurePipelines(builder =>
                 {
@@ -213,26 +218,27 @@ namespace RoyalCode.PipelineFlow.Tests
         }
 
         [Fact]
-        public void T08_BridgeDelegateHandlerAsync_InOutNext()
+        public async Task T08_BridgeDelegateHandlerAsync_InOutNext()
         {
             int intValue = 0;
             string stringValue = string.Empty;
 
+            PipelineFactory.ResetChainTypes<ITestBus>();
             var factory = PipelineFactory.Configure<ITestBus>()
                 .ConfigurePipelines(builder =>
                 {
                     builder.Configure<IntInput, string>()
                         .DecorateAsync((i, n, t) => { i.Increment(); return n(); })
-                        .BridgeHandleAsync<IntInput, string, StringInput, MultiInput>((i, n, t) =>
+                        .BridgeHandleAsync<IntInput, string, StringInput, MultiInput>(async (i, n, t) =>
                         {
                             i.Increment();
                             intValue = i.Value;
-                            var r = n(new StringInput(i)).Result;
-                            return Task.FromResult(r.ToString()!);
+                            var r = await n(new StringInput(i));
+                            return r.ToString()!;
                         });
 
                     builder.Configure<StringInput, MultiInput>()
-                        .DecorateAsync((i, n, t) => { i.Increment(); var r = n().Result; r.Increment(); return Task.FromResult(r); })
+                        .DecorateAsync(async (i, n, t) => { i.Increment(); var r = await n(); r.Increment(); return r; })
                         .HandleAsync((i, t) => { i.Increment(); stringValue = i.Value; return Task.FromResult(new MultiInput(i.Value)); });
                 })
                 .Create();
@@ -240,33 +246,34 @@ namespace RoyalCode.PipelineFlow.Tests
             var pipeline = factory.Create<IntInput, string>();
             Assert.NotNull(pipeline);
 
-            var result = pipeline.SendAsync(new IntInput(1)).Result;
+            var result = await pipeline.SendAsync(new IntInput(1));
             Assert.Equal(3, intValue);
             Assert.Equal("3333", stringValue);
             Assert.Equal("6666", result);
         }
 
         [Fact]
-        public void T09_BridgeDelegateHandlerAsyncWithoutCancellationToken_InOutNext()
+        public async void T09_BridgeDelegateHandlerAsyncWithoutCancellationToken_InOutNext()
         {
             int intValue = 0;
             string stringValue = string.Empty;
 
+            PipelineFactory.ResetChainTypes<ITestBus>();
             var factory = PipelineFactory.Configure<ITestBus>()
                 .ConfigurePipelines(builder =>
                 {
                     builder.Configure<IntInput, string>()
                         .DecorateAsync((i, n) => { i.Increment(); return n(); })
-                        .BridgeHandleAsync<IntInput, string, StringInput, MultiInput>((i, n) =>
+                        .BridgeHandleAsync<IntInput, string, StringInput, MultiInput>(async (i, n) =>
                         {
                             i.Increment();
                             intValue = i.Value;
-                            var r = n(new StringInput(i)).Result;
-                            return Task.FromResult(r.ToString()!);
+                            var r = await n(new StringInput(i));
+                            return r.ToString()!;
                         });
 
                     builder.Configure<StringInput, MultiInput>()
-                        .DecorateAsync((i, n) => { i.Increment(); var r = n().Result; r.Increment(); return Task.FromResult(r); })
+                        .DecorateAsync(async (i, n) => { i.Increment(); var r = await n(); r.Increment(); return r; })
                         .HandleAsync((i) => { i.Increment(); stringValue = i.Value; return Task.FromResult(new MultiInput(i.Value)); });
                 })
                 .Create();
@@ -274,7 +281,7 @@ namespace RoyalCode.PipelineFlow.Tests
             var pipeline = factory.Create<IntInput, string>();
             Assert.NotNull(pipeline);
 
-            var result = pipeline.SendAsync(new IntInput(1)).Result;
+            var result = await pipeline.SendAsync(new IntInput(1));
             Assert.Equal(3, intValue);
             Assert.Equal("3333", stringValue);
             Assert.Equal("6666", result);
@@ -283,6 +290,7 @@ namespace RoyalCode.PipelineFlow.Tests
         [Fact]
         public void T10_BridgeHandler_In()
         {
+            PipelineFactory.ResetChainTypes<ITestBus>();
             var factory = PipelineFactory.Configure<ITestBus>()
                 .ConfigurePipelines(builder =>
                 {
@@ -301,8 +309,9 @@ namespace RoyalCode.PipelineFlow.Tests
         }
 
         [Fact]
-        public void T11_BridgeHandlerAsync_In()
+        public async Task T11_BridgeHandlerAsync_In()
         {
+            PipelineFactory.ResetChainTypes<ITestBus>();
             var factory = PipelineFactory.Configure<ITestBus>()
                 .ConfigurePipelines(builder =>
                 {
@@ -315,14 +324,15 @@ namespace RoyalCode.PipelineFlow.Tests
             var pipeline = factory.Create<IntInput>();
             Assert.NotNull(pipeline);
 
-            pipeline.SendAsync(new IntInput(1)).GetAwaiter().GetResult();
+            await pipeline.SendAsync(new IntInput(1));
             Assert.Equal(3, Bridges.IntValue);
             Assert.Equal("3333", Handlers.StringValue);
         }
 
         [Fact]
-        public void T12_BridgeHandlerAsyncWithoutCancellationToken_In()
+        public async void T12_BridgeHandlerAsyncWithoutCancellationToken_In()
         {
+            PipelineFactory.ResetChainTypes<ITestBus>();
             var factory = PipelineFactory.Configure<ITestBus>()
                 .ConfigurePipelines(builder =>
                 {
@@ -335,7 +345,7 @@ namespace RoyalCode.PipelineFlow.Tests
             var pipeline = factory.Create<IntInput>();
             Assert.NotNull(pipeline);
 
-            pipeline.SendAsync(new IntInput(1)).GetAwaiter().GetResult();
+            await pipeline.SendAsync(new IntInput(1));
             Assert.Equal(3, Bridges.IntValue);
             Assert.Equal("3333", Handlers.StringValue);
         }
@@ -343,6 +353,7 @@ namespace RoyalCode.PipelineFlow.Tests
         [Fact]
         public void T13_BridgeHandler_InOut()
         {
+            PipelineFactory.ResetChainTypes<ITestBus>();
             var factory = PipelineFactory.Configure<ITestBus>()
                 .ConfigurePipelines(builder =>
                 {
@@ -362,8 +373,9 @@ namespace RoyalCode.PipelineFlow.Tests
         }
 
         [Fact]
-        public void T14_BridgeHandlerAsync_InOut()
+        public async Task T14_BridgeHandlerAsync_InOut()
         {
+            PipelineFactory.ResetChainTypes<ITestBus>();
             var factory = PipelineFactory.Configure<ITestBus>()
                 .ConfigurePipelines(builder =>
                 {
@@ -376,15 +388,16 @@ namespace RoyalCode.PipelineFlow.Tests
             var pipeline = factory.Create<IntInput, string>();
             Assert.NotNull(pipeline);
 
-            var result = pipeline.SendAsync(new IntInput(1)).GetAwaiter().GetResult();
+            var result = await pipeline.SendAsync(new IntInput(1));
             Assert.Equal(3, Bridges.IntValue);
             Assert.Equal("3333", Handlers.StringValue);
             Assert.Equal("3333", result);
         }
 
         [Fact]
-        public void T15_BridgeHandlerAsyncWithoutCancellationToken_InOut()
+        public async Task T15_BridgeHandlerAsyncWithoutCancellationToken_InOut()
         {
+            PipelineFactory.ResetChainTypes<ITestBus>();
             var factory = PipelineFactory.Configure<ITestBus>()
                 .ConfigurePipelines(builder =>
                 {
@@ -397,7 +410,7 @@ namespace RoyalCode.PipelineFlow.Tests
             var pipeline = factory.Create<IntInput, string>();
             Assert.NotNull(pipeline);
 
-            var result = pipeline.SendAsync(new IntInput(1)).GetAwaiter().GetResult();
+            var result = await pipeline.SendAsync(new IntInput(1));
             Assert.Equal(3, Bridges.IntValue);
             Assert.Equal("3333", Handlers.StringValue);
             Assert.Equal("3333", result);
@@ -406,6 +419,7 @@ namespace RoyalCode.PipelineFlow.Tests
         [Fact]
         public void T16_BridgeHandler_InOutNext()
         {
+            PipelineFactory.ResetChainTypes<ITestBus>();
             var factory = PipelineFactory.Configure<ITestBus>()
                 .ConfigurePipelines(builder =>
                 {
@@ -425,8 +439,9 @@ namespace RoyalCode.PipelineFlow.Tests
         }
 
         [Fact]
-        public void T17_BridgeHandlerAsync_InOutNext()
+        public async Task T17_BridgeHandlerAsync_InOutNext()
         {
+            PipelineFactory.ResetChainTypes<ITestBus>();
             var factory = PipelineFactory.Configure<ITestBus>()
                 .ConfigurePipelines(builder =>
                 {
@@ -439,15 +454,16 @@ namespace RoyalCode.PipelineFlow.Tests
             var pipeline = factory.Create<IntInput, string>();
             Assert.NotNull(pipeline);
 
-            var result = pipeline.SendAsync(new IntInput(1)).GetAwaiter().GetResult();
+            var result = await pipeline.SendAsync(new IntInput(1));
             Assert.Equal(3, Bridges.IntValue);
             Assert.Equal("3333", Handlers.StringValue);
             Assert.Equal("6666", result);
         }
 
         [Fact]
-        public void T18_BridgeHandlerAsyncWithoutCancellationToken_InOutNext()
+        public async Task T18_BridgeHandlerAsyncWithoutCancellationToken_InOutNext()
         {
+            PipelineFactory.ResetChainTypes<ITestBus>();
             var factory = PipelineFactory.Configure<ITestBus>()
                 .ConfigurePipelines(builder =>
                 {
@@ -460,7 +476,7 @@ namespace RoyalCode.PipelineFlow.Tests
             var pipeline = factory.Create<IntInput, string>();
             Assert.NotNull(pipeline);
 
-            var result = pipeline.SendAsync(new IntInput(1)).GetAwaiter().GetResult();
+            var result = await pipeline.SendAsync(new IntInput(1));
             Assert.Equal(3, Bridges.IntValue);
             Assert.Equal("3333", Handlers.StringValue);
             Assert.Equal("6666", result);
@@ -647,20 +663,20 @@ namespace RoyalCode.PipelineFlow.Tests
             return r.ToString()!;
         }
 
-        public Task<string> HandleNextStringInputResultMultiInputAsync(IntInput i, Func<StringInput, Task<MultiInput>> next, CancellationToken token)
+        public async Task<string> HandleNextStringInputResultMultiInputAsync(IntInput i, Func<StringInput, Task<MultiInput>> next, CancellationToken token)
         {
             i.Increment();
             IntValue = i.Value;
-            var r = next(new StringInput(i)).GetAwaiter().GetResult();
-            return Task.FromResult(r.ToString()!);
+            var r = await next(new StringInput(i));
+            return r.ToString()!;
         }
 
-        public Task<string> HandleNextStringInputResultMultiInputAsyncWithoutCancellationToken(IntInput i, Func<StringInput, Task<MultiInput>> next)
+        public async Task<string> HandleNextStringInputResultMultiInputAsyncWithoutCancellationToken(IntInput i, Func<StringInput, Task<MultiInput>> next)
         {
             i.Increment();
             IntValue = i.Value;
-            var r = next(new StringInput(i)).GetAwaiter().GetResult();
-            return Task.FromResult(r.ToString()!);
+            var r = await next(new StringInput(i));
+            return r.ToString()!;
         }
     }
 

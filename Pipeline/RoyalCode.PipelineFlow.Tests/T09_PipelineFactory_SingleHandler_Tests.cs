@@ -5,11 +5,13 @@ using System.Threading;
 
 namespace RoyalCode.PipelineFlow.Tests
 {
+    [Collection("Pipeline tests")]
     public class T09_PipelineFactory_SingleHandler_Tests
     {
         [Fact]
         public  void T01_SingleInputHandler()
         {
+            PipelineFactory.ResetChainTypes<ITestBus>();
             var factory = PipelineFactory.Configure<ITestBus>()
                 .ConfigurePipelines(builder =>
                 {
@@ -27,6 +29,7 @@ namespace RoyalCode.PipelineFlow.Tests
         [Fact]
         public void T02_SingleInputOutputHandler()
         {
+            PipelineFactory.ResetChainTypes<ITestBus>();
             var factory = PipelineFactory.Configure<ITestBus>()
                 .ConfigurePipelines(builder =>
                 {
@@ -45,6 +48,7 @@ namespace RoyalCode.PipelineFlow.Tests
         [Fact]
         public void T03_SingleAsyncInputHandler()
         {
+            PipelineFactory.ResetChainTypes<ITestBus>();
             var factory = PipelineFactory.Configure<ITestBus>()
                 .ConfigurePipelines(builder =>
                 {
@@ -62,6 +66,7 @@ namespace RoyalCode.PipelineFlow.Tests
         [Fact]
         public void T04_SingleAsyncInputWithoutCancellationTokenHandler()
         {
+            PipelineFactory.ResetChainTypes<ITestBus>();
             var factory = PipelineFactory.Configure<ITestBus>()
                 .ConfigurePipelines(builder =>
                 {
@@ -79,6 +84,7 @@ namespace RoyalCode.PipelineFlow.Tests
         [Fact]
         public void T05_SingleInputOutputAsyncHandler()
         {
+            PipelineFactory.ResetChainTypes<ITestBus>();
             var factory = PipelineFactory.Configure<ITestBus>()
                 .ConfigurePipelines(builder =>
                 {
@@ -97,6 +103,7 @@ namespace RoyalCode.PipelineFlow.Tests
         [Fact]
         public void T06_SingleInputOutputAsyncWithoutCancellationTokenHandler()
         {
+            PipelineFactory.ResetChainTypes<ITestBus>();
             var factory = PipelineFactory.Configure<ITestBus>()
                 .ConfigurePipelines(builder =>
                 {
@@ -117,6 +124,7 @@ namespace RoyalCode.PipelineFlow.Tests
         {
             int result = 0;
 
+            PipelineFactory.ResetChainTypes<ITestBus>();
             var factory = PipelineFactory.Configure<ITestBus>()
                 .ConfigurePipelines(builder =>
                 {
@@ -135,6 +143,7 @@ namespace RoyalCode.PipelineFlow.Tests
         [Fact]
         public void T08_SingleInputOutputDelegateHandler()
         {
+            PipelineFactory.ResetChainTypes<ITestBus>();
             var factory = PipelineFactory.Configure<ITestBus>()
                 .ConfigurePipelines(builder =>
                 {
@@ -155,6 +164,7 @@ namespace RoyalCode.PipelineFlow.Tests
         {
             int result = 0;
 
+            PipelineFactory.ResetChainTypes<ITestBus>();
             var factory = PipelineFactory.Configure<ITestBus>()
                 .ConfigurePipelines(builder =>
                 {
@@ -175,6 +185,7 @@ namespace RoyalCode.PipelineFlow.Tests
         {
             int result = 0;
 
+            PipelineFactory.ResetChainTypes<ITestBus>();
             var factory = PipelineFactory.Configure<ITestBus>()
                 .ConfigurePipelines(builder =>
                 {
@@ -193,6 +204,7 @@ namespace RoyalCode.PipelineFlow.Tests
         [Fact]
         public void T11_SingleInputOutputAsyncDelegateHandler()
         {
+            PipelineFactory.ResetChainTypes<ITestBus>();
             var factory = PipelineFactory.Configure<ITestBus>()
                 .ConfigurePipelines(builder =>
                 {
@@ -211,6 +223,7 @@ namespace RoyalCode.PipelineFlow.Tests
         [Fact]
         public void T12_SingleInputOutputAsyncWithoutCancellationTokenDelegateHandler()
         {
+            PipelineFactory.ResetChainTypes<ITestBus>();
             var factory = PipelineFactory.Configure<ITestBus>()
                 .ConfigurePipelines(builder =>
                 {

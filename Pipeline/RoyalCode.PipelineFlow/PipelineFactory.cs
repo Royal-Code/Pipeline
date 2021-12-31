@@ -22,6 +22,15 @@ namespace RoyalCode.PipelineFlow
         /// <typeparam name="TFor">The specific type of the pipeline.</typeparam>
         /// <returns>a new instance of <see cref="PipelineFactoryConfiguration{TFor}"/>.</returns>
         public static PipelineFactoryConfiguration<TFor> Configure<TFor>() => new(ChainDelegateRegistry);
+
+        /// <summary>
+        /// Clears the chains types resolved at the moment for a <see cref="IPipelineFactory{TFor}"/>.. 
+        /// </summary>
+        public static void ResetChainTypes<TFor>()
+        {
+            PipelineFactory<TFor>.ResetChainTypes();
+            ChainDelegateRegistry.Reset();
+        }
     }
 
     /// <summary>
@@ -49,6 +58,17 @@ namespace RoyalCode.PipelineFlow
         {
             this.pipelineChainBuilder = pipelineChainBuilder;
             this.pipelineTypeBuilder = pipelineTypeBuilder;
+        }
+
+        /// <summary>
+        /// Clears the chains types resolved at the moment.
+        /// </summary>
+        public static void ResetChainTypes()
+        {
+            inputOnlyChainType.Clear();
+            callerInputOnlyChainType.Clear();
+            inputOutputChainType.Clear();
+            callerInputOutputChainType.Clear();
         }
 
         /// <inheritdoc/>

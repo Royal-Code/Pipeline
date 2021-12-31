@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using RoyalCode.CommandAndQuery.Tests.GenericsHandlers;
+using RoyalCode.PipelineFlow;
 using RoyalCode.PipelineFlow.Configurations;
 using System;
 using Xunit;
@@ -12,6 +13,7 @@ namespace RoyalCode.CommandAndQuery.Tests
         [Fact]
         public void T01_GenericHandler_In()
         {
+            PipelineFactory.ResetChainTypes<ICommandQueryBus>();
             var sp = new ServiceCollection()
                 .AddCommandAndQueryHandlersAsAService()
                 .AddTransient(typeof(IHandler<>), typeof(GenericHandler<>))
@@ -33,6 +35,7 @@ namespace RoyalCode.CommandAndQuery.Tests
         [Fact]
         public void T02_GenericHandler_InOut()
         {
+            PipelineFactory.ResetChainTypes<ICommandQueryBus>();
             var sp = new ServiceCollection()
                 .AddCommandAndQueryHandlersAsAService()
                 .AddTransient(typeof(IHandler<,>), typeof(GenericHandler<,>))
@@ -59,6 +62,7 @@ namespace RoyalCode.CommandAndQuery.Tests
         [Fact]
         public void T03_GenericHandlerWithDefinedResult_InOut()
         {
+            PipelineFactory.ResetChainTypes<ICommandQueryBus>();
             var sp = new ServiceCollection()
                 .AddCommandQueryBus(builder => builder.AddHandlerMethodDefined(typeof(GenericHandlerWithDefinedResult<>), "Handle"))
                 .AddTransient(typeof(GenericHandlerWithDefinedResult<>))
@@ -86,6 +90,7 @@ namespace RoyalCode.CommandAndQuery.Tests
         [Fact]
         public void T04_GenericAsyncHandler_In()
         {
+            PipelineFactory.ResetChainTypes<ICommandQueryBus>();
             var sp = new ServiceCollection()
                 .AddCommandAndQueryHandlersAsAService()
                 .AddTransient(typeof(IAsyncHandler<>), typeof(GenericAsyncHandler<>))
@@ -107,6 +112,7 @@ namespace RoyalCode.CommandAndQuery.Tests
         [Fact]
         public void T05_GenericAsyncHandler_InOut()
         {
+            PipelineFactory.ResetChainTypes<ICommandQueryBus>();
             var sp = new ServiceCollection()
                 .AddCommandAndQueryHandlersAsAService()
                 .AddTransient(typeof(IAsyncHandler<,>), typeof(GenericAsyncHandler<,>))

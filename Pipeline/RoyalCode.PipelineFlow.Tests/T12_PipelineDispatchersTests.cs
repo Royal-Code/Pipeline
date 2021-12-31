@@ -7,6 +7,7 @@ namespace RoyalCode.PipelineFlow.Tests
         [Fact]
         public void T01_GetDispatcher_In()
         {
+            TestDispatchers.Clear();
             var dispatchers = new TestDispatchers();
 
             var @delegate =  dispatchers.GetDispatcher(typeof(int));
@@ -17,6 +18,7 @@ namespace RoyalCode.PipelineFlow.Tests
         [Fact]
         public void T02_GetDispatcher_InOut()
         {
+            TestDispatchers.Clear();
             var dispatchers = new TestDispatchers();
 
             var @delegate = dispatchers.GetDispatcher<string>(typeof(int));
@@ -27,6 +29,7 @@ namespace RoyalCode.PipelineFlow.Tests
         [Fact]
         public void T03_GetAsyncDispatcher_In()
         {
+            TestDispatchers.Clear();
             var dispatchers = new TestDispatchers();
 
             var @delegate = dispatchers.GetAsyncDispatcher(typeof(int));
@@ -37,6 +40,7 @@ namespace RoyalCode.PipelineFlow.Tests
         [Fact]
         public void T04_GetAsyncDispatcher_InOut()
         {
+            TestDispatchers.Clear();
             var dispatchers = new TestDispatchers();
 
             var @delegate = dispatchers.GetAsyncDispatcher<string>(typeof(int));
@@ -45,5 +49,8 @@ namespace RoyalCode.PipelineFlow.Tests
         }
     }
 
-    internal class TestDispatchers : PipelineDispatchers<TestDispatchers> { }
+    internal class TestDispatchers : PipelineDispatchers<TestDispatchers> 
+    {
+        public static void Clear() => ResetDispatchers();
+    }
 }

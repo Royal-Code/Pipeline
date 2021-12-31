@@ -1,4 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
+using RoyalCode.PipelineFlow;
 using RoyalCode.PipelineFlow.Exceptions;
 using System;
 using Xunit;
@@ -13,6 +14,7 @@ namespace RoyalCode.CommandAndQuery.Tests
         [Fact]
         public void T01_Basic_Get_ICommandQueryBus()
         {
+            PipelineFactory.ResetChainTypes<ICommandQueryBus>();
             var services = new ServiceCollection();
 
             services.AddCommandQueryBus();
@@ -26,6 +28,7 @@ namespace RoyalCode.CommandAndQuery.Tests
         [Fact]
         public void T02_Basic_SendRequestToHandler_ConfiguratedByFromAssemblyMethod()
         {
+            PipelineFactory.ResetChainTypes<ICommandQueryBus>();
             var services = new ServiceCollection();
 
             services.AddCommandsAndQueriesFromAssemblyOfType<AddServicesTestRequest>();
@@ -43,6 +46,7 @@ namespace RoyalCode.CommandAndQuery.Tests
         [Fact]
         public void T03_Basic_SendRequestToHandler_ConfiguratedByHandlersAsAServiceMethod()
         {
+            PipelineFactory.ResetChainTypes<ICommandQueryBus>();
             var services = new ServiceCollection();
 
             services.AddCommandAndQueryHandlersAsAService();

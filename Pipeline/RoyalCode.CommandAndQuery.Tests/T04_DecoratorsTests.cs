@@ -1,9 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using RoyalCode.PipelineFlow;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace RoyalCode.CommandAndQuery.Tests
@@ -13,6 +10,7 @@ namespace RoyalCode.CommandAndQuery.Tests
         [Fact]
         public void T01_SimpleDecorator_In()
         {
+            PipelineFactory.ResetChainTypes<ICommandQueryBus>();
             var services = new ServiceCollection();
 
             services.AddCommandsAndQueriesFromAssemblyOfType<SimpleDecoratorInRequest>();
@@ -34,6 +32,7 @@ namespace RoyalCode.CommandAndQuery.Tests
         [Fact]
         public void T02_SimpleDecorator_InOut()
         {
+            PipelineFactory.ResetChainTypes<ICommandQueryBus>();
             var services = new ServiceCollection();
 
             services.AddCommandsAndQueriesFromAssemblyOfType<SimpleDecoratorInOutRequest>();
@@ -54,6 +53,41 @@ namespace RoyalCode.CommandAndQuery.Tests
             Assert.Equal("3", result);
         }
 
+        [Fact]
+        public void T03_MultiDecorator_In()
+        {
+
+        }
+
+        [Fact]
+        public void T04_MultiDecorator_InOut()
+        {
+
+        }
+
+        [Fact]
+        public void T05_GenericDecorator_In()
+        {
+
+        }
+
+        [Fact]
+        public void T06_GenericDecorator_InOut()
+        {
+
+        }
+
+        [Fact]
+        public void T07_CircuitBreak_In()
+        {
+
+        }
+
+        [Fact]
+        public void T08_CircuitBreak_InOut()
+        {
+
+        }
     }
 
     #region SimpleDecorator_In
@@ -124,6 +158,12 @@ namespace RoyalCode.CommandAndQuery.Tests
             return Value.ToString();
         }
     }
+
+    #endregion
+
+    #region MultiDecorators_In
+
+
 
     #endregion
 }
