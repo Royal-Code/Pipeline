@@ -21,6 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\RoyalCode.CommandAndQuery.Tests.GenericsDecorators\RoyalCode.CommandAndQuery.Tests.GenericsDecorators.csproj" />
     <ProjectReference Include="..\RoyalCode.CommandAndQuery.Tests.GenericsHandlers\RoyalCode.CommandAndQuery.Tests.GenericsHandlers.csproj" />
     <ProjectReference Include="..\RoyalCode.PipelineFlow.CommandAndQuery\RoyalCode.PipelineFlow.CommandAndQuery.csproj" />
   </ItemGroup>

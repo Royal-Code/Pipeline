@@ -41,7 +41,7 @@ namespace RoyalCode.PipelineFlow.Descriptors
         {
             return InputType.IsGenericType
                 ? InputType.GetGenericTypeDefinition() == inputType.GetGenericTypeDefinition() && !HasOutput
-                : InputType.IsGenericParameter || InputType == inputType && !HasOutput;
+                : (InputType.IsGenericParameter || InputType == inputType) && !HasOutput;
         }
 
         /// <summary>
