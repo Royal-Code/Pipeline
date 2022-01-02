@@ -114,7 +114,7 @@ namespace RoyalCode.PipelineFlow.Builders
             {
                 var chainBuilder = chainBuilders.FirstOrDefault(c => c.Kind == ChainKind.Decorator);
 
-                decoratorSorter.Sort(decoratorDescriptions)
+                decoratorSorter.Sort(decoratorDescriptions.Reverse())
                     .ToList()
                     .ForEach(decoratorDescription =>
                     {
@@ -181,7 +181,7 @@ namespace RoyalCode.PipelineFlow.Builders
             {
                 var chainBuilder = chainBuilders.FirstOrDefault(c => c.Kind == ChainKind.Decorator);
 
-                decoratorSorter.Sort(decoratorDescriptions)
+                decoratorSorter.Sort(decoratorDescriptions.Reverse())
                     .ToList()
                     .ForEach(decoratorDescription =>
                     {
