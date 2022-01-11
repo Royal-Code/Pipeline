@@ -11,10 +11,11 @@
     <AssemblyVersion>1.0.0</AssemblyVersion>
     <FileVersion>1.0.0</FileVersion>
     <Description>
-      This package contains the event dispatch pattern. 
-      The event dispatcher is a mediator between those who create and dispatch events and the observers,
-      event handlers.
-    </Description>
+		This package contains the event dispatch pattern.
+		The event dispatcher is a mediator between those who create and dispatch events and the observers,
+		event handlers.
+		This is also known as the notification pattern.
+	</Description>
     <PackageTags>RoyalCode EventDispatcher EventDispatcher-Pattern</PackageTags>
   </PropertyGroup>
   
