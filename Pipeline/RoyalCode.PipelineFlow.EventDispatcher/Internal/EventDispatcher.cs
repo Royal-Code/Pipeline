@@ -7,27 +7,25 @@ namespace RoyalCode.PipelineFlow.EventDispatcher.Internal;
 
 internal class EventDispatcher : IEventDispatcher
 {
-    private readonly IPipelineFactory<IEventDispatcher> factory;
+    
+    private readonly IPipelineDispatcherFactory factory;
+
+    public EventDispatcher(IPipelineDispatcherFactory factory)
+    {
+        this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
+    }
 
     public void Dispatch(Type eventType, object eventObject, DispatchStrategy strategy)
     {
-        var request = new EventDispatchRequest();
-        var pipeline = factory.Create<EventDispatchRequest>();
-        pipeline.Send(request);
+        var pipeline = factory.Create(eventType);
+        pipeline.Dispatch(eventObject, strategy);
     }
 
-    public Task DispatchAsync(Type eventType, object eventObject, DispatchStrategy strategy, CancellationToken cancellationToken = default)
+    public async Task DispatchAsync(
+        Type eventType, object eventObject, DispatchStrategy strategy,
+        CancellationToken cancellationToken = default)
     {
-        throw new NotImplementedException();
+        var pipeline = factory.Create(eventType);
+        await pipeline.DispatchAsync(eventObject, strategy, cancellationToken);
     }
 }
-
-#if NET5_0_OR_GREATER
-public record EventDispatchRequest(){}
-
-#else
-public class EventDispatchRequest
-{
-
-}
-#endif
