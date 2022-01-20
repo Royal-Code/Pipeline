@@ -18,7 +18,7 @@ jobs:
           dotnet-version: '6.0.x'
 
       - name: Build and pack
-        run: dotnet build ./Pipeline/RoyalCode.EventDispatcher/RoyalCode.EventDispatcher.csproj -c Release
+        run: sudo dotnet build ./Pipeline/RoyalCode.EventDispatcher/RoyalCode.EventDispatcher.csproj -c Release
 
       - name: Publish
         run: dotnet nuget push ./Pipeline/RoyalCode.EventDispatcher/**/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
