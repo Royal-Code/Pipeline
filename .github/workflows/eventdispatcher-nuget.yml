@@ -1,11 +1,6 @@
 name: eventdispatcher-nuget
 
 on:
-  push:
-    branches: [ release-eventdispatcher ]
-  pull_request:
-    branches: [ release-eventdispatcher ]
-
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
@@ -20,10 +15,10 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: 6.0.x
+          dotnet-version: '6.0.x'
 
       - name: Build and pack
-        run: sudo dotnet build ./Pipeline/RoyalCode.EventDispatcher/RoyalCode.EventDispatcher.csproj -c Release
+        run: dotnet build ./Pipeline/RoyalCode.EventDispatcher/RoyalCode.EventDispatcher.csproj -c Release
 
       - name: Publish
-        run: sudo dotnet nuget push ./Pipeline/RoyalCode.EventDispatcher/**/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
+        run: dotnet nuget push ./Pipeline/RoyalCode.EventDispatcher/**/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
