@@ -1,18 +1,20 @@
 ﻿using RoyalCode.EventDispatcher;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
 
 namespace RoyalCode.PipelineFlow.EventDispatcher.Internal;
 
 internal class PipelineDispatcherFactory : IPipelineDispatcherFactory
 {
-    private static readonly Dictionary<Type, Func<IPipelineFactory<IEventDispatcher>, IPipelineDispatcher>> creators = new();
+    private static readonly Dictionary<Type, Func<EventDispatcherPipelineFactory, IPipelineDispatcher>> creators = new();
 
-    private readonly IPipelineFactory<IEventDispatcher> factory;
+    private readonly EventDispatcherPipelineFactory factory;
 
-    public PipelineDispatcherFactory(IPipelineFactory<IEventDispatcher> factory)
+    public PipelineDispatcherFactory(EventDispatcherPipelineFactory factory)
     {
-        this.factory = factory ?? throw new ArgumentNullException(nameof(factory));
+        this.factory = factory;
     }
 
     public IPipelineDispatcher Create(Type eventType)
@@ -26,12 +28,20 @@ internal class PipelineDispatcherFactory : IPipelineDispatcherFactory
         return creator(factory);
     }
 
-    private Func<IPipelineFactory<IEventDispatcher>, IPipelineDispatcher> GenerateCreator(Type eventType)
+    private Func<EventDispatcherPipelineFactory, IPipelineDispatcher> GenerateCreator(Type eventType)
     {
         // User expressions para criar função lambda.
         // compilar e retornar.
 
-        throw new NotImplementedException();
+        var factory = Expression.Parameter(typeof(EventDispatcherPipelineFactory), "factory");
+        var pipelineDispatcherType = typeof(PipelineDispatcher<>).MakeGenericType(eventType);
+        var ctor = pipelineDispatcherType.GetConstructors().First();
+
+        var newPipelineDispatcher = Expression.New(ctor, factory);
+
+        var lambda = Expression.Lambda<Func<EventDispatcherPipelineFactory, IPipelineDispatcher>>(newPipelineDispatcher, factory);
+
+        return lambda.Compile();
     }
 }
 

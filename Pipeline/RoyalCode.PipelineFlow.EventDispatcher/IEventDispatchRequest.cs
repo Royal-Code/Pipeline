@@ -1,7 +1,7 @@
-﻿using RoyalCode.EventDispatcher;
 using System;
+using RoyalCode.EventDispatcher;
 
-namespace RoyalCode.PipelineFlow.EventDispatcher.Internal;
+namespace RoyalCode.PipelineFlow.EventDispatcher;
 
 public interface IEventDispatchRequest
 {
