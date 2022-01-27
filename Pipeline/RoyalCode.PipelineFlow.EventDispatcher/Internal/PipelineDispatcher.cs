@@ -6,12 +6,14 @@ namespace RoyalCode.PipelineFlow.EventDispatcher.Internal;
 
 /// <summary>
 /// <para>
-///     Dispatches the event through the pipeline (<see cref="IPipeline{TIn}"/>)
-///     of the event barring <see cref="IEventDispatcher"/>.
+///     Sends the dispatched event to the <see cref="IEventDispatcher"/>
+///     by the event pipeline (<see cref="IPipeline{TIn}"/>),
+///     which will deliver the event to the observers.
 /// </para>
 /// </summary>
 /// <typeparam name="TEvent">The event type.</typeparam>
 internal class PipelineDispatcher<TEvent> : IPipelineDispatcher
+    where TEvent : class
 {
     private readonly EventDispatcherPipelineFactory factory;
     private readonly DispatcherStateCollection stateCollection;
@@ -45,6 +47,8 @@ internal class PipelineDispatcher<TEvent> : IPipelineDispatcher
 
             if (request.Result.ThereIsNoObserverForTheEvent)
                 state.HasObservers = false;
+
+            request.Result.EnsureSuccess();
         }
         else
         {

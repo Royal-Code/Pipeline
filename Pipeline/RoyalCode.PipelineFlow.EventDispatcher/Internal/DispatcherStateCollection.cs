@@ -13,8 +13,8 @@ namespace RoyalCode.PipelineFlow.EventDispatcher.Internal;
 /// </summary>
 public class DispatcherStateCollection
 {
-    private ConcurrentDictionary<Type, DispatcherState> inCurrentScopeDispatcherStates = new();
-    private ConcurrentDictionary<Type, DispatcherState> inSeparetedScopeDispatcherStates = new();
+    private readonly ConcurrentDictionary<Type, DispatcherState> inCurrentScopeDispatcherStates = new();
+    private readonly ConcurrentDictionary<Type, DispatcherState> inSeparetedScopeDispatcherStates = new();
 
     /// <summary>
     /// Get the state for dispatcher in the current scope.

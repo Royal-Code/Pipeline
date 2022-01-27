@@ -56,24 +56,25 @@ namespace RoyalCode.PipelineFlow.Configurations
                 }
 
                 var resolvedDescription = resolver.TryResolve(inputType);
-                if (resolvedDescription is not null)
-                {
-                    if (description is not null)
-                        throw new MultipleHandlersForTheSameRequestException(inputType);
-                    description = resolvedDescription;
-                }
-            } 
-
-            if (description is null && fallbackResolvers is not null)
-            {
-                foreach (var resolver in fallbackResolvers)
-                {
-                    description = resolver.TryResolve(inputType);
-                    if (description is not null)
-                        break;
-                }
+                if (resolvedDescription is null) 
+                    continue;
+                
+                if (description is not null)
+                    throw new MultipleHandlersForTheSameRequestException(inputType);
+                
+                description = resolvedDescription;
             }
 
+            if (description is not null || fallbackResolvers is null) 
+                return description;
+            
+            foreach (var resolver in fallbackResolvers)
+            {
+                description = resolver.TryResolve(inputType);
+                if (description is not null)
+                    break;
+            }
+            
             return description;
         }
 

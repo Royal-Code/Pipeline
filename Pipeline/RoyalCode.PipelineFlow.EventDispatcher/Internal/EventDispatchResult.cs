@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -40,7 +41,26 @@ internal class EventDispatchResult
     }
 
     /// <summary>
+    /// Check if has errors.
+    /// </summary>
+    public bool HasErrors => _errors is not null;
+    
+    /// <summary>
     /// There is no observer for the event.
     /// </summary>
     public bool ThereIsNoObserverForTheEvent => DeliveryCount is 0;
+
+    /// <summary>
+    /// Ensure that the delivery of the events was a complete success.
+    /// </summary>
+    public void EnsureSuccess()
+    {
+        if (_errors is null)
+            return;
+
+        if (_errors.Count is 1)
+            throw _errors.First().Exception;
+
+        throw new AggregateException(_errors.Select(e => e.Exception).ToList());
+    }
 }
