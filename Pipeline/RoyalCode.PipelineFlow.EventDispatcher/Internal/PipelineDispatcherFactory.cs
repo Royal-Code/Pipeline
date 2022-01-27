@@ -30,16 +30,13 @@ internal class PipelineDispatcherFactory : IPipelineDispatcherFactory
 
     private Func<EventDispatcherPipelineFactory, IPipelineDispatcher> GenerateCreator(Type eventType)
     {
-        // User expressions para criar função lambda.
-        // compilar e retornar.
-
-        var factory = Expression.Parameter(typeof(EventDispatcherPipelineFactory), "factory");
+        var factoryParam = Expression.Parameter(typeof(EventDispatcherPipelineFactory), "factory");
         var pipelineDispatcherType = typeof(PipelineDispatcher<>).MakeGenericType(eventType);
         var ctor = pipelineDispatcherType.GetConstructors().First();
 
-        var newPipelineDispatcher = Expression.New(ctor, factory);
+        var newPipelineDispatcher = Expression.New(ctor, factoryParam);
 
-        var lambda = Expression.Lambda<Func<EventDispatcherPipelineFactory, IPipelineDispatcher>>(newPipelineDispatcher, factory);
+        var lambda = Expression.Lambda<Func<EventDispatcherPipelineFactory, IPipelineDispatcher>>(newPipelineDispatcher, factoryParam);
 
         return lambda.Compile();
     }

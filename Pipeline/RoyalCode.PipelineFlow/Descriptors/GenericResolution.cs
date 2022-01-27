@@ -51,7 +51,7 @@ namespace RoyalCode.PipelineFlow.Descriptors
         /// </para>
         /// </exception>
         public GenericResolution(Type inputType, Type outputType,
-            bool isAsync, bool hasOutput, MethodInfo handlerMethod)
+            bool isAsync, bool hasOutput, MethodInfo? handlerMethod)
         {
             if (inputType is null)
                 throw new ArgumentNullException(nameof(inputType));
@@ -62,7 +62,8 @@ namespace RoyalCode.PipelineFlow.Descriptors
             this.hasOutput = hasOutput;
             this.handlerMethod = handlerMethod ?? throw new ArgumentNullException(nameof(handlerMethod));
 
-            var serviceGenerics = handlerMethod.DeclaringType.GetGenericArguments()
+            var serviceGenerics = this.handlerMethod.DeclaringType
+                !.GetGenericArguments()
                 .Where(arg => arg.IsGenericParameter)
                 .ToArray();
 
