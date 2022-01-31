@@ -11,4 +11,5 @@ namespace RoyalCode.EventDispatcher;
 ///     Corresponds to the <see cref="DispatchStrategy.InSeparetedScope"/>.
 /// </para>
 /// </summary>
+[AttributeUsage(AttributeTargets.Class)]
 public class ObserveInSeparetedScopeAttribute : Attribute { }

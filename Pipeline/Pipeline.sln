@@ -34,7 +34,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoyalCode.CommandAndQuery.O
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoyalCode.EventDispatcher", "RoyalCode.EventDispatcher\RoyalCode.EventDispatcher.csproj", "{364D13AC-C37E-4FB6-B6E3-8CFFAE223EF5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoyalCode.PipelineFlow.EventDispatcher", "RoyalCode.PipelineFlow.EventDispatcher\RoyalCode.PipelineFlow.EventDispatcher.csproj", "{34DB5309-35CC-400F-B16C-18DC53677778}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoyalCode.PipelineFlow.EventDispatcher", "RoyalCode.PipelineFlow.EventDispatcher\RoyalCode.PipelineFlow.EventDispatcher.csproj", "{34DB5309-35CC-400F-B16C-18DC53677778}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoyalCode.PipelineFlow.DependencyInjection", "RoyalCode.PipelineFlow.DependencyInjection\RoyalCode.PipelineFlow.DependencyInjection.csproj", "{9D801CC4-FDAF-49C2-BDEC-6F05DD332612}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -86,6 +88,10 @@ Global
 		{34DB5309-35CC-400F-B16C-18DC53677778}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{34DB5309-35CC-400F-B16C-18DC53677778}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{34DB5309-35CC-400F-B16C-18DC53677778}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9D801CC4-FDAF-49C2-BDEC-6F05DD332612}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9D801CC4-FDAF-49C2-BDEC-6F05DD332612}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9D801CC4-FDAF-49C2-BDEC-6F05DD332612}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9D801CC4-FDAF-49C2-BDEC-6F05DD332612}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -102,6 +108,7 @@ Global
 		{5BDB3CAD-5F40-4CD3-859F-3B4FF0E346C4} = {F5DD2E92-9192-4869-AA1E-94A2F6E0FA9F}
 		{364D13AC-C37E-4FB6-B6E3-8CFFAE223EF5} = {F5DD2E92-9192-4869-AA1E-94A2F6E0FA9F}
 		{34DB5309-35CC-400F-B16C-18DC53677778} = {F5DD2E92-9192-4869-AA1E-94A2F6E0FA9F}
+		{9D801CC4-FDAF-49C2-BDEC-6F05DD332612} = {F5DD2E92-9192-4869-AA1E-94A2F6E0FA9F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {AB2570C9-31BE-4028-8797-6520A1E4945F}

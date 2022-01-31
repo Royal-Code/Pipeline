@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <Import Project="..\base.targets" />
 
@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <Version>1.0.0-rc1</Version>
+    <Version>1.0.0-preview1</Version>
     <AssemblyVersion>1.0.0</AssemblyVersion>
     <FileVersion>1.0.0</FileVersion>
     <Description>
@@ -31,7 +31,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\RoyalCode.Core.Cqs\RoyalCode.CommandAndQuery.csproj" />
-    <ProjectReference Include="..\RoyalCode.PipelineFlow\RoyalCode.PipelineFlow.csproj" />
+    <ProjectReference Include="..\RoyalCode.PipelineFlow.DependencyInjection\RoyalCode.PipelineFlow.DependencyInjection.csproj" />
   </ItemGroup>
 
 </Project>
