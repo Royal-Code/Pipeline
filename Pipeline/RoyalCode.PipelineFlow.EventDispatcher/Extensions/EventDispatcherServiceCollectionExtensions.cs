@@ -1,7 +1,5 @@
 ﻿using RoyalCode.EventDispatcher;
 using RoyalCode.PipelineFlow;
-using RoyalCode.PipelineFlow.Configurations;
-using RoyalCode.PipelineFlow.EventDispatcher.Internal;
 using System;
 
 namespace Microsoft.Extensions.DependencyInjection;
@@ -11,26 +9,12 @@ namespace Microsoft.Extensions.DependencyInjection;
 /// </summary>
 public static class PipelineFlowEventDispatcherServiceCollectionExtensions
 {
-
-    public static void AddObserver<TObserver, TEvent>(this IServiceCollection services)
+    public static IServiceCollection AddObserver<TObserver, TEvent>(this IServiceCollection services)
         where TObserver : IEventObserver<TEvent>
         where TEvent : class
     {
-        services.AddEventDispatcher(builder =>
-        {
-            if (typeof(TObserver).GetDispatchStrategy() == DispatchStrategy.InCurrentScope)
-            {
-                builder.Configure<CurrentScopeEventDispatchRequest<TEvent>>()
-                    .WithService<TObserver>()
-                    .DecorateAsync(NotifyObserverDecoratorHandlers.NotifyInCurrentScope);
-            }
-            else
-            {
-                builder.Configure<SeparatedScopeEventDispatchRequest<TEvent>>()
-                    .WithService<TObserver>()
-                    .DecorateAsync(NotifyObserverDecoratorHandlers.NotifyInSeparatedScope);
-            }
-        });
+        services.AddEventDispatcher(subscriber => subscriber.AddObserver<TObserver, TEvent>());
+        return services;
     }
 
     /// <summary>
@@ -42,13 +26,13 @@ public static class PipelineFlowEventDispatcherServiceCollectionExtensions
     /// <param name="pipelineConfigureAction">Action to configure the pipeline, optional.</param>
     /// <returns>The same instance of <paramref name="services"/> to chain calls.</returns>
     public static IServiceCollection AddEventDispatcher(this IServiceCollection services,
-        Action<IPipelineBuilder>? pipelineConfigureAction = null)
+        Action<ObserverSubscriber>? pipelineConfigureAction = null)
     {
         var configuration = services.GetPipelineFactoryConfiguration();
 
         if (pipelineConfigureAction is not null)
         {
-            configuration.ConfigurePipelines(pipelineConfigureAction);
+            configuration.ConfigurePipelines(builder => pipelineConfigureAction(new ObserverSubscriber(builder)));
         }
 
         return services;

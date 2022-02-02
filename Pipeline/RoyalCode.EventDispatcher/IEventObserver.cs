@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Threading;
+using System.Threading.Tasks;
 
 namespace RoyalCode.EventDispatcher;
 
@@ -21,6 +22,7 @@ public interface IEventObserver<in TEvent>
     /// Receive the dispatched event.
     /// </summary>
     /// <param name="event">The event object, contains the event data.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>Task of assynchronous operation.</returns>
-    Task ReceiveAsync(TEvent @event);
+    Task ReceiveAsync(TEvent @event, CancellationToken cancellationToken);
 }
