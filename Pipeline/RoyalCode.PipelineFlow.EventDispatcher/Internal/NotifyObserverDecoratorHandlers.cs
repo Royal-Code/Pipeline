@@ -80,10 +80,19 @@ internal static class NotifyObserverDecoratorHandlers
     }
 }
 
-internal class ObserverMethodResolver
+public class ObserverMethodResolver
 {
     public ObserverMethodResolver(MethodInfo method)
     {
+        var parameters = method.GetParameters();
+        if (parameters.Length == 0)
+            throw new InvalidObserverMethodException("Invalid observer method"); // create a better message and resource.
+
 
     }
+}
+
+public class InvalidObserverMethodException : InvalidOperationException
+{
+    public InvalidObserverMethodException(string message) : base(message) { }
 }
