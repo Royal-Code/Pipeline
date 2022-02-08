@@ -1,6 +1,10 @@
-﻿using RoyalCode.EventDispatcher;
+﻿using Microsoft.Extensions.DependencyInjection.Extensions;
+using RoyalCode.EventDispatcher;
 using RoyalCode.PipelineFlow;
+using RoyalCode.PipelineFlow.Configurations;
+using RoyalCode.PipelineFlow.EventDispatcher.Internal;
 using System;
+using System.Reflection;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -9,13 +13,44 @@ namespace Microsoft.Extensions.DependencyInjection;
 /// </summary>
 public static class PipelineFlowEventDispatcherServiceCollectionExtensions
 {
+    /// <summary>
+    /// <para>
+    ///     Adds an event observer that implements the <see cref="IEventObserver{TEvent}"/>.
+    /// </para>
+    /// </summary>
+    /// <typeparam name="TObserver">The observer type.</typeparam>
+    /// <typeparam name="TEvent">The event type.</typeparam>
+    /// <param name="services">The service collection.</param>
+    /// <returns>The same instance of <paramref name="services"/> for chain calls.</returns>
     public static IServiceCollection AddObserver<TObserver, TEvent>(this IServiceCollection services)
         where TObserver : IEventObserver<TEvent>
         where TEvent : class
     {
         services.AddEventDispatcher(subscriber => subscriber.AddObserver<TObserver, TEvent>());
+        services.TryAddTransient(typeof(TObserver));
         return services;
     }
+
+    /// <summary>
+    /// <para>
+    ///     Adds a method that will observer events.
+    /// </para>
+    /// <para>
+    ///     To better understand the method constraints see <see cref="ObserverMethodResolver"/>.
+    /// </para>
+    /// </summary>
+    /// <param name="services">The service collection.</param>
+    /// <param name="method">The observer method.</param>
+    /// <param name="strategy">The dispatch strategy.</param>
+    /// <returns>The same instance of <paramref name="services"/> for chain calls.</returns>
+    public static IServiceCollection AddObserver(this IServiceCollection services,
+        MethodInfo method, DispatchStrategy strategy)
+    {
+        services.AddEventDispatcher(subscriber => subscriber.AddObserver(method, strategy));
+        services.TryAddTransient(method.DeclaringType);
+        return services;
+    }
+
 
     /// <summary>
     /// <para>
@@ -44,6 +79,18 @@ public static class PipelineFlowEventDispatcherServiceCollectionExtensions
         return services.GetPipelineFactoryConfiguration<IEventDispatcher>(static (cfg, sc) =>
         {
             //TODO: adds the event dispatcher services ...
+            sc.AddTransient<IEventDispatcher, EventDispatcher>();
+            sc.AddTransient<IPipelineDispatcherFactory, PipelineDispatcherFactory>();
+            sc.AddTransient<EventDispatcherPipelineFactory>();
+            sc.AddSingleton<DispatcherStateCollection>();
+            cfg.ConfigurePipelines(builder => builder
+                .AddHandlerMethodDefined(
+                    typeof(CurrentScopeEventDispatchHandler<>),
+                    nameof(CurrentScopeEventDispatchHandler<object>.CurrentScopeEventDispatch))
+                .AddHandlerMethodDefined(
+                    typeof(SeparatedScopeEventDispatchHandler<>),
+                    nameof(SeparatedScopeEventDispatchHandler<object>.CurrentScopeEventDispatch)
+                ));
         });
     }
 }

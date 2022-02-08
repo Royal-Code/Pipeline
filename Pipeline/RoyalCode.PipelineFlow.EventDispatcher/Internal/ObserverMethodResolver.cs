@@ -80,6 +80,11 @@ public class ObserverMethodResolver
     }
 
     /// <summary>
+    /// The event Type.
+    /// </summary>
+    public Type EventType => eventType;
+
+    /// <summary>
     /// <para>
     ///     Creates the function to execute the method.
     /// </para>

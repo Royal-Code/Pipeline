@@ -7,7 +7,7 @@ using Xunit;
 
 namespace RoyalCode.EventDispatcher.Tests;
 
-public class ObserverMethodResolverTest
+public class T01_ObserverMethodResolverTest
 {
     [Theory]
     [InlineData(nameof(ReturnTypesModel.AsyncMethod), true)]
