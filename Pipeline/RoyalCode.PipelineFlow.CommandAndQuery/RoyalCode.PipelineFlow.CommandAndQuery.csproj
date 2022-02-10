@@ -30,7 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\RoyalCode.Core.Cqs\RoyalCode.CommandAndQuery.csproj" />
+    <ProjectReference Include="..\RoyalCode.CommandAndQuery\RoyalCode.CommandAndQuery.csproj" />
     <ProjectReference Include="..\RoyalCode.PipelineFlow.DependencyInjection\RoyalCode.PipelineFlow.DependencyInjection.csproj" />
   </ItemGroup>
 
