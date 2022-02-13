@@ -28,6 +28,13 @@ namespace RoyalCode.PipelineFlow.Resolvers
         }
 
         /// <inheritdoc/>
+        public SortDescriptor SortDescriptor 
+        {
+            get => decoratorDescription.SortDescriptor; 
+            set => decoratorDescription.SortDescriptor = value; 
+        }
+
+        /// <inheritdoc/>
         public DecoratorDescriptor? TryResolve(Type inputType)
         {
             return decoratorDescription.Match(inputType)

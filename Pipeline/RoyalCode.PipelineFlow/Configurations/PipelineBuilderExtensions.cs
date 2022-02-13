@@ -1,4 +1,5 @@
-﻿using RoyalCode.PipelineFlow.Resolvers;
+﻿using RoyalCode.PipelineFlow.Descriptors;
+using RoyalCode.PipelineFlow.Resolvers;
 using System;
 using System.Linq;
 using System.Reflection;
@@ -618,9 +619,12 @@ namespace RoyalCode.PipelineFlow.Configurations
 
         public static IPipelineBuilder<TInput> DecorateAsync<TService, TInput>(
             this IPipelineBuilderWithService<TService, TInput> builder,
-            Func<TService, TInput, Func<Task>, CancellationToken, Task> handler)
+            Func<TService, TInput, Func<Task>, CancellationToken, Task> handler,
+            Action<SortDescriptor>? configureSortAction = null)
         {
-            builder.AddDecoratorResolver(DefaultDecoratorsResolver.DecorateAsync(handler));
+            var resolver = DefaultDecoratorsResolver.DecorateAsync(handler);
+            configureSortAction?.Invoke(resolver.SortDescriptor);
+            builder.AddDecoratorResolver(resolver);
             return builder.Configure<TInput>();
         }
 

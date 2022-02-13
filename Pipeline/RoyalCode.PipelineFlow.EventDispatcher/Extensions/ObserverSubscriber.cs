@@ -1,5 +1,6 @@
 ﻿using RoyalCode.EventDispatcher;
 using RoyalCode.PipelineFlow.Configurations;
+using RoyalCode.PipelineFlow.Descriptors;
 using RoyalCode.PipelineFlow.EventDispatcher.Internal;
 using RoyalCode.PipelineFlow.Resolvers;
 using System.Reflection;
@@ -36,13 +37,15 @@ public class ObserverSubscriber
         {
             builder.Configure<CurrentScopeEventDispatchRequest<TEvent>>()
                 .WithService<TObserver>()
-                .DecorateAsync(NotifyObserverDecoratorHandlers.NotifyInCurrentScope);
+                .DecorateAsync(NotifyObserverDecoratorHandlers.NotifyInCurrentScope,
+                    d => d.Priority = SortingPriority.InTheEnding);
         }
         else
         {
             builder.Configure<SeparatedScopeEventDispatchRequest<TEvent>>()
                 .WithService<TObserver>()
-                .DecorateAsync(NotifyObserverDecoratorHandlers.NotifyInSeparatedScope);
+                .DecorateAsync(NotifyObserverDecoratorHandlers.NotifyInSeparatedScope,
+                    d => d.Priority = SortingPriority.InTheEnding);
         }
         return this;
     }
@@ -65,6 +68,7 @@ public class ObserverSubscriber
             : NotifyObserverDecoratorHandlers.BuildNotifyInSeparatedScope(method);
 
         var decorator = new ServiceAndDelegateDecoratorResolver(@delegate, method.DeclaringType);
+        decorator.SortDescriptor.Priority = SortingPriority.InTheEnding;
         builder.AddDecoratorResolver(decorator);
 
         return this;

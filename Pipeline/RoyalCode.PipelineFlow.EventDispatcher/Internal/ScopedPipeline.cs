@@ -1,5 +1,6 @@
 using System;
 using Microsoft.Extensions.DependencyInjection;
+using RoyalCode.EventDispatcher;
 
 namespace RoyalCode.PipelineFlow.EventDispatcher.Internal;
 
@@ -26,7 +27,9 @@ internal sealed class ScopedPipeline<TIn> : IDisposable
     /// <summary>
     /// Gets the scoped pipeline.
     /// </summary>
-    public IPipeline<TIn> Pipeline => pipeline ??= scope.ServiceProvider.GetRequiredService<IPipeline<TIn>>();
+    public IPipeline<TIn> Pipeline => pipeline ??= scope.ServiceProvider
+        .GetRequiredService<IPipelineFactory<IEventDispatcher>>()
+        .Create<TIn>();
 
     /// <summary>
     /// Dispose the scope.

@@ -42,14 +42,16 @@ internal class EventDispatcherPipelineFactory
     /// </summary>
     /// <typeparam name="TEvent">The event type.</typeparam>
     /// <returns>New <see cref="IPipeline{TIn}"/>.</returns>
-    public IPipeline<ICurrentScopeEventDispatchRequest<TEvent>> CreatePipelineInCurrentScope<TEvent>()
-        => factory.Create<ICurrentScopeEventDispatchRequest<TEvent>>();
+    public IPipeline<CurrentScopeEventDispatchRequest<TEvent>> CreatePipelineInCurrentScope<TEvent>()
+        where TEvent : class
+        => factory.Create<CurrentScopeEventDispatchRequest<TEvent>>();
     
     /// <summary>
     /// Creates a scoped pipeline that wraps the pipeline for dispatch events in separated scope.
     /// </summary>
     /// <typeparam name="TEvent">The event type.</typeparam>
     /// <returns>A new instance of <see cref="ScopedPipeline{TIn}"/>.</returns>
-    public ScopedPipeline<ISeparatedScopeEventDispatchRequest<TEvent>> CreatePipelineInSeparatedScope<TEvent>()
+    public ScopedPipeline<SeparatedScopeEventDispatchRequest<TEvent>> CreatePipelineInSeparatedScope<TEvent>()
+        where TEvent: class
         => new(serviceProvider.CreateScope());
 }

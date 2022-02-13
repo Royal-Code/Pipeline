@@ -2,6 +2,7 @@
 using RoyalCode.EventDispatcher;
 using RoyalCode.PipelineFlow;
 using RoyalCode.PipelineFlow.Configurations;
+using RoyalCode.PipelineFlow.EventDispatcher.Exceptions;
 using RoyalCode.PipelineFlow.EventDispatcher.Internal;
 using System;
 using System.Reflection;
@@ -47,7 +48,7 @@ public static class PipelineFlowEventDispatcherServiceCollectionExtensions
         MethodInfo method, DispatchStrategy strategy)
     {
         services.AddEventDispatcher(subscriber => subscriber.AddObserver(method, strategy));
-        services.TryAddTransient(method.DeclaringType);
+        services.TryAddTransient(method.DeclaringType ?? throw new InvalidObserverMethodException("The method don't have a Declaring Type"));
         return services;
     }
 
@@ -83,14 +84,18 @@ public static class PipelineFlowEventDispatcherServiceCollectionExtensions
             sc.AddTransient<IPipelineDispatcherFactory, PipelineDispatcherFactory>();
             sc.AddTransient<EventDispatcherPipelineFactory>();
             sc.AddSingleton<DispatcherStateCollection>();
+            sc.AddTransient(typeof(CurrentScopeEventDispatchHandler<>));
+            sc.AddTransient(typeof(SeparatedScopeEventDispatchHandler<>));
             cfg.ConfigurePipelines(builder => builder
-                .AddHandlerMethodDefined(
-                    typeof(CurrentScopeEventDispatchHandler<>),
-                    nameof(CurrentScopeEventDispatchHandler<object>.CurrentScopeEventDispatch))
-                .AddHandlerMethodDefined(
-                    typeof(SeparatedScopeEventDispatchHandler<>),
-                    nameof(SeparatedScopeEventDispatchHandler<object>.CurrentScopeEventDispatch)
-                ));
+            .AddHandlerMethodDefined(
+                typeof(CurrentScopeEventDispatchHandler<>),
+                nameof(CurrentScopeEventDispatchHandler<object>.CurrentScopeEventDispatch))
+            .AddHandlerMethodDefined(
+                typeof(SeparatedScopeEventDispatchHandler<>),
+                nameof(SeparatedScopeEventDispatchHandler<object>.CurrentScopeEventDispatch)
+            ));
+
+
         });
     }
 }

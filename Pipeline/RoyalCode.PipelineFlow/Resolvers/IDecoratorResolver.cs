@@ -14,6 +14,11 @@ namespace RoyalCode.PipelineFlow.Resolvers
     public interface IDecoratorResolver
     {
         /// <summary>
+        /// Get or Set the sort descriptor of the decorator descriptor.
+        /// </summary>
+        public SortDescriptor SortDescriptor { get; set; }
+
+        /// <summary>
         /// For the input type, try solving a handler that doesn't produce results.
         /// </summary>
         /// <param name="inputType">The pipeline input type.</param>
