@@ -4,14 +4,24 @@ namespace RoyalCode.PipelineFlow
 {
     /// <summary>
     /// <para>
-    ///     Pipeline Factory for a specific type of pipeline.
+    ///     Pipeline Factory for a specific type of pipeline, defined by <typeparamref name="TFor"/>.
     /// </para>
     /// <para>
-    ///     It is used for creating pipelines from the request type(input and output types).
+    ///     It is used for creating pipelines from the request type (input and output types).
     /// </para>
     /// </summary>
     /// <typeparam name="TFor">The specific type of pipeline.</typeparam>
-    public interface IPipelineFactory<TFor>
+    public interface IPipelineFactory<TFor> : IPipelineFactory { }
+    
+    /// <summary>
+    /// <para>
+    ///     A Pipeline Factory.
+    /// </para>
+    /// <para>
+    ///     It is used for creating pipelines from the request type (input and output types).
+    /// </para>
+    /// </summary>
+    public interface IPipelineFactory
     {
         /// <summary>
         /// Create a pipeline for the input type without result.
