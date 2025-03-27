@@ -34,11 +34,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoyalCode.EventDispatcher",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoyalCode.PipelineFlow.EventDispatcher", "RoyalCode.PipelineFlow.EventDispatcher\RoyalCode.PipelineFlow.EventDispatcher.csproj", "{34DB5309-35CC-400F-B16C-18DC53677778}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoyalCode.PipelineFlow.DependencyInjection", "RoyalCode.PipelineFlow.DependencyInjection\RoyalCode.PipelineFlow.DependencyInjection.csproj", "{9D801CC4-FDAF-49C2-BDEC-6F05DD332612}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoyalCode.PipelineFlow.DependencyInjection", "RoyalCode.PipelineFlow.DependencyInjection\RoyalCode.PipelineFlow.DependencyInjection.csproj", "{9D801CC4-FDAF-49C2-BDEC-6F05DD332612}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoyalCode.EventDispatcher.Tests", "RoyalCode.EventDispatcher.Tests\RoyalCode.EventDispatcher.Tests.csproj", "{BFFD22A4-C3EF-4FE0-8C19-DF44881C6772}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoyalCode.EventDispatcher.Tests", "RoyalCode.EventDispatcher.Tests\RoyalCode.EventDispatcher.Tests.csproj", "{BFFD22A4-C3EF-4FE0-8C19-DF44881C6772}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoyalCode.CommandAndQuery", "RoyalCode.CommandAndQuery\RoyalCode.CommandAndQuery.csproj", "{3C19108D-AF63-46C2-B197-F1898E499020}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoyalCode.CommandAndQuery", "RoyalCode.CommandAndQuery\RoyalCode.CommandAndQuery.csproj", "{3C19108D-AF63-46C2-B197-F1898E499020}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoyalCode.SmartPipelines", "RoyalCode.SmartPipelines\RoyalCode.SmartPipelines.csproj", "{6B7820C1-10BD-40B6-BB8C-E6F7BD231032}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -98,6 +100,10 @@ Global
 		{3C19108D-AF63-46C2-B197-F1898E499020}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3C19108D-AF63-46C2-B197-F1898E499020}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3C19108D-AF63-46C2-B197-F1898E499020}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6B7820C1-10BD-40B6-BB8C-E6F7BD231032}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6B7820C1-10BD-40B6-BB8C-E6F7BD231032}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6B7820C1-10BD-40B6-BB8C-E6F7BD231032}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6B7820C1-10BD-40B6-BB8C-E6F7BD231032}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -116,6 +122,7 @@ Global
 		{9D801CC4-FDAF-49C2-BDEC-6F05DD332612} = {F5DD2E92-9192-4869-AA1E-94A2F6E0FA9F}
 		{BFFD22A4-C3EF-4FE0-8C19-DF44881C6772} = {48F480F4-D227-4EA8-B670-9EB8CC38F5BD}
 		{3C19108D-AF63-46C2-B197-F1898E499020} = {F5DD2E92-9192-4869-AA1E-94A2F6E0FA9F}
+		{6B7820C1-10BD-40B6-BB8C-E6F7BD231032} = {F5DD2E92-9192-4869-AA1E-94A2F6E0FA9F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {AB2570C9-31BE-4028-8797-6520A1E4945F}

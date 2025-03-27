@@ -258,18 +258,17 @@ namespace Microsoft.Extensions.DependencyInjection
                 var handlerType = typeof(IHandler<>).MakeGenericType(inputType);
                 return handlersServicesTypes!.Any(Match(handlerType));
             }
+            public bool HasHandlerServiceFor(Type inputType, Type outputType)
+            {
+                Initialize();
+                var handlerType = typeof(IHandler<,>).MakeGenericType(inputType, outputType);
+                return handlersServicesTypes!.Any(Match(handlerType));
+            }
 
             public bool HasAsyncHandlerServiceFor(Type inputType)
             {
                 Initialize();
                 var handlerType = typeof(IAsyncHandler<>).MakeGenericType(inputType);
-                return handlersServicesTypes!.Any(Match(handlerType));
-            }
-
-            public bool HasHandlerServiceFor(Type inputType, Type outputType)
-            {
-                Initialize();
-                var handlerType = typeof(IHandler<,>).MakeGenericType(inputType, outputType);
                 return handlersServicesTypes!.Any(Match(handlerType));
             }
 

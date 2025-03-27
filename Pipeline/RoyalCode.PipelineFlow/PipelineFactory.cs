@@ -9,7 +9,7 @@ namespace RoyalCode.PipelineFlow
     /// <summary>
     /// Used to start building a <see cref="IPipelineFactory{TFor}"/>.
     /// </summary>
-    public class PipelineFactory
+    public static class PipelineFactory
     {
         /// <summary>
         /// The <see cref="ChainDelegateRegistry"/> used to configure pipelines.
